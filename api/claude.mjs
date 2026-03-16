@@ -5,14 +5,9 @@ export default async function handler(req, res) {
 
   if (req.method === "OPTIONS") return res.status(200).end();
 
-  // GET test — confirms key is loaded
   if (req.method === "GET") {
     const key = process.env.ANTHROPIC_API_KEY;
-    return res.status(200).json({
-      status: "ok",
-      keyLoaded: !!key,
-      keyPrefix: key ? key.substring(0, 12) + "..." : "MISSING"
-    });
+    return res.status(200).json({ status: "ok", keyLoaded: !!key });
   }
 
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
@@ -36,8 +31,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: error.message });
   }
 }
-```
-
-Commit it, wait 30 seconds, then visit:
-```
-https://field-guide-nu.vercel.app/api/claude
