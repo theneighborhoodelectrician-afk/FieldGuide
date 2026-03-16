@@ -3,17 +3,28 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS, GET");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req.method === "OPTIONS") {
+    res.status(200).end();
+    return;
+  }
 
   if (req.method === "GET") {
     const key = process.env.ANTHROPIC_API_KEY;
-    return res.status(200).json({ status: "ok", keyLoaded: !!key });
+    res.status(200).json({ status: "ok", keyLoaded: !!key });
+    return;
   }
 
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  if (req.method !== "POST") {
+    res.status(405).json({ error: "Method not allowed" });
+    return;
+  }
 
   const key = process.env.ANTHROPIC_API_KEY;
-  if (!key) return res.status(500).json({ error: "Missing API key" });
+
+  if (!key) {
+    res.status(500).json({ error: "Missing API key" });
+    return;
+  }
 
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -26,15 +37,8 @@ export default async function handler(req, res) {
       body: JSON.stringify(req.body),
     });
     const data = await response.json();
-    return res.status(200).json(data);
+    res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 }
-```
-
-5. Click **Commit new file**
-
-Wait 30 seconds then visit:
-```
-https://field-guide-nu.vercel.app/api/claude
