@@ -6,12 +6,18 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
+  const key = process.env.ANTHROPIC_API_KEY;
+
+  if (!key) {
+    return res.status(500).json({ error: "Missing API key — check Vercel environment variables" });
+  }
+
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "x-api-key": key,
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify(req.body),
@@ -19,7 +25,6 @@ export default async function handler(req, res) {
     const data = await response.json();
     return res.status(200).json(data);
   } catch (error) {
-    console.error("API error:", error);
-    return res.status(500).json({ error: "API call failed" });
+    return res.status(500).json({ error: error.message });
   }
 }
