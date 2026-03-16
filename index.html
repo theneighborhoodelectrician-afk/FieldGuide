@@ -41,14 +41,23 @@
     async function callClaude(system, userText) {
       const body = { model: "claude-sonnet-4-20250514", max_tokens: 1000, messages: [{ role: "user", content: userText }] };
       if (system) body.system = system;
-      const res = await fetch("/api/claude", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      const raw = data.content?.[0]?.text || "{}";
-      return JSON.parse(raw.replace(/```json|```/g, "").trim());
+      try {
+        const res = await fetch("/api/claude", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const text = await res.text();
+        console.log("RAW:", text);
+        const data = JSON.parse(text);
+        if (data.error) { console.error("API ERROR:", data.error); return null; }
+        const raw = data.content?.[0]?.text || "{}";
+        console.log("CLAUDE:", raw);
+        return JSON.parse(raw.replace(/```json|```/g, "").trim());
+      } catch(e) {
+        console.error("FAILED:", e);
+        return null;
+      }
     }
 
     const C = {
@@ -154,6 +163,7 @@
       const [isRec,setIsRec]   = useState(false);
       const [analyzing,setAna] = useState(false);
       const [extracted,setExt] = useState(saved?.extracted||null);
+      const [error,setError]   = useState(null);
       const recRef = useRef(null);
 
       const startVoice = () => {
@@ -168,9 +178,14 @@
       const stopVoice=()=>{recRef.current?.stop();setIsRec(false);};
 
       const analyze=async()=>{
-        if(!text.trim())return; setAna(true);
-        try{ const parsed=await callClaude(meta.systemPrompt,text); setExt(parsed); }
-        catch(e){console.error(e);}
+        if(!text.trim())return;
+        setAna(true); setError(null);
+        const parsed = await callClaude(meta.systemPrompt, text);
+        if(parsed) {
+          setExt(parsed);
+        } else {
+          setError("Something went wrong — please try again");
+        }
         setAna(false);
       };
 
@@ -206,6 +221,7 @@
                   onFocus:e=>e.target.style.borderColor=meta.color,
                   onBlur:e=>e.target.style.borderColor=C.border
                 }),
+            error && h("div",{style:{marginTop:10,padding:"10px 14px",background:"rgba(255,71,87,0.15)",border:"1px solid rgba(255,71,87,0.4)",borderRadius:10,fontSize:13,color:"#FF4757",fontWeight:600}},error),
             text&&!extracted&&h("button",{onClick:analyze,disabled:analyzing,style:{marginTop:14,width:"100%",background:analyzing?"rgba(0,0,0,0.2)":meta.color,color:analyzing?C.mid:C.bg,border:"none",borderRadius:12,padding:"15px",fontSize:15,fontWeight:900,letterSpacing:1,textTransform:"uppercase",display:"flex",alignItems:"center",justifyContent:"center",gap:8,boxShadow:analyzing?"none":`0 4px 20px ${meta.color}66`,transition:"all 0.2s"}},
               analyzing?[h("span",{key:"s",style:{animation:"spin 0.8s linear infinite",display:"inline-block"}},"◌")," Scanning..."]:"◈ Pull Out Scopes"
             )
@@ -273,11 +289,13 @@
       const [loading,setLoading]   = useState(true);
       const [selected,setSelected] = useState(null);
       const [expanded,setExpanded] = useState(null);
+      const [error,setError]       = useState(null);
 
       useEffect(()=>{
         (async()=>{
-          try{ const parsed=await callClaude(null,buildOptionsPrompt(scopes)); setOptions(parsed.options); }
-          catch(e){console.error(e);}
+          const parsed = await callClaude(null, buildOptionsPrompt(scopes));
+          if(parsed) setOptions(parsed.options);
+          else setError("Could not build options — please try again");
           setLoading(false);
         })();
       },[]);
@@ -287,6 +305,8 @@
         h("div",{style:{fontSize:17,fontWeight:800,color:C.white}},"Building options..."),
         h("div",{style:{fontSize:13,color:C.mid}},"Finding the best combinations for your customer")
       );
+
+      if(error) return h("div",{style:{padding:"32px 0",textAlign:"center",color:"#FF4757",fontSize:15,fontWeight:600}},error);
 
       return h("div",{style:{display:"flex",flexDirection:"column",gap:10}},
         h("div",{style:{paddingBottom:6}},
@@ -313,42 +333,4 @@
               opt.includes?.map((item,i)=>
                 h("div",{key:i,style:{display:"flex",alignItems:"center",gap:10,padding:"9px 12px",marginBottom:6,background:`${color}14`,border:`1px solid ${color}30`,borderRadius:10}},
                   h("div",{style:{width:6,height:6,borderRadius:"50%",background:color,flexShrink:0}}),
-                  h("span",{style:{fontSize:13,color:C.bright,fontWeight:600}},item)
-                )
-              )
-            )
-          );
-        }),
-        selected&&h("button",{style:{marginTop:8,width:"100%",background:C.amber,color:C.bg,border:"none",borderRadius:16,padding:"17px",fontSize:16,fontWeight:900,letterSpacing:1,textTransform:"uppercase",boxShadow:`0 6px 28px ${C.amber}55`,animation:"fadeUp 0.25s ease"}},`Send Option ${selected} to Customer →`)
-      );
-    }
-
-    function FieldGuide() {
-      const [step,setStep]     = useState("request");
-      const [data,setData]     = useState({});
-      const [scopes,setScopes] = useState(null);
-
-      const handleStep=(key,result)=>{
-        setData(prev=>({...prev,[key]:result}));
-        if(key==="request")           setStep("safety");
-        else if(key==="safety")       setStep("enhancements");
-        else if(key==="enhancements") setStep("review");
-      };
-      const reset=()=>{setStep("request");setData({});setScopes(null);};
-
-      return h("div",{style:{minHeight:"100vh",background:C.bg}},
-        h(StepHeader,{current:step,onReset:reset}),
-        h("div",{style:{maxWidth:480,margin:"0 auto",padding:"20px 16px 56px"}},
-          step==="request"      && h(InputStep,{meta:STEP_META.request,      onDone:r=>handleStep("request",r),      saved:data.request}),
-          step==="safety"       && h(InputStep,{meta:STEP_META.safety,       onDone:r=>handleStep("safety",r),       saved:data.safety}),
-          step==="enhancements" && h(InputStep,{meta:STEP_META.enhancements, onDone:r=>handleStep("enhancements",r), saved:data.enhancements}),
-          step==="review"       && h(ReviewStep,{data,onConfirm:s=>{setScopes(s);setStep("options");}}),
-          step==="options"      && scopes && h(OptionsStep,{scopes})
-        )
-      );
-    }
-
-    createRoot(document.getElementById("root")).render(h(FieldGuide,null));
-  </script>
-</body>
-</html>
+                  h("span",{style
