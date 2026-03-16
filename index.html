@@ -31,23 +31,26 @@
 </head>
 <body>
   <div id="root"></div>
-
   <script type="importmap">
-    {
-      "imports": {
-        "react":     "https://esm.sh/react@18.2.0",
-        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client"
-      }
-    }
+    { "imports": { "react": "https://esm.sh/react@18.2.0", "react-dom/client": "https://esm.sh/react-dom@18.2.0/client" } }
   </script>
-
   <script type="module">
     import React, { useState, useRef, useEffect } from "react";
     import { createRoot } from "react-dom/client";
 
-    // ── Paste your Anthropic API key below ──────────────────────
-    const API_KEY = "sk-ant-api03-...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...";
-    // ────────────────────────────────────────────────────────────
+    // ── API call goes through Vercel backend — no key needed here ─
+    async function callClaude(system, userText) {
+      const body = { model: "claude-sonnet-4-20250514", max_tokens: 1000, messages: [{ role: "user", content: userText }] };
+      if (system) body.system = system;
+      const res = await fetch("/api/claude", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      const raw = data.content?.[0]?.text || "{}";
+      return JSON.parse(raw.replace(/```json|```/g, "").trim());
+    }
 
     const C = {
       bg:"#111318", bgCard:"#1A1D26", bgInner:"#13151C", border:"#262B38",
@@ -71,9 +74,7 @@
         question:"What did the customer call you to do today?",
         sub:"Speak or type it out — don't hold back",
         placeholder:"e.g. 6 recessed lights in the living room, outlets in the garage aren't working, EV charger install...",
-        systemPrompt:`You are a sharp electrical estimating assistant. Extract job scopes from a technician's field description.
-Return ONLY valid JSON, no markdown:
-{"requested_scopes":["scope 1","scope 2"],"job_facts":{"location":"where","quantity":"how many","panel_condition":"panel info or unknown","structural_conditions":["notes"]}}`
+        systemPrompt:`You are a sharp electrical estimating assistant. Extract job scopes from a technician's field description.\nReturn ONLY valid JSON, no markdown:\n{"requested_scopes":["scope 1","scope 2"],"job_facts":{"location":"where","quantity":"how many","panel_condition":"panel info or unknown","structural_conditions":["notes"]}}`
       },
       safety: {
         num:2, label:"Safety Findings", short:"Safety", emoji:"⚡",
@@ -81,9 +82,7 @@ Return ONLY valid JSON, no markdown:
         question:"What safety issues did you find?",
         sub:"You're looking out for their family — what needs attention",
         placeholder:"e.g. panel from the 70s and overloaded, no GFCI in bathrooms, aluminum wiring throughout...",
-        systemPrompt:`You are a sharp electrical estimating assistant. Extract safety findings from a technician's notes.
-Return ONLY valid JSON, no markdown:
-{"safety_scopes":["safety item 1","safety item 2"],"job_facts":{"panel_condition":"panel condition","safety_risks":["risk 1","risk 2"],"urgency":"immediate / soon / monitor"}}`
+        systemPrompt:`You are a sharp electrical estimating assistant. Extract safety findings from a technician's notes.\nReturn ONLY valid JSON, no markdown:\n{"safety_scopes":["safety item 1","safety item 2"],"job_facts":{"panel_condition":"panel condition","safety_risks":["risk 1","risk 2"],"urgency":"immediate / soon / monitor"}}`
       },
       enhancements: {
         num:3, label:"Upgrade Ideas", short:"Upgrades", emoji:"💡",
@@ -91,9 +90,7 @@ Return ONLY valid JSON, no markdown:
         question:"If this were your house, what would you add?",
         sub:"Genuine advice — things that would improve their life",
         placeholder:"e.g. dimmers on all switches, under cabinet lighting, smart switches, whole-home surge protector...",
-        systemPrompt:`You are a sharp electrical estimating assistant. Extract upgrade recommendations from a technician's notes.
-Return ONLY valid JSON, no markdown:
-{"enhancement_scopes":["enhancement 1","enhancement 2"],"future_opportunities":["future 1"]}`
+        systemPrompt:`You are a sharp electrical estimating assistant. Extract upgrade recommendations from a technician's notes.\nReturn ONLY valid JSON, no markdown:\n{"enhancement_scopes":["enhancement 1","enhancement 2"],"future_opportunities":["future 1"]}`
       },
     };
 
@@ -104,35 +101,10 @@ Return ONLY valid JSON, no markdown:
     };
 
     const buildOptionsPrompt = (scopes) =>
-      `You are a trusted electrical advisor helping a technician build honest estimate options for a homeowner.
-Available scopes:
-- What they asked for: ${JSON.stringify(scopes.requested)}
-- Safety items: ${JSON.stringify(scopes.safety)}
-- Upgrade ideas: ${JSON.stringify(scopes.enhancements)}
-Create exactly 6 estimate options. Be an advisor, not a salesman.
-Rules: NEVER invent pricing. List specific scope items. Give each a warm clear name. Value statement = what this does for the customer's family.
-Return ONLY valid JSON:
-{"options":[{"number":1,"name":"Option name","tier":"essential|safety|comfort|recommended|enhanced|complete","includes":["item 1","item 2"],"value_statement":"What this means for your home"}]}`;
+      `You are a trusted electrical advisor helping a technician build honest estimate options for a homeowner.\nAvailable scopes:\n- What they asked for: ${JSON.stringify(scopes.requested)}\n- Safety items: ${JSON.stringify(scopes.safety)}\n- Upgrade ideas: ${JSON.stringify(scopes.enhancements)}\nCreate exactly 6 estimate options. Be an advisor, not a salesman.\nRules: NEVER invent pricing. List specific scope items. Give each a warm clear name. Value statement = what this does for the customer.\nReturn ONLY valid JSON:\n{"options":[{"number":1,"name":"Option name","tier":"essential|safety|comfort|recommended|enhanced|complete","includes":["item 1"],"value_statement":"What this means for your home"}]}`;
 
-    async function callClaude(system, userText) {
-      const body = { model:"claude-sonnet-4-20250514", max_tokens:1000, messages:[{role:"user",content:userText}] };
-      if (system) body.system = system;
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method:"POST",
-        headers:{ "Content-Type":"application/json", "x-api-key": API_KEY, "anthropic-version":"2023-06-01", "anthropic-dangerous-direct-browser-access":"true" },
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      const raw = data.content?.[0]?.text || "{}";
-      return JSON.parse(raw.replace(/```json|```/g,"").trim());
-    }
-
-    // ── h helper (shorthand for React.createElement) ─────────────
     const h = React.createElement;
 
-    function s(base, extra={}) { return {...base,...extra}; }
-
-    // ── ScopeCard ─────────────────────────────────────────────────
     function ScopeCard({text, index, onRemove}) {
       const bg = SCOPE_COLORS[index % SCOPE_COLORS.length];
       return h("div",{style:{display:"flex",alignItems:"center",background:bg,borderRadius:14,marginBottom:8,overflow:"hidden",boxShadow:`0 4px 16px ${bg}44`,animation:"fadeUp 0.25s ease both",animationDelay:`${index*0.05}s`}},
@@ -142,7 +114,6 @@ Return ONLY valid JSON:
       );
     }
 
-    // ── StepHeader ────────────────────────────────────────────────
     function StepHeader({current, onReset}) {
       const steps=[{key:"request",label:"Request",color:C.cyan},{key:"safety",label:"Safety",color:C.amber},{key:"enhancements",label:"Upgrades",color:C.green},{key:"review",label:"Review",color:C.cyan},{key:"options",label:"Options",color:C.cyan}];
       const idx = STEPS.indexOf(current);
@@ -153,8 +124,7 @@ Return ONLY valid JSON:
             h("div",{style:{display:"flex",alignItems:"center",gap:10}},
               h("div",{style:{width:38,height:38,borderRadius:10,background:`${C.cyan}22`,border:`1px solid ${C.cyan}44`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}},"🧭"),
               h("div",null,
-                h("div",{style:{fontSize:20,fontWeight:900,color:C.white,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2,lineHeight:1}},
-                  "FIELD",h("span",{style:{color:C.cyan}},"GUIDE")),
+                h("div",{style:{fontSize:20,fontWeight:900,color:C.white,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2,lineHeight:1}},"FIELD",h("span",{style:{color:C.cyan}},"GUIDE")),
                 h("div",{style:{fontSize:9,color:C.mid,textTransform:"uppercase",letterSpacing:2,fontWeight:600}},"Electrical Estimating")
               )
             ),
@@ -179,13 +149,12 @@ Return ONLY valid JSON:
       );
     }
 
-    // ── InputStep ─────────────────────────────────────────────────
     function InputStep({meta, onDone, saved}) {
-      const [text,setText]         = useState(saved?.text||"");
-      const [mode,setMode]         = useState("type");
-      const [isRec,setIsRec]       = useState(false);
-      const [analyzing,setAna]     = useState(false);
-      const [extracted,setExt]     = useState(saved?.extracted||null);
+      const [text,setText]     = useState(saved?.text||"");
+      const [mode,setMode]     = useState("type");
+      const [isRec,setIsRec]   = useState(false);
+      const [analyzing,setAna] = useState(false);
+      const [extracted,setExt] = useState(saved?.extracted||null);
       const recRef = useRef(null);
 
       const startVoice = () => {
@@ -222,15 +191,11 @@ Return ONLY valid JSON:
                 h("div",{style:{fontSize:12,color:C.mid,marginTop:5,fontStyle:"italic"}},meta.sub)
               )
             ),
-
-            // Mode toggle
             h("div",{style:{display:"flex",background:"rgba(0,0,0,0.3)",borderRadius:12,padding:4,marginBottom:14,border:`1px solid ${C.border}`}},
               [["type","⌨️  Type"],["voice","🎤  Voice"]].map(([m,label])=>
                 h("button",{key:m,onClick:()=>setMode(m),style:{flex:1,padding:"10px 0",border:"none",borderRadius:9,background:mode===m?meta.color:"transparent",color:mode===m?C.bg:C.mid,fontWeight:800,fontSize:13,letterSpacing:0.5,transition:"all 0.2s",boxShadow:mode===m?`0 2px 12px ${meta.color}66`:"none"}},label)
               )
             ),
-
-            // Voice UI
             mode==="voice"
               ? h("div",{style:{display:"flex",flexDirection:"column",alignItems:"center",gap:14}},
                   h("button",{onClick:isRec?stopVoice:startVoice,style:{width:96,height:96,borderRadius:"50%",border:`3px solid ${isRec?"#FF4757":meta.color}`,background:isRec?"rgba(255,71,87,0.15)":`${meta.color}22`,fontSize:36,display:"flex",alignItems:"center",justifyContent:"center",animation:isRec?"recPulse 1.5s ease-in-out infinite":"none",boxShadow:isRec?"none":`0 0 24px ${meta.color}55`,transition:"all 0.25s"}},isRec?"⏹":"🎤"),
@@ -242,25 +207,19 @@ Return ONLY valid JSON:
                   onFocus:e=>e.target.style.borderColor=meta.color,
                   onBlur:e=>e.target.style.borderColor=C.border
                 }),
-
             text&&!extracted&&h("button",{onClick:analyze,disabled:analyzing,style:{marginTop:14,width:"100%",background:analyzing?"rgba(0,0,0,0.2)":meta.color,color:analyzing?C.mid:C.bg,border:"none",borderRadius:12,padding:"15px",fontSize:15,fontWeight:900,letterSpacing:1,textTransform:"uppercase",display:"flex",alignItems:"center",justifyContent:"center",gap:8,boxShadow:analyzing?"none":`0 4px 20px ${meta.color}66`,transition:"all 0.2s"}},
-              analyzing
-                ?[h("span",{key:"s",style:{animation:"spin 0.8s linear infinite",display:"inline-block"}},"◌")," Scanning..."]
-                :"◈ Pull Out Scopes"
+              analyzing?[h("span",{key:"s",style:{animation:"spin 0.8s linear infinite",display:"inline-block"}},"◌")," Scanning..."]:"◈ Pull Out Scopes"
             )
           )
         ),
-
-        // Extracted results
         extracted&&h("div",{style:{animation:"fadeUp 0.3s ease"}},
           h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}},
             h("div",{style:{fontSize:11,fontWeight:800,color:meta.color,textTransform:"uppercase",letterSpacing:2}},"Scopes Found — Remove Any That Are Off"),
             h("div",{style:{background:`${meta.color}22`,border:`1px solid ${meta.color}44`,borderRadius:20,padding:"2px 10px",fontSize:11,fontWeight:800,color:meta.color}},getScopes().length)
           ),
           getScopes().length
-            ? getScopes().map((s,i)=>h(ScopeCard,{key:i,text:s,index:i,onRemove:()=>removeScope(i)}))
-            : h("div",{style:{color:C.mid,fontSize:13,fontStyle:"italic",padding:"12px 0"}},"Nothing extracted — try re-entering your notes"),
-
+            ?getScopes().map((s,i)=>h(ScopeCard,{key:i,text:s,index:i,onRemove:()=>removeScope(i)}))
+            :h("div",{style:{color:C.mid,fontSize:13,fontStyle:"italic",padding:"12px 0"}},"Nothing extracted — try re-entering your notes"),
           extracted.job_facts&&Object.entries(extracted.job_facts).some(([,v])=>v&&!(Array.isArray(v)&&!v.length)&&v!=="unknown"&&v!=="not mentioned")&&
             h("div",{style:{background:C.bgCard,border:`1px solid ${C.border}`,borderRadius:14,padding:"14px 16px",marginTop:10}},
               h("div",{style:{fontSize:10,fontWeight:800,color:C.dim,textTransform:"uppercase",letterSpacing:1.5,marginBottom:10}},"Job Details"),
@@ -274,15 +233,11 @@ Return ONLY valid JSON:
                 })
               )
             ),
-
-          h("button",{onClick:()=>onDone({text,extracted}),style:{marginTop:14,width:"100%",background:meta.color,color:C.bg,border:"none",borderRadius:14,padding:"16px",fontSize:16,fontWeight:900,letterSpacing:1,textTransform:"uppercase",boxShadow:`0 6px 24px ${meta.color}55`,transition:"all 0.2s"}},
-            "Looks Good — Next →"
-          )
+          h("button",{onClick:()=>onDone({text,extracted}),style:{marginTop:14,width:"100%",background:meta.color,color:C.bg,border:"none",borderRadius:14,padding:"16px",fontSize:16,fontWeight:900,letterSpacing:1,textTransform:"uppercase",boxShadow:`0 6px 24px ${meta.color}55`,transition:"all 0.2s"}},"Looks Good — Next →")
         )
       );
     }
 
-    // ── ReviewStep ────────────────────────────────────────────────
     function ReviewStep({data, onConfirm}) {
       const sections=[
         {label:"Customer Request",emoji:"🏠",color:C.cyan, scopes:data.request?.extracted?.requested_scopes||[]},
@@ -310,13 +265,10 @@ Return ONLY valid JSON:
             )
           )
         ),
-        h("button",{onClick:()=>onConfirm({requested:data.request?.extracted?.requested_scopes||[],safety:data.safety?.extracted?.safety_scopes||[],enhancements:data.enhancements?.extracted?.enhancement_scopes||[]}),style:{width:"100%",background:C.cyan,color:C.bg,border:"none",borderRadius:16,padding:"17px",fontSize:16,fontWeight:900,letterSpacing:1,textTransform:"uppercase",boxShadow:`0 6px 28px ${C.cyan}55`}},
-          "◈ Build My Estimate Options"
-        )
+        h("button",{onClick:()=>onConfirm({requested:data.request?.extracted?.requested_scopes||[],safety:data.safety?.extracted?.safety_scopes||[],enhancements:data.enhancements?.extracted?.enhancement_scopes||[]}),style:{width:"100%",background:C.cyan,color:C.bg,border:"none",borderRadius:16,padding:"17px",fontSize:16,fontWeight:900,letterSpacing:1,textTransform:"uppercase",boxShadow:`0 6px 28px ${C.cyan}55`}},"◈ Build My Estimate Options")
       );
     }
 
-    // ── OptionsStep ───────────────────────────────────────────────
     function OptionsStep({scopes}) {
       const [options,setOptions]   = useState(null);
       const [loading,setLoading]   = useState(true);
@@ -368,13 +320,10 @@ Return ONLY valid JSON:
             )
           );
         }),
-        selected&&h("button",{style:{marginTop:8,width:"100%",background:C.amber,color:C.bg,border:"none",borderRadius:16,padding:"17px",fontSize:16,fontWeight:900,letterSpacing:1,textTransform:"uppercase",boxShadow:`0 6px 28px ${C.amber}55`,animation:"fadeUp 0.25s ease"}},
-          `Send Option ${selected} to Customer →`
-        )
+        selected&&h("button",{style:{marginTop:8,width:"100%",background:C.amber,color:C.bg,border:"none",borderRadius:16,padding:"17px",fontSize:16,fontWeight:900,letterSpacing:1,textTransform:"uppercase",boxShadow:`0 6px 28px ${C.amber}55`,animation:"fadeUp 0.25s ease"}},`Send Option ${selected} to Customer →`)
       );
     }
 
-    // ── App Root ──────────────────────────────────────────────────
     function FieldGuide() {
       const [step,setStep]     = useState("request");
       const [data,setData]     = useState({});
