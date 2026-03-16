@@ -333,4 +333,42 @@
               opt.includes?.map((item,i)=>
                 h("div",{key:i,style:{display:"flex",alignItems:"center",gap:10,padding:"9px 12px",marginBottom:6,background:`${color}14`,border:`1px solid ${color}30`,borderRadius:10}},
                   h("div",{style:{width:6,height:6,borderRadius:"50%",background:color,flexShrink:0}}),
-                  h("span",{style
+                  h("span",{style:{fontSize:13,color:C.bright,fontWeight:600}},item)
+                )
+              )
+            )
+          );
+        }),
+        selected&&h("button",{style:{marginTop:8,width:"100%",background:C.amber,color:C.bg,border:"none",borderRadius:16,padding:"17px",fontSize:16,fontWeight:900,letterSpacing:1,textTransform:"uppercase",boxShadow:`0 6px 28px ${C.amber}55`,animation:"fadeUp 0.25s ease"}},`Send Option ${selected} to Customer →`)
+      );
+    }
+
+    function FieldGuide() {
+      const [step,setStep]     = useState("request");
+      const [data,setData]     = useState({});
+      const [scopes,setScopes] = useState(null);
+
+      const handleStep=(key,result)=>{
+        setData(prev=>({...prev,[key]:result}));
+        if(key==="request")           setStep("safety");
+        else if(key==="safety")       setStep("enhancements");
+        else if(key==="enhancements") setStep("review");
+      };
+      const reset=()=>{setStep("request");setData({});setScopes(null);};
+
+      return h("div",{style:{minHeight:"100vh",background:C.bg}},
+        h(StepHeader,{current:step,onReset:reset}),
+        h("div",{style:{maxWidth:480,margin:"0 auto",padding:"20px 16px 56px"}},
+          step==="request"      && h(InputStep,{meta:STEP_META.request,      onDone:r=>handleStep("request",r),      saved:data.request}),
+          step==="safety"       && h(InputStep,{meta:STEP_META.safety,       onDone:r=>handleStep("safety",r),       saved:data.safety}),
+          step==="enhancements" && h(InputStep,{meta:STEP_META.enhancements, onDone:r=>handleStep("enhancements",r), saved:data.enhancements}),
+          step==="review"       && h(ReviewStep,{data,onConfirm:s=>{setScopes(s);setStep("options");}}),
+          step==="options"      && scopes && h(OptionsStep,{scopes})
+        )
+      );
+    }
+
+    createRoot(document.getElementById("root")).render(h(FieldGuide,null));
+  </script>
+</body>
+</html>
