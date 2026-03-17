@@ -44,10 +44,7 @@
       const body = { model: "claude-sonnet-4-20250514", max_tokens: 1500, messages: [{ role: "user", content: userText }] };
       if (system) body.system = system;
       try {
-        const res = await fetch("/api/claude", {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
+        const res = await fetch("/api/claude", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
         const data = JSON.parse(await res.text());
         if (data.error) return null;
         const raw = data.content?.[0]?.text || "{}";
@@ -93,7 +90,7 @@
     function saveRules(r) { try { localStorage.setItem("fg_rules",JSON.stringify(r)); } catch(e) {} }
 
     function buildSystemPrompt(rules, section) {
-      const rulesText = rules.map(r=>`- IF: "${r.trigger}" → THEN: "${r.result}"`).join("\n");
+      const rulesText = rules.map(r=>`- IF: "${r.trigger}" THEN: "${r.result}"`).join("\n");
       const sectionPrompts = {
         request: "Extract what the customer specifically asked for. Return requested_scopes array.",
         safety:  "Analyze safety observations. Apply ALL Field Intelligence rules. Return safety_scopes with FULL expanded scopes — think like a master electrician.",
@@ -120,7 +117,7 @@ Scopes:
 - Customer asked for: ${JSON.stringify(scopes.requested)}
 - Safety items: ${JSON.stringify(scopes.safety)}
 - Upgrades: ${JSON.stringify(scopes.enhancements)}
-Key rules: ${rules.slice(0,10).map(r=>`${r.trigger} → ${r.result}`).join("; ")}
+Key rules: ${rules.slice(0,10).map(r=>`${r.trigger} -> ${r.result}`).join("; ")}
 Create exactly 6 estimate options. Be an advisor, not a salesman. NEVER invent pricing.
 Return ONLY valid JSON:
 {"options":[{"number":1,"name":"Option name","tier":"essential|safety|comfort|recommended|enhanced|complete","includes":["item 1"],"permits_required":false,"value_statement":"What this means for your home"}]}`;
@@ -139,11 +136,10 @@ Return ONLY valid JSON:
     const SCOPE_COLORS  = [C.blue,C.violet,C.teal,C.orange,C.rose,C.lime,C.indigo,C.sky,C.emerald,C.fuchsia];
     const OPTION_COLORS = [C.blue,C.teal,C.violet,C.amber,C.green,C.indigo];
     const STEPS = ["tech","job","request","safety","enhancements","review","options"];
-
     const STEP_META = {
-      request:      { num:1, label:"Their Request", emoji:"🏠", color:C.cyan,  soft:C.cyanSoft,  question:"What did the customer call you to do today?",        sub:"What they asked for — in their own words",              placeholder:"e.g. 6 recessed lights in living room, outlets in garage not working, EV charger..." },
-      safety:       { num:2, label:"What You See",  emoji:"⚡", color:C.amber, soft:C.amberSoft, question:"What did you find when you got there?",               sub:"Describe what you see — the AI knows what it means",   placeholder:"e.g. panel has oxidation on main breaker, original from 70s, aluminum wiring, no GFCI..." },
-      enhancements: { num:3, label:"Good Ideas",    emoji:"💡", color:C.green, soft:C.greenSoft, question:"If this were your house, what would you add?",        sub:"Genuine advice — things that would improve their life", placeholder:"e.g. dimmers, under cabinet lighting, smart switches..." },
+      request:      { num:1, label:"Their Request", emoji:"🏠", color:C.cyan,  soft:C.cyanSoft,  question:"What did the customer call you to do today?",       sub:"What they asked for — in their own words",            placeholder:"e.g. 6 recessed lights in living room, outlets in garage not working, EV charger..." },
+      safety:       { num:2, label:"What You See",  emoji:"⚡", color:C.amber, soft:C.amberSoft, question:"What did you find when you got there?",              sub:"Describe what you see — the AI knows what it means",  placeholder:"e.g. panel has oxidation on main breaker, original from 70s, aluminum wiring, no GFCI..." },
+      enhancements: { num:3, label:"Good Ideas",    emoji:"💡", color:C.green, soft:C.greenSoft, question:"If this were your house, what would you add?",       sub:"Genuine advice — things that would improve their life",placeholder:"e.g. dimmers, under cabinet lighting, smart switches..." },
     };
     const TIER_LABEL = { essential:"Just What They Asked", safety:"Safety First", comfort:"Added Comfort", recommended:"★ Recommended", enhanced:"Enhanced Home", complete:"The Complete Picture" };
 
@@ -153,15 +149,16 @@ Return ONLY valid JSON:
     function TechSelector({onSelect}) {
       return h("div",{style:{minHeight:"100vh",background:C.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 20px"}},
         h("div",{style:{width:72,height:72,borderRadius:18,background:`${C.cyan}22`,border:`2px solid ${C.cyan}44`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:34,marginBottom:20,boxShadow:`0 0 32px ${C.cyan}33`}},"🧭"),
-        h("div",{style:{fontSize:28,fontWeight:900,color:C.white,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2,marginBottom:4}},"FIELD",h("span",{style:{color:C.cyan}},"GUIDE")),
+        h("div",{style:{fontSize:28,fontWeight:900,color:C.white,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2,marginBottom:4}},
+          "FIELD",h("span",{style:{color:C.cyan}},"GUIDE")
+        ),
         h("div",{style:{fontSize:11,color:C.mid,textTransform:"uppercase",letterSpacing:3,fontWeight:600,marginBottom:40}},"Electrical Estimating"),
-       
         h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,width:"100%",maxWidth:360}},
           TECHS.map((name,i)=>
             h("button",{key:name,onClick:()=>onSelect(name),style:{
               background:C.bgCard, border:`1.5px solid ${C.border}`,
-              borderRadius:14, padding:"16px 12px",
-              fontSize:15, fontWeight:800, color:C.bright,
+              borderRadius:14, padding:"18px 12px",
+              fontSize:16, fontWeight:800, color:C.bright,
               textAlign:"center", letterSpacing:0.5,
               boxShadow:"0 2px 12px rgba(0,0,0,0.3)",
               animation:"fadeUp 0.25s ease both",
@@ -190,24 +187,25 @@ Return ONLY valid JSON:
             h("div",{style:{display:"flex",alignItems:"center",gap:10}},
               h("div",{style:{width:38,height:38,borderRadius:10,background:`${C.cyan}22`,border:`1px solid ${C.cyan}44`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}},"🧭"),
               h("div",null,
-                h("div",{style:{fontSize:20,fontWeight:900,color:C.white,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2,lineHeight:1}},"FIELD",h("span",{style:{color:C.cyan}},"GUIDE")),
+                h("div",{style:{fontSize:20,fontWeight:900,color:C.white,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2,lineHeight:1}},
+                  "FIELD",h("span",{style:{color:C.cyan}},"GUIDE")),
                 h("div",{style:{fontSize:9,color:C.mid,textTransform:"uppercase",letterSpacing:2,fontWeight:600}},"Electrical Estimating")
               )
             ),
             h("div",{style:{display:"flex",gap:8,alignItems:"center"}},
               h("button",{onClick:onIntelligence,style:{background:`${C.amber}18`,border:`1px solid ${C.amber}44`,borderRadius:8,padding:"6px 11px",fontSize:11,fontWeight:700,color:C.amber,textTransform:"uppercase",letterSpacing:0.8}},"🧠 Rules"),
-              step !== "job" && h("button",{onClick:onReset,style:{background:C.bgInner,border:`1px solid ${C.border}`,borderRadius:8,padding:"6px 13px",fontSize:11,fontWeight:700,color:C.mid,textTransform:"uppercase",letterSpacing:0.8}},"← Jobs"),
+              step!=="job"&&h("button",{onClick:onReset,style:{background:C.bgInner,border:`1px solid ${C.border}`,borderRadius:8,padding:"6px 13px",fontSize:11,fontWeight:700,color:C.mid,textTransform:"uppercase",letterSpacing:0.8}},"← Estimates"),
               h("div",{style:{display:"flex",alignItems:"center",gap:5,background:`${C.green}18`,border:`1px solid ${C.green}44`,borderRadius:8,padding:"6px 10px",fontSize:10,fontWeight:700,color:C.green,textTransform:"uppercase",letterSpacing:1}},
                 h("span",{style:{width:5,height:5,borderRadius:"50%",background:C.green,display:"inline-block",animation:"blink 2s infinite"}}),
                 techName
               )
             )
           ),
-          jobName && h("div",{style:{fontSize:12,color:C.cyan,fontWeight:600,marginBottom:10,paddingLeft:2}},"📋 "+jobName),
-          step !== "job" && h("div",{style:{display:"flex",gap:6,paddingBottom:14,overflowX:"auto"}},
+          jobName&&h("div",{style:{fontSize:12,color:C.cyan,fontWeight:600,marginBottom:10,paddingLeft:2}},"📋 "+jobName),
+          step!=="job"&&h("div",{style:{display:"flex",gap:6,paddingBottom:14,overflowX:"auto"}},
             steps.filter(s=>s.key!=="job").map((s,i)=>{
-              const realIdx = i+1;
-              const done = idx > realIdx+1, active = idx === realIdx+1;
+              const realIdx=i+2;
+              const done=idx>realIdx, active=idx===realIdx;
               return h("div",{key:s.key,style:{display:"flex",alignItems:"center",gap:6,background:active?`${s.color}22`:done?`${s.color}14`:C.bgInner,border:`1.5px solid ${active?s.color:done?s.color+"55":C.border}`,borderRadius:100,padding:"6px 12px",whiteSpace:"nowrap",flexShrink:0,boxShadow:active?`0 0 12px ${s.color}44`:"none",transition:"all 0.3s"}},
                 h("div",{style:{width:18,height:18,borderRadius:"50%",background:active?s.color:done?s.color+"cc":C.dim,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:900,color:C.bg,flexShrink:0}},done?"✓":i+1),
                 h("span",{style:{fontSize:11,fontWeight:700,color:active?s.color:done?s.color+"cc":C.mid,textTransform:"uppercase",letterSpacing:0.8}},s.label)
@@ -218,95 +216,99 @@ Return ONLY valid JSON:
       );
     }
 
-    // ── Job Picker ────────────────────────────────────────────────
+    // ── Estimate Picker ───────────────────────────────────────────
     function JobPicker({techName, onSelect}) {
       const [estimates,setEstimates] = useState(null);
       const [loading,setLoading]     = useState(true);
       const [error,setError]         = useState(null);
 
       useEffect(()=>{
-  (async()=>{
-    try {
-      // Get employees to find this tech's ID
-      const empData = await callHCP("/employees?page_size=100","GET");
-      let techId = null;
-      if(empData?.employees) {
-        const match = empData.employees.find(e=>{
-          const first = (e.first_name||"").toLowerCase().trim();
-          return first === techName.toLowerCase().trim();
-        });
-        if(match) techId = match.id;
-      }
+        (async()=>{
+          try {
+            // Step 1: Find this tech's employee ID
+            const empData = await callHCP("/employees?page_size=100","GET");
+            let techId = null;
+            if(empData?.employees) {
+              const match = empData.employees.find(e=>{
+                const first = (e.first_name||"").toLowerCase().trim();
+                return first === techName.toLowerCase().trim();
+              });
+              if(match) techId = match.id;
+            }
 
-      // Pull estimates directly — filter by assigned employee
-      const estData = await callHCP(`/estimates?page_size=100`,"GET");
-      let allEsts = estData?.estimates || (Array.isArray(estData)?estData:[]);
+            // Step 2: Pull today's estimates only
+            const today = new Date();
+            const start = new Date(today.getFullYear(),today.getMonth(),today.getDate(),0,0,0).toISOString();
+            const end   = new Date(today.getFullYear(),today.getMonth(),today.getDate(),23,59,59).toISOString();
+            const estData = await callHCP(`/estimates?page_size=100&scheduled_start_min=${start}&scheduled_start_max=${end}`,"GET");
+            let allEsts = estData?.estimates || (Array.isArray(estData)?estData:[]);
 
-      // Filter to only this tech's estimates
-      let filtered = allEsts;
-      if(techId) {
-        filtered = allEsts.filter(e=>
-          e.assigned_employees?.some(emp=>emp.id===techId)
-        );
-      }
+            // Step 3: Filter by assigned employee
+            let filtered = allEsts;
+            if(techId && allEsts.length) {
+              const byTech = allEsts.filter(e=>
+                e.assigned_employees?.some(emp=>emp.id===techId)
+              );
+              if(byTech.length) filtered = byTech;
+            }
 
-      // Fetch full details for customer names
-      const detailed = await Promise.all(
-        filtered.slice(0,20).map(async est=>{
-          if(est.customer?.first_name) return est;
-          const full = await callHCP(`/estimates/${est.id}`,"GET");
-          return full||est;
-        })
-      );
+            // Step 4: Fetch full details for customer names
+            const detailed = await Promise.all(
+              filtered.slice(0,20).map(async est=>{
+                if(est.customer?.first_name) return est;
+                const full = await callHCP(`/estimates/${est.id}`,"GET");
+                return full||est;
+              })
+            );
 
-      setEstimates(detailed);
-    } catch(e) {
-      setError("Could not load estimates from Housecall Pro");
-    }
-    setLoading(false);
-  })();
-},[]);
+            setEstimates(detailed);
+          } catch(e) {
+            setError("Could not load estimates from Housecall Pro");
+          }
+          setLoading(false);
+        })();
+      },[]);
 
       if(loading) return h("div",{style:{display:"flex",flexDirection:"column",alignItems:"center",gap:16,padding:"64px 0"}},
         h("div",{style:{width:60,height:60,border:`3px solid ${C.border}`,borderTop:`3px solid ${C.cyan}`,borderRadius:"50%",animation:"spin 0.9s linear infinite",boxShadow:`0 0 24px ${C.cyan}44`}}),
-        h("div",{style:{fontSize:17,fontWeight:800,color:C.white}},"Loading jobs..."),
+        h("div",{style:{fontSize:17,fontWeight:800,color:C.white}},"Loading estimates..."),
         h("div",{style:{fontSize:13,color:C.mid}},`Pulling ${techName}'s estimates from HCP`)
       );
 
       return h("div",{style:{display:"flex",flexDirection:"column",gap:14}},
         h("div",null,
-          h("div",{style:{fontSize:22,fontWeight:900,color:C.white,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1}},"Today's Jobs"),
-          h("div",{style:{fontSize:13,color:C.mid,marginTop:2}},`Showing estimates for ${techName}`)
+          h("div",{style:{fontSize:22,fontWeight:900,color:C.white,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1}},"Today's Estimates"),
+          h("div",{style:{fontSize:13,color:C.mid,marginTop:2}},`${techName}'s estimates for today`)
         ),
 
-        error && h("div",{style:{background:C.redSoft,border:`1px solid ${C.red}33`,borderRadius:12,padding:"14px 16px",color:C.red,fontSize:13,fontWeight:600}},error),
+        error&&h("div",{style:{background:C.redSoft,border:`1px solid ${C.red}33`,borderRadius:12,padding:"14px 16px",color:C.red,fontSize:13,fontWeight:600}},error),
 
-        estimates && estimates.length === 0 && h("div",{style:{background:C.bgCard,border:`1px solid ${C.border}`,borderRadius:16,padding:"32px 20px",textAlign:"center"}},
+        estimates&&estimates.length===0&&h("div",{style:{background:C.bgCard,border:`1px solid ${C.border}`,borderRadius:16,padding:"32px 20px",textAlign:"center"}},
           h("div",{style:{fontSize:32,marginBottom:12}},"📋"),
-          h("div",{style:{fontSize:16,fontWeight:700,color:C.bright,marginBottom:6}},"No estimates found"),
+          h("div",{style:{fontSize:16,fontWeight:700,color:C.bright,marginBottom:6}},"No estimates scheduled for today"),
           h("div",{style:{fontSize:13,color:C.mid}},"Check Housecall Pro to confirm your schedule")
         ),
 
-        estimates && estimates.map((est,i)=>{
+        estimates&&estimates.map((est,i)=>{
           const customer = est.customer;
           const address  = est.address;
-          const name     = customer?.first_name ? `${customer.first_name} ${customer.last_name}` : "Loading...";
+          const name     = customer?.first_name ? `${customer.first_name} ${customer.last_name}` : "Unknown Customer";
           const addr     = address ? `${address.street}, ${address.city}` : "";
-          const estNum   = est.estimate_number || est.id?.slice(-6);
-          const optCount = est.options?.length || 0;
-          const status   = est.work_status || "";
+          const estNum   = est.estimate_number||est.id?.slice(-6);
+          const optCount = est.options?.length||0;
+          const status   = est.work_status||"";
 
-          return h("div",{key:est.id,onClick:()=>onSelect(est),style:{background:C.bgCard,border:`1px solid ${C.border}`,borderRadius:16,overflow:"hidden",cursor:"pointer",transition:"border 0.2s",boxShadow:"0 2px 12px rgba(0,0,0,0.3)",animation:"fadeUp 0.25s ease both",animationDelay:`${i*0.06}s`}},
+          return h("div",{key:est.id,onClick:()=>onSelect(est),style:{background:C.bgCard,border:`1px solid ${C.border}`,borderRadius:16,overflow:"hidden",cursor:"pointer",transition:"all 0.2s",boxShadow:"0 2px 12px rgba(0,0,0,0.3)",animation:"fadeUp 0.25s ease both",animationDelay:`${i*0.06}s`}},
             h("div",{style:{height:3,background:`linear-gradient(90deg,${C.cyan},${C.cyan}44)`}}),
             h("div",{style:{padding:"16px 18px",display:"flex",alignItems:"center",gap:14}},
               h("div",{style:{width:48,height:48,borderRadius:12,background:`${C.cyan}18`,border:`1px solid ${C.cyan}33`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}},"🏠"),
               h("div",{style:{flex:1}},
                 h("div",{style:{fontSize:16,fontWeight:800,color:C.bright,lineHeight:1.2}},name),
-                addr && h("div",{style:{fontSize:12,color:C.mid,marginTop:3}},addr),
+                addr&&h("div",{style:{fontSize:12,color:C.mid,marginTop:3}},addr),
                 h("div",{style:{display:"flex",gap:8,marginTop:6,flexWrap:"wrap"}},
                   h("span",{style:{fontSize:10,fontWeight:700,color:C.cyan,background:`${C.cyan}18`,border:`1px solid ${C.cyan}33`,borderRadius:6,padding:"2px 8px",textTransform:"uppercase",letterSpacing:0.8}},`Est #${estNum}`),
-                  status && h("span",{style:{fontSize:10,fontWeight:700,color:C.mid,background:C.bgInner,border:`1px solid ${C.border}`,borderRadius:6,padding:"2px 8px",textTransform:"uppercase",letterSpacing:0.8}},status.replace(/_/g," ")),
-                  optCount>0 && h("span",{style:{fontSize:10,fontWeight:700,color:C.amber,background:`${C.amber}18`,border:`1px solid ${C.amber}33`,borderRadius:6,padding:"2px 8px",textTransform:"uppercase",letterSpacing:0.8}},`${optCount} option${optCount>1?"s":""} in HCP`)
+                  status&&h("span",{style:{fontSize:10,fontWeight:700,color:C.mid,background:C.bgInner,border:`1px solid ${C.border}`,borderRadius:6,padding:"2px 8px",textTransform:"uppercase",letterSpacing:0.8}},status.replace(/_/g," ")),
+                  optCount>0&&h("span",{style:{fontSize:10,fontWeight:700,color:C.amber,background:`${C.amber}18`,border:`1px solid ${C.amber}33`,borderRadius:6,padding:"2px 8px",textTransform:"uppercase",letterSpacing:0.8}},`${optCount} option${optCount>1?"s":""} in HCP`)
                 )
               ),
               h("div",{style:{fontSize:20,color:C.dim}},"→")
@@ -318,11 +320,11 @@ Return ONLY valid JSON:
 
     // ── Scope Card ────────────────────────────────────────────────
     function ScopeCard({text, index, onRemove}) {
-      const bg = SCOPE_COLORS[index % SCOPE_COLORS.length];
+      const bg = SCOPE_COLORS[index%SCOPE_COLORS.length];
       return h("div",{style:{display:"flex",alignItems:"center",background:bg,borderRadius:14,marginBottom:8,overflow:"hidden",boxShadow:`0 4px 16px ${bg}44`,animation:"fadeUp 0.25s ease both",animationDelay:`${index*0.05}s`}},
         h("div",{style:{width:52,height:52,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.15)",fontSize:18,color:C.white}},"◈"),
         h("div",{style:{flex:1,padding:"0 12px",fontSize:14,fontWeight:700,color:C.white,lineHeight:1.3}},text),
-        onRemove && h("div",{onClick:onRemove,style:{width:52,height:52,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.15)",cursor:"pointer",fontSize:22,color:C.white,fontWeight:300}},"×")
+        onRemove&&h("div",{onClick:onRemove,style:{width:52,height:52,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.15)",cursor:"pointer",fontSize:22,color:C.white,fontWeight:300}},"×")
       );
     }
 
@@ -377,12 +379,12 @@ Return ONLY valid JSON:
               )
             ),
             mode==="voice"
-              ? h("div",{style:{display:"flex",flexDirection:"column",alignItems:"center",gap:14}},
+              ?h("div",{style:{display:"flex",flexDirection:"column",alignItems:"center",gap:14}},
                   h("button",{onClick:isRec?stopVoice:startVoice,style:{width:96,height:96,borderRadius:"50%",border:`3px solid ${isRec?"#FF4757":meta.color}`,background:isRec?"rgba(255,71,87,0.15)":`${meta.color}22`,fontSize:36,display:"flex",alignItems:"center",justifyContent:"center",animation:isRec?"recPulse 1.5s ease-in-out infinite":"none",boxShadow:isRec?"none":`0 0 24px ${meta.color}55`,transition:"all 0.25s"}},isRec?"⏹":"🎤"),
                   h("div",{style:{fontSize:13,fontWeight:700,color:isRec?"#FF4757":C.mid,textTransform:"uppercase",letterSpacing:1,animation:isRec?"blink 1s infinite":"none"}},isRec?"● Listening — tap to stop":"Tap to speak"),
                   text&&h("div",{style:{width:"100%",background:"rgba(0,0,0,0.3)",border:`1px solid ${C.border}`,borderRadius:12,padding:"12px 14px",fontSize:13,color:C.mid,lineHeight:1.6,maxHeight:90,overflowY:"auto"}},text)
                 )
-              : h("textarea",{value:text,onChange:e=>setText(e.target.value),placeholder:meta.placeholder,
+              :h("textarea",{value:text,onChange:e=>setText(e.target.value),placeholder:meta.placeholder,
                   style:{width:"100%",minHeight:100,background:"rgba(0,0,0,0.3)",border:`1.5px solid ${C.border}`,borderRadius:12,padding:"12px 14px",fontSize:14,color:C.bright,resize:"vertical",outline:"none",lineHeight:1.6,caretColor:meta.color,transition:"border-color 0.2s"},
                   onFocus:e=>e.target.style.borderColor=meta.color,
                   onBlur:e=>e.target.style.borderColor=C.border
@@ -482,12 +484,12 @@ Return ONLY valid JSON:
         try {
           for(const opt of toSend) {
             await callHCP(`/estimates/${estimate.id}/options`,"POST",{
-              name: opt.name,
-              line_items: opt.includes.map(item=>({
-                name: item,
-                description: opt.permits_required?"Permits may be required":"",
-                unit_price: 0,
-                quantity: 1,
+              name:opt.name,
+              line_items:opt.includes.map(item=>({
+                name:item,
+                description:opt.permits_required?"Permits may be required":"",
+                unit_price:0,
+                quantity:1,
               }))
             });
           }
@@ -634,7 +636,7 @@ Return ONLY valid JSON:
       const reset=()=>{setStep("job");setData({});setScopes(null);setEstimate(null);};
 
       const jobName = estimate
-        ? `${estimate.customer?.first_name||""} ${estimate.customer?.last_name||""} — Est #${estimate.estimate_number}`.trim()
+        ? `${estimate.customer?.first_name||""} ${estimate.customer?.last_name||""}`.trim()+` — Est #${estimate.estimate_number}`
         : null;
 
       if(!tech) return h(TechSelector,{onSelect:setTech});
