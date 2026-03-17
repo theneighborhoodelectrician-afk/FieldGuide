@@ -243,14 +243,13 @@ Return ONLY valid JSON:
             const estData = await callHCP(`/estimates?page_size=100&scheduled_start_min=${start}&scheduled_start_max=${end}`,"GET");
             let allEsts = estData?.estimates || (Array.isArray(estData)?estData:[]);
 
-            // Step 3: Filter by assigned employee
-            let filtered = allEsts;
-            if(techId && allEsts.length) {
-              const byTech = allEsts.filter(e=>
-                e.assigned_employees?.some(emp=>emp.id===techId)
-              );
-              if(byTech.length) filtered = byTech;
-            }
+            // Step 3: Filter by assigned employee — no fallback
+            let filtered = [];
+            if(techId) {
+            filtered = allEsts.filter(e=>
+            e.assigned_employees?.some(emp=>emp.id===techId)
+            );
+           }
 
             // Step 4: Fetch full details for customer names
             const detailed = await Promise.all(
