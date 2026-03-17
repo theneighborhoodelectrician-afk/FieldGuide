@@ -259,7 +259,7 @@ Return ONLY valid JSON:
           const estNum = est.estimate_number || est.id?.slice(-6);
           const optCount = est.options?.length || 0;
 
-          return h("div",{key:est.id,onClick:()=>onSelect(est),style:{background:C.bgCard,border:`1px solid ${C.border}`,borderRadius:16,overflow:"hidden",cursor:"pointer",transition:"all 0.2s",boxShadow:"0 2px 12px rgba(0,0,0,0.3)",animation:"fadeUp 0.25s ease both",animationDelay:`${i*0.06}s"},
+          return h("div",{key:est.id,onClick:()=>onSelect(est),style:{background:C.bgCard,border:`1px solid ${C.border}`,borderRadius:16,overflow:"hidden",cursor:"pointer",transition:"all 0.2s",boxShadow:"0 2px 12px rgba(0,0,0,0.3)",animation:"fadeUp 0.25s ease both",animationDelay:`${i*0.06}s`},
             onMouseEnter:e=>{e.currentTarget.style.border=`1px solid ${C.cyan}55`;e.currentTarget.style.boxShadow=`0 4px 20px ${C.cyan}22`;},
             onMouseLeave:e=>{e.currentTarget.style.border=`1px solid ${C.border}`;e.currentTarget.style.boxShadow="0 2px 12px rgba(0,0,0,0.3)";}
           },
