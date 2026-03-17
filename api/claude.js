@@ -33,50 +33,19 @@ module.exports = async function handler(req, res) {
   const hcpKey = process.env.HCP_API_KEY;
   const claudeKey = process.env.ANTHROPIC_API_KEY;
 
-  // Test: search HCP customers
-  if (req.method === "GET" && req.query.action === "search") {
-    const q = req.query.q || "";
-    const r = await makeRequest(
-      `https://api.housecallpro.com/customers?q=${encodeURIComponent(q)}&page_size=10`,
-      { method: "GET", headers: { "Authorization": `Token ${hcpKey}`, "Content-Type": "application/json" } }
-    );
-    res.status(r.status).json(r.body);
-    return;
-  }
-
-  // Test: create estimate in HCP
-  if (req.method === "GET" && req.query.action === "test_estimate") {
-    const body = {
-      customer_id: "cus_cfacd2dadced4393b04205554d6615cc",
-      address_id: "adr_256461b40d2244a9a4a3f5b655dab7cf",
-      options: [{
-        name: "Test Option from FieldGuide",
-        line_items: [{
-          name: "Install recessed lights in kitchen",
-          description: "6 recessed lights with new dimmer switch",
-          unit_price: 0,
-          quantity: 1
-        }]
-      }]
-    };
-    const r = await makeRequest(
-      "https://api.housecallpro.com/estimates",
-      { method: "POST", headers: { "Authorization": `Token ${hcpKey}`, "Content-Type": "application/json" } },
-      body
-    );
-    res.status(r.status).json(r.body);
-    return;
-  }
-
-  // HCP proxy for FieldGuide
+  // HCP proxy — all HCP calls go through here
   if (req.method === "POST" && req.query.action === "hcp") {
     const { endpoint, method, body } = req.body;
-    const r = await makeRequest(
-      `https://api.housecallpro.com${endpoint}`,
-      { method: method || "POST", headers: { "Authorization": `Token ${hcpKey}`, "Content-Type": "application/json" } },
-      body
-    );
-    res.status(r.status).json(r.body);
+    try {
+      const r = await makeRequest(
+        `https://api.housecallpro.com${endpoint}`,
+        { method: method || "GET", headers: { "Authorization": `Token ${hcpKey}`, "Content-Type": "application/json" } },
+        body || null
+      );
+      res.status(r.status).json(r.body);
+    } catch(e) {
+      res.status(500).json({ error: e.message });
+    }
     return;
   }
 
@@ -94,4 +63,3 @@ module.exports = async function handler(req, res) {
     res.status(500).json({ error: e.message });
   }
 };
-
