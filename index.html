@@ -225,55 +225,47 @@ Return ONLY valid JSON:
       const [error,setError]         = useState(null);
 
       useEffect(()=>{
-        (async()=>{
-          // Get today's date range
-          const now = new Date();
-          const todayStart = new Date(now.getFullYear(),now.getMonth(),now.getDate()).toISOString();
-          const todayEnd   = new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59).toISOString();
+  (async()=>{
+    try {
+      // Get employees to find this tech's ID
+      const empData = await callHCP("/employees?page_size=100","GET");
+      let techId = null;
+      if(empData?.employees) {
+        const match = empData.employees.find(e=>{
+          const first = (e.first_name||"").toLowerCase().trim();
+          return first === techName.toLowerCase().trim();
+        });
+        if(match) techId = match.id;
+      }
 
-          // First get all employees to find this tech's ID
-          const empData = await callHCP("/employees?page_size=50","GET");
-          let techId = null;
-          if(empData && empData.employees) {
-            const match = empData.employees.find(e=>{
-              const fullName = `${e.first_name} ${e.last_name}`.toLowerCase();
-              return fullName.includes(techName.toLowerCase());
-            });
-            if(match) techId = match.id;
-          }
+      // Pull estimates directly — filter by assigned employee
+      const estData = await callHCP(`/estimates?page_size=100`,"GET");
+      let allEsts = estData?.estimates || (Array.isArray(estData)?estData:[]);
 
-          // Pull estimates — try scheduled for today first
-          let data = await callHCP(`/estimates?page_size=50&scheduled_start_min=${todayStart}&scheduled_start_max=${todayEnd}`,"GET");
+      // Filter to only this tech's estimates
+      let filtered = allEsts;
+      if(techId) {
+        filtered = allEsts.filter(e=>
+          e.assigned_employees?.some(emp=>emp.id===techId)
+        );
+      }
 
-          // If no results, fall back to recent open estimates
-          if(!data?.estimates?.length) {
-            data = await callHCP(`/estimates?page_size=50&work_status=needs+scheduling`,"GET");
-          }
+      // Fetch full details for customer names
+      const detailed = await Promise.all(
+        filtered.slice(0,20).map(async est=>{
+          if(est.customer?.first_name) return est;
+          const full = await callHCP(`/estimates/${est.id}`,"GET");
+          return full||est;
+        })
+      );
 
-          let ests = data?.estimates || (Array.isArray(data) ? data : []);
-
-          // Filter by tech if we found their ID
-          if(techId && ests.length) {
-            const filtered = ests.filter(e=>
-              e.assigned_employees?.some(emp=>emp.id===techId)
-            );
-            // Only filter if results exist — otherwise show all
-            if(filtered.length) ests = filtered;
-          }
-
-          // For each estimate, fetch full details to get customer name
-          const detailed = await Promise.all(
-            ests.slice(0,20).map(async est=>{
-              if(est.customer?.first_name) return est;
-              const full = await callHCP(`/estimates/${est.id}`,"GET");
-              return full || est;
-            })
-          );
-
-          setEstimates(detailed);
-          setLoading(false);
-        })();
-      },[]);
+      setEstimates(detailed);
+    } catch(e) {
+      setError("Could not load estimates from Housecall Pro");
+    }
+    setLoading(false);
+  })();
+},[]);
 
       if(loading) return h("div",{style:{display:"flex",flexDirection:"column",alignItems:"center",gap:16,padding:"64px 0"}},
         h("div",{style:{width:60,height:60,border:`3px solid ${C.border}`,borderTop:`3px solid ${C.cyan}`,borderRadius:"50%",animation:"spin 0.9s linear infinite",boxShadow:`0 0 24px ${C.cyan}44`}}),
