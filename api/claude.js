@@ -4,12 +4,29 @@ module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   if (req.method === "OPTIONS") { res.status(200).end(); return; }
-  if (req.method === "GET") { res.status(200).json({ status: "ok", keyLoaded: !!process.env.ANTHROPIC_API_KEY }); return; }
-  if (req.method !== "POST") { res.status(405).json({ error: "Method not allowed" }); return; }
 
+  // Test HCP connection
+  if (req.method === "GET" && req.query.test === "hcp") {
+    const hcpKey = process.env.HCP_API_KEY;
+    try {
+      const response = await fetch("https://api.housecallpro.com/customers/cus_cfacd2dadced4393b04205554d6615cc", {
+        headers: {
+          "Authorization": `Token ${hcpKey}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      res.status(200).json({ status: response.status, data });
+    } catch(e) {
+      res.status(500).json({ error: e.message });
+    }
+    return;
+  }
+
+  // Claude API
+  if (req.method !== "POST") { res.status(405).json({ error: "Method not allowed" }); return; }
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) { res.status(500).json({ error: "Missing API key" }); return; }
-
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
