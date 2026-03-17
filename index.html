@@ -339,7 +339,7 @@ Return ONLY valid JSON:
               })
             );
 
-            console.log("FIRST EST:", JSON.stringify(detailed[0]?.customer));
+            console.log("FULL EST:", JSON.stringify(detailed[0]));
             setEstimates(detailed.filter(Boolean));
           } catch(e) { setError("Could not load estimates from Housecall Pro"); }
           setLoading(false);
