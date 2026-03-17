@@ -38,71 +38,66 @@
     import React, { useState, useRef, useEffect } from "react";
     import { createRoot } from "react-dom/client";
 
-    // ── API Helpers ───────────────────────────────────────────────
+    const TECHS = ["Brandon","Steve","David","Joe","Lou","Brayden","Andrew","Nate"];
+
     async function callClaude(system, userText) {
       const body = { model: "claude-sonnet-4-20250514", max_tokens: 1500, messages: [{ role: "user", content: userText }] };
       if (system) body.system = system;
       try {
         const res = await fetch("/api/claude", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
-        const text = await res.text();
-        const data = JSON.parse(text);
-        if (data.error) { console.error("API ERROR:", data.error); return null; }
+        const data = JSON.parse(await res.text());
+        if (data.error) return null;
         const raw = data.content?.[0]?.text || "{}";
         return JSON.parse(raw.replace(/```json|```/g, "").trim());
-      } catch(e) { console.error("FAILED:", e); return null; }
+      } catch(e) { return null; }
     }
 
-    async function callHCP(endpoint, method = "GET", body = null) {
+    async function callHCP(endpoint, method, body) {
       try {
         const res = await fetch("/api/claude?action=hcp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ endpoint, method, body }),
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ endpoint, method: method||"GET", body: body||null }),
         });
         return await res.json();
-      } catch(e) { console.error("HCP FAILED:", e); return null; }
+      } catch(e) { return null; }
     }
 
-    // ── Field Intelligence Rules ──────────────────────────────────
     const DEFAULT_RULES = [
-      { id: 1, trigger: "oxidation on breaker or main breaker", result: "Full panel replacement + service upgrade + outside disconnect + new ground system + permits required" },
-      { id: 2, trigger: "rust inside panel or water damage in panel", result: "Full panel replacement + service upgrade + outside disconnect + new ground system + permits required" },
-      { id: 3, trigger: "Federal Pacific, Stab-Lok, FPE, Zinsco, Pushmatic, or GE panel", result: "Known unsafe panel — full replacement required + outside service upgrade + new ground system" },
-      { id: 4, trigger: "fuse box or fuse panel", result: "Unsafe — full panel upgrade required + outside service + new ground system + permits" },
-      { id: 5, trigger: "double tapped breakers and panel is under 150 amps", result: "Full new service upgrade required + outside disconnect + new ground system + permits" },
-      { id: 6, trigger: "double tapped breakers and panel is 150 amps or above", result: "Offer sub-panel installation OR full new service upgrade + outside disconnect + new ground system + permits" },
-      { id: 7, trigger: "panel is full with no open breakers and does not accept tandem breakers, panel under 150 amps", result: "Full new service upgrade required + outside disconnect + new ground system + permits" },
-      { id: 8, trigger: "panel is full with no open breakers and does not accept tandem breakers, panel 150 amps or above", result: "Offer sub-panel installation OR full new service upgrade" },
-      { id: 9, trigger: "panel is full with no open breakers but accepts tandem breakers", result: "Offer tandem breaker installation as a solution" },
-      { id: 10, trigger: "any panel upgrade", result: "Always includes: new ground system + in most cases outside service upgrade + permits required" },
-      { id: 11, trigger: "permit pulled for panel upgrade", result: "Outside disconnect is required by code" },
-      { id: 12, trigger: "aluminum wiring on branch circuits (not ranges, dryers, or AC units)", result: "Must replace wiring OR install CO/ALR rated devices at every location" },
-      { id: 13, trigger: "ungrounded outlets or two-prong outlets", result: "Offer GFCI protection at each location OR GFCI breaker in panel for those circuits" },
-      { id: 14, trigger: "no GFCI protection in bathroom, kitchen, garage, or exterior", result: "Separate line item: GFCI protection required at all wet and exterior locations" },
-      { id: 15, trigger: "knob and tube wiring", result: "Only two options: leave it completely alone OR full house rewire — no middle ground" },
-      { id: 16, trigger: "home built before 1980 or older home", result: "Flag for: bad panel brands (GE/Pushmatic/Zinsco/FPE), grounding system check (likely tied to water pipe now PEX = no continuity), aluminum grounds to water pipe that oxidize, outdated smoke detectors, outlet and GFCI condition check" },
-      { id: 17, trigger: "grounding system tied to water pipe or PEX plumbing", result: "Ground system has lost continuity — new ground system required" },
-      { id: 18, trigger: "aluminum grounds to water pipe", result: "Oxidation risk — recommend replacing ground connections" },
-      { id: 19, trigger: "EV charger request", result: "Always perform load calculation first — only recommend panel upgrade if load calc shows panel cannot handle it" },
-      { id: 20, trigger: "no smoke detectors or outdated smoke detectors", result: "Recommend: wired smoke/carbon detector in basement + wireless smoke in each bedroom + wireless combo smoke/carbon on all other floors" },
-      { id: 21, trigger: "any job", result: "Always offer whole-home surge protection as an enhancement on every job" },
+      { id:1,  trigger:"oxidation on breaker or main breaker", result:"Full panel replacement + service upgrade + outside disconnect + new ground system + permits required" },
+      { id:2,  trigger:"rust inside panel or water damage in panel", result:"Full panel replacement + service upgrade + outside disconnect + new ground system + permits required" },
+      { id:3,  trigger:"Federal Pacific, Stab-Lok, FPE, Zinsco, Pushmatic, or GE panel", result:"Known unsafe panel — full replacement required + outside service upgrade + new ground system" },
+      { id:4,  trigger:"fuse box or fuse panel", result:"Unsafe — full panel upgrade required + outside service + new ground system + permits" },
+      { id:5,  trigger:"double tapped breakers and panel is under 150 amps", result:"Full new service upgrade required + outside disconnect + new ground system + permits" },
+      { id:6,  trigger:"double tapped breakers and panel is 150 amps or above", result:"Offer sub-panel installation OR full new service upgrade + outside disconnect + new ground system + permits" },
+      { id:7,  trigger:"panel is full, no open breakers, does not accept tandem breakers, under 150 amps", result:"Full new service upgrade required + outside disconnect + new ground system + permits" },
+      { id:8,  trigger:"panel is full, no open breakers, does not accept tandem breakers, 150 amps or above", result:"Offer sub-panel installation OR full new service upgrade" },
+      { id:9,  trigger:"panel is full but accepts tandem breakers", result:"Offer tandem breaker installation as a solution" },
+      { id:10, trigger:"any panel upgrade", result:"Always includes: new ground system + outside service upgrade + permits required" },
+      { id:11, trigger:"permit pulled for panel upgrade", result:"Outside disconnect is required by code" },
+      { id:12, trigger:"aluminum wiring on branch circuits (not ranges, dryers, or AC)", result:"Must replace wiring OR install CO/ALR rated devices at every location" },
+      { id:13, trigger:"ungrounded outlets or two-prong outlets", result:"Offer GFCI protection at each location OR GFCI breaker in panel" },
+      { id:14, trigger:"no GFCI protection in bathroom, kitchen, garage, or exterior", result:"Separate line item: GFCI protection required at all wet and exterior locations" },
+      { id:15, trigger:"knob and tube wiring", result:"Only two options: leave it completely alone OR full house rewire" },
+      { id:16, trigger:"home built before 1980", result:"Flag for: bad panel brands, grounding system tied to water pipe/PEX (no continuity), aluminum grounds oxidizing, outdated smoke detectors, outlet/GFCI condition" },
+      { id:17, trigger:"grounding system tied to water pipe or PEX plumbing", result:"Ground system has lost continuity — new ground system required" },
+      { id:18, trigger:"aluminum grounds to water pipe", result:"Oxidation risk — recommend replacing ground connections" },
+      { id:19, trigger:"EV charger request", result:"Perform load calculation first — only recommend panel upgrade if load calc shows it cannot handle it" },
+      { id:20, trigger:"no smoke detectors or outdated smoke detectors", result:"Recommend: wired smoke/carbon in basement + wireless smoke in each bedroom + wireless combo on all other floors" },
+      { id:21, trigger:"any job", result:"Always offer whole-home surge protection as an enhancement" },
     ];
 
-    function loadRules() {
-      try { const s = localStorage.getItem("fg_rules"); return s ? JSON.parse(s) : DEFAULT_RULES; } catch(e) { return DEFAULT_RULES; }
-    }
-    function saveRules(r) { try { localStorage.setItem("fg_rules", JSON.stringify(r)); } catch(e) {} }
+    function loadRules() { try { const s=localStorage.getItem("fg_rules"); return s?JSON.parse(s):DEFAULT_RULES; } catch(e) { return DEFAULT_RULES; } }
+    function saveRules(r) { try { localStorage.setItem("fg_rules",JSON.stringify(r)); } catch(e) {} }
 
     function buildSystemPrompt(rules, section) {
-      const rulesText = rules.map(r => `- IF: "${r.trigger}" → THEN: "${r.result}"`).join("\n");
+      const rulesText = rules.map(r=>`- IF: "${r.trigger}" → THEN: "${r.result}"`).join("\n");
       const sectionPrompts = {
-        request: `Extract what the customer specifically asked for. Return requested_scopes array.`,
-        safety: `Analyze safety observations. Apply ALL Field Intelligence rules. Return safety_scopes with FULL expanded scopes — think like a master electrician interpreting field conditions.`,
-        enhancements: `Extract upgrade opportunities. Always include whole-home surge protection. Return enhancement_scopes array.`,
+        request: "Extract what the customer specifically asked for. Return requested_scopes array.",
+        safety:  "Analyze safety observations. Apply ALL Field Intelligence rules. Return safety_scopes with FULL expanded scopes — think like a master electrician.",
+        enhancements: "Extract upgrade opportunities. Always include whole-home surge protection. Return enhancement_scopes array.",
       };
       return `You are a master electrician with 30 years experience helping field technicians build accurate estimates.
 
@@ -111,33 +106,25 @@ ${rulesText}
 
 YOUR JOB: ${sectionPrompts[section]}
 
-CRITICAL: When a tech mentions an observation matching a Field Intelligence rule, automatically expand it into the full scope of work. Never just transcribe — interpret what it MEANS.
+CRITICAL: Interpret field observations and expand them into full scope of work. Never just transcribe.
 
 Return ONLY valid JSON, no markdown:
-${section === "request" ? '{"requested_scopes":["scope 1"],"job_facts":{"location":"","quantity":"","panel_condition":"","structural_conditions":[],"home_age":""}}' : ""}
-${section === "safety" ? '{"safety_scopes":["scope 1"],"job_facts":{"panel_condition":"","safety_risks":[],"urgency":"","triggers_panel_upgrade":false,"triggers_service_upgrade":false,"requires_permits":false}}' : ""}
-${section === "enhancements" ? '{"enhancement_scopes":["scope 1"],"future_opportunities":[]}' : ""}`;
+${section==="request" ? '{"requested_scopes":["scope 1"],"job_facts":{"location":"","quantity":"","panel_condition":"","structural_conditions":[],"home_age":""}}' : ""}
+${section==="safety"  ? '{"safety_scopes":["scope 1"],"job_facts":{"panel_condition":"","safety_risks":[],"urgency":"","triggers_panel_upgrade":false,"triggers_service_upgrade":false,"requires_permits":false}}' : ""}
+${section==="enhancements" ? '{"enhancement_scopes":["scope 1"],"future_opportunities":[]}' : ""}`;
     }
 
-    const buildOptionsPrompt = (scopes, rules) => {
-      const rulesText = rules.slice(0,10).map(r=>`- ${r.trigger} → ${r.result}`).join("\n");
-      return `You are a master electrician helping a technician build honest estimate options for a homeowner.
-
+    const buildOptionsPrompt = (scopes, rules) =>
+      `You are a master electrician helping a technician build honest estimate options for a homeowner.
 Scopes:
 - Customer asked for: ${JSON.stringify(scopes.requested)}
 - Safety items: ${JSON.stringify(scopes.safety)}
 - Upgrades: ${JSON.stringify(scopes.enhancements)}
-
-Key rules:
-${rulesText}
-
+Key rules: ${rules.slice(0,10).map(r=>`${r.trigger} → ${r.result}`).join("; ")}
 Create exactly 6 estimate options. Be an advisor, not a salesman. NEVER invent pricing.
-
 Return ONLY valid JSON:
 {"options":[{"number":1,"name":"Option name","tier":"essential|safety|comfort|recommended|enhanced|complete","includes":["item 1"],"permits_required":false,"value_statement":"What this means for your home"}]}`;
-    };
 
-    // ── Colors ────────────────────────────────────────────────────
     const C = {
       bg:"#111318", bgCard:"#1A1D26", bgInner:"#13151C", border:"#262B38",
       cyan:"#00C2E0", cyanSoft:"#003D47",
@@ -151,26 +138,55 @@ Return ONLY valid JSON:
     };
     const SCOPE_COLORS  = [C.blue,C.violet,C.teal,C.orange,C.rose,C.lime,C.indigo,C.sky,C.emerald,C.fuchsia];
     const OPTION_COLORS = [C.blue,C.teal,C.violet,C.amber,C.green,C.indigo];
-    const STEPS = ["job","request","safety","enhancements","review","options"];
+    const STEPS = ["tech","job","request","safety","enhancements","review","options"];
 
     const STEP_META = {
-      request: { num:1, label:"Their Request", emoji:"🏠", color:C.cyan, soft:C.cyanSoft, question:"What did the customer call you to do today?", sub:"What they asked for — in their own words", placeholder:"e.g. 6 recessed lights in living room, outlets in garage not working, EV charger..." },
-      safety:  { num:2, label:"What You See",  emoji:"⚡", color:C.amber, soft:C.amberSoft, question:"What did you find when you got there?", sub:"Describe what you see — the AI knows what it means", placeholder:"e.g. panel has oxidation on main breaker, original from the 70s, aluminum wiring, no GFCI in bathrooms..." },
-      enhancements: { num:3, label:"Good Ideas", emoji:"💡", color:C.green, soft:C.greenSoft, question:"If this were your house, what would you add?", sub:"Genuine advice — things that would improve their life", placeholder:"e.g. dimmers, under cabinet lighting, smart switches..." },
+      request:      { num:1, label:"Their Request", emoji:"🏠", color:C.cyan,  soft:C.cyanSoft,  question:"What did the customer call you to do today?",        sub:"What they asked for — in their own words",              placeholder:"e.g. 6 recessed lights in living room, outlets in garage not working, EV charger..." },
+      safety:       { num:2, label:"What You See",  emoji:"⚡", color:C.amber, soft:C.amberSoft, question:"What did you find when you got there?",               sub:"Describe what you see — the AI knows what it means",   placeholder:"e.g. panel has oxidation on main breaker, original from 70s, aluminum wiring, no GFCI..." },
+      enhancements: { num:3, label:"Good Ideas",    emoji:"💡", color:C.green, soft:C.greenSoft, question:"If this were your house, what would you add?",        sub:"Genuine advice — things that would improve their life", placeholder:"e.g. dimmers, under cabinet lighting, smart switches..." },
     };
-
     const TIER_LABEL = { essential:"Just What They Asked", safety:"Safety First", comfort:"Added Comfort", recommended:"★ Recommended", enhanced:"Enhanced Home", complete:"The Complete Picture" };
 
     const h = React.createElement;
 
+    // ── Tech Selector ─────────────────────────────────────────────
+    function TechSelector({onSelect}) {
+      return h("div",{style:{minHeight:"100vh",background:C.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 20px"}},
+        h("div",{style:{width:72,height:72,borderRadius:18,background:`${C.cyan}22`,border:`2px solid ${C.cyan}44`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:34,marginBottom:20,boxShadow:`0 0 32px ${C.cyan}33`}},"🧭"),
+        h("div",{style:{fontSize:28,fontWeight:900,color:C.white,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:2,marginBottom:4}},"FIELD",h("span",{style:{color:C.cyan}},"GUIDE")),
+        h("div",{style:{fontSize:11,color:C.mid,textTransform:"uppercase",letterSpacing:3,fontWeight:600,marginBottom:40}},"Electrical Estimating"),
+        h("div",{style:{fontSize:15,fontWeight:700,color:C.bright,marginBottom:20,textAlign:"center"}},"Who are you today?"),
+        h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,width:"100%",maxWidth:360}},
+          TECHS.map((name,i)=>
+            h("button",{key:name,onClick:()=>onSelect(name),style:{
+              background:C.bgCard, border:`1.5px solid ${C.border}`,
+              borderRadius:14, padding:"16px 12px",
+              fontSize:15, fontWeight:800, color:C.bright,
+              textAlign:"center", letterSpacing:0.5,
+              boxShadow:"0 2px 12px rgba(0,0,0,0.3)",
+              animation:"fadeUp 0.25s ease both",
+              animationDelay:`${i*0.05}s`,
+            }},name)
+          )
+        )
+      );
+    }
+
     // ── Header ────────────────────────────────────────────────────
-    function Header({step, onReset, onIntelligence, jobName}) {
-      const steps = [{key:"job",label:"Job",color:C.cyan},{key:"request",label:"Request",color:C.cyan},{key:"safety",label:"Field",color:C.amber},{key:"enhancements",label:"Upgrades",color:C.green},{key:"review",label:"Review",color:C.cyan},{key:"options",label:"Options",color:C.cyan}];
+    function Header({step, onReset, onIntelligence, jobName, techName}) {
+      const steps = [
+        {key:"job",label:"Job",color:C.cyan},
+        {key:"request",label:"Request",color:C.cyan},
+        {key:"safety",label:"Field",color:C.amber},
+        {key:"enhancements",label:"Upgrades",color:C.green},
+        {key:"review",label:"Review",color:C.cyan},
+        {key:"options",label:"Options",color:C.cyan},
+      ];
       const idx = STEPS.indexOf(step);
       return h("div",{style:{background:C.bgCard,borderBottom:`1px solid ${C.border}`,position:"sticky",top:0,zIndex:100,boxShadow:"0 4px 24px rgba(0,0,0,0.5)"}},
         h("div",{style:{height:3,background:`linear-gradient(90deg,${C.cyan},${C.amber},${C.green},${C.cyan})`}}),
         h("div",{style:{maxWidth:480,margin:"0 auto",padding:"14px 18px 0"}},
-          h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:jobName?8:16}},
+          h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:jobName?6:16}},
             h("div",{style:{display:"flex",alignItems:"center",gap:10}},
               h("div",{style:{width:38,height:38,borderRadius:10,background:`${C.cyan}22`,border:`1px solid ${C.cyan}44`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}},"🧭"),
               h("div",null,
@@ -181,16 +197,17 @@ Return ONLY valid JSON:
             h("div",{style:{display:"flex",gap:8,alignItems:"center"}},
               h("button",{onClick:onIntelligence,style:{background:`${C.amber}18`,border:`1px solid ${C.amber}44`,borderRadius:8,padding:"6px 11px",fontSize:11,fontWeight:700,color:C.amber,textTransform:"uppercase",letterSpacing:0.8}},"🧠 Rules"),
               step !== "job" && h("button",{onClick:onReset,style:{background:C.bgInner,border:`1px solid ${C.border}`,borderRadius:8,padding:"6px 13px",fontSize:11,fontWeight:700,color:C.mid,textTransform:"uppercase",letterSpacing:0.8}},"← Jobs"),
-              h("div",{style:{display:"flex",alignItems:"center",gap:5,background:`${C.green}18`,border:`1px solid ${C.green}44`,borderRadius:8,padding:"6px 12px",fontSize:10,fontWeight:700,color:C.green,textTransform:"uppercase",letterSpacing:1.2}},
-                h("span",{style:{width:5,height:5,borderRadius:"50%",background:C.green,display:"inline-block",animation:"blink 2s infinite"}}), "Live"
+              h("div",{style:{display:"flex",alignItems:"center",gap:5,background:`${C.green}18`,border:`1px solid ${C.green}44`,borderRadius:8,padding:"6px 10px",fontSize:10,fontWeight:700,color:C.green,textTransform:"uppercase",letterSpacing:1}},
+                h("span",{style:{width:5,height:5,borderRadius:"50%",background:C.green,display:"inline-block",animation:"blink 2s infinite"}}),
+                techName
               )
             )
           ),
-          jobName && h("div",{style:{fontSize:12,color:C.cyan,fontWeight:600,marginBottom:12,paddingLeft:2}},"📋 "+jobName),
+          jobName && h("div",{style:{fontSize:12,color:C.cyan,fontWeight:600,marginBottom:10,paddingLeft:2}},"📋 "+jobName),
           step !== "job" && h("div",{style:{display:"flex",gap:6,paddingBottom:14,overflowX:"auto"}},
             steps.filter(s=>s.key!=="job").map((s,i)=>{
               const realIdx = i+1;
-              const done = idx > realIdx, active = idx === realIdx;
+              const done = idx > realIdx+1, active = idx === realIdx+1;
               return h("div",{key:s.key,style:{display:"flex",alignItems:"center",gap:6,background:active?`${s.color}22`:done?`${s.color}14`:C.bgInner,border:`1.5px solid ${active?s.color:done?s.color+"55":C.border}`,borderRadius:100,padding:"6px 12px",whiteSpace:"nowrap",flexShrink:0,boxShadow:active?`0 0 12px ${s.color}44`:"none",transition:"all 0.3s"}},
                 h("div",{style:{width:18,height:18,borderRadius:"50%",background:active?s.color:done?s.color+"cc":C.dim,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:900,color:C.bg,flexShrink:0}},done?"✓":i+1),
                 h("span",{style:{fontSize:11,fontWeight:700,color:active?s.color:done?s.color+"cc":C.mid,textTransform:"uppercase",letterSpacing:0.8}},s.label)
@@ -202,76 +219,102 @@ Return ONLY valid JSON:
     }
 
     // ── Job Picker ────────────────────────────────────────────────
-    function JobPicker({onSelect}) {
-      const [estimates, setEstimates] = useState(null);
-      const [loading, setLoading]     = useState(true);
-      const [error, setError]         = useState(null);
+    function JobPicker({techName, onSelect}) {
+      const [estimates,setEstimates] = useState(null);
+      const [loading,setLoading]     = useState(true);
+      const [error,setError]         = useState(null);
 
       useEffect(()=>{
         (async()=>{
-          const today = new Date().toISOString().split("T")[0];
-          const tomorrow = new Date(Date.now()+86400000).toISOString().split("T")[0];
-          const data = await callHCP(`/estimates?scheduled_start_min=${today}T00:00:00Z&scheduled_start_max=${tomorrow}T00:00:00Z&page_size=50`,"GET");
-          if(data && data.estimates) {
-            setEstimates(data.estimates);
-          } else if(data && Array.isArray(data)) {
-            setEstimates(data);
-          } else {
-            // Fallback: get recent estimates
-            const fallback = await callHCP(`/estimates?page_size=20`,"GET");
-            if(fallback && fallback.estimates) setEstimates(fallback.estimates);
-            else if(fallback && Array.isArray(fallback)) setEstimates(fallback);
-            else setError("Could not load estimates from Housecall Pro");
+          // Get today's date range
+          const now = new Date();
+          const todayStart = new Date(now.getFullYear(),now.getMonth(),now.getDate()).toISOString();
+          const todayEnd   = new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59).toISOString();
+
+          // First get all employees to find this tech's ID
+          const empData = await callHCP("/employees?page_size=50","GET");
+          let techId = null;
+          if(empData && empData.employees) {
+            const match = empData.employees.find(e=>{
+              const fullName = `${e.first_name} ${e.last_name}`.toLowerCase();
+              return fullName.includes(techName.toLowerCase());
+            });
+            if(match) techId = match.id;
           }
+
+          // Pull estimates — try scheduled for today first
+          let data = await callHCP(`/estimates?page_size=50&scheduled_start_min=${todayStart}&scheduled_start_max=${todayEnd}`,"GET");
+
+          // If no results, fall back to recent open estimates
+          if(!data?.estimates?.length) {
+            data = await callHCP(`/estimates?page_size=50&work_status=needs+scheduling`,"GET");
+          }
+
+          let ests = data?.estimates || (Array.isArray(data) ? data : []);
+
+          // Filter by tech if we found their ID
+          if(techId && ests.length) {
+            const filtered = ests.filter(e=>
+              e.assigned_employees?.some(emp=>emp.id===techId)
+            );
+            // Only filter if results exist — otherwise show all
+            if(filtered.length) ests = filtered;
+          }
+
+          // For each estimate, fetch full details to get customer name
+          const detailed = await Promise.all(
+            ests.slice(0,20).map(async est=>{
+              if(est.customer?.first_name) return est;
+              const full = await callHCP(`/estimates/${est.id}`,"GET");
+              return full || est;
+            })
+          );
+
+          setEstimates(detailed);
           setLoading(false);
         })();
       },[]);
 
       if(loading) return h("div",{style:{display:"flex",flexDirection:"column",alignItems:"center",gap:16,padding:"64px 0"}},
         h("div",{style:{width:60,height:60,border:`3px solid ${C.border}`,borderTop:`3px solid ${C.cyan}`,borderRadius:"50%",animation:"spin 0.9s linear infinite",boxShadow:`0 0 24px ${C.cyan}44`}}),
-        h("div",{style:{fontSize:17,fontWeight:800,color:C.white}},"Loading today's jobs..."),
-        h("div",{style:{fontSize:13,color:C.mid}},"Pulling from Housecall Pro")
-      );
-
-      if(error) return h("div",{style:{padding:"32px 16px",textAlign:"center"}},
-        h("div",{style:{fontSize:40,marginBottom:12}},"⚠️"),
-        h("div",{style:{fontSize:16,fontWeight:700,color:C.red,marginBottom:8}}),error,
-        h("div",{style:{fontSize:13,color:C.mid}},"Check your HCP connection")
+        h("div",{style:{fontSize:17,fontWeight:800,color:C.white}},"Loading jobs..."),
+        h("div",{style:{fontSize:13,color:C.mid}},`Pulling ${techName}'s estimates from HCP`)
       );
 
       return h("div",{style:{display:"flex",flexDirection:"column",gap:14}},
         h("div",null,
           h("div",{style:{fontSize:22,fontWeight:900,color:C.white,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1}},"Today's Jobs"),
-          h("div",{style:{fontSize:13,color:C.mid,marginTop:2}},"Tap a job to start the estimate")
+          h("div",{style:{fontSize:13,color:C.mid,marginTop:2}},`Showing estimates for ${techName}`)
         ),
+
+        error && h("div",{style:{background:C.redSoft,border:`1px solid ${C.red}33`,borderRadius:12,padding:"14px 16px",color:C.red,fontSize:13,fontWeight:600}},error),
 
         estimates && estimates.length === 0 && h("div",{style:{background:C.bgCard,border:`1px solid ${C.border}`,borderRadius:16,padding:"32px 20px",textAlign:"center"}},
           h("div",{style:{fontSize:32,marginBottom:12}},"📋"),
-          h("div",{style:{fontSize:16,fontWeight:700,color:C.bright,marginBottom:6}},"No estimates scheduled for today"),
+          h("div",{style:{fontSize:16,fontWeight:700,color:C.bright,marginBottom:6}},"No estimates found"),
           h("div",{style:{fontSize:13,color:C.mid}},"Check Housecall Pro to confirm your schedule")
         ),
 
         estimates && estimates.map((est,i)=>{
           const customer = est.customer;
-          const address = est.address;
-          const name = customer ? `${customer.first_name} ${customer.last_name}` : "Unknown Customer";
-          const addr = address ? `${address.street}, ${address.city}` : "No address";
-          const estNum = est.estimate_number || est.id?.slice(-6);
+          const address  = est.address;
+          const name     = customer?.first_name ? `${customer.first_name} ${customer.last_name}` : "Loading...";
+          const addr     = address ? `${address.street}, ${address.city}` : "";
+          const estNum   = est.estimate_number || est.id?.slice(-6);
           const optCount = est.options?.length || 0;
+          const status   = est.work_status || "";
 
-          return h("div",{key:est.id,onClick:()=>onSelect(est),style:{background:C.bgCard,border:`1px solid ${C.border}`,borderRadius:16,overflow:"hidden",cursor:"pointer",transition:"all 0.2s",boxShadow:"0 2px 12px rgba(0,0,0,0.3)",animation:"fadeUp 0.25s ease both",animationDelay:`${i*0.06}s`},
-            onMouseEnter:e=>{e.currentTarget.style.border=`1px solid ${C.cyan}55`;e.currentTarget.style.boxShadow=`0 4px 20px ${C.cyan}22`;},
-            onMouseLeave:e=>{e.currentTarget.style.border=`1px solid ${C.border}`;e.currentTarget.style.boxShadow="0 2px 12px rgba(0,0,0,0.3)";}
-          },
+          return h("div",{key:est.id,onClick:()=>onSelect(est),style:{background:C.bgCard,border:`1px solid ${C.border}`,borderRadius:16,overflow:"hidden",cursor:"pointer",transition:"border 0.2s",boxShadow:"0 2px 12px rgba(0,0,0,0.3)",animation:"fadeUp 0.25s ease both",animationDelay:`${i*0.06}s`}},
             h("div",{style:{height:3,background:`linear-gradient(90deg,${C.cyan},${C.cyan}44)`}}),
             h("div",{style:{padding:"16px 18px",display:"flex",alignItems:"center",gap:14}},
               h("div",{style:{width:48,height:48,borderRadius:12,background:`${C.cyan}18`,border:`1px solid ${C.cyan}33`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}},"🏠"),
               h("div",{style:{flex:1}},
                 h("div",{style:{fontSize:16,fontWeight:800,color:C.bright,lineHeight:1.2}},name),
-                h("div",{style:{fontSize:12,color:C.mid,marginTop:3}},addr),
-                h("div",{style:{display:"flex",gap:8,marginTop:6}},
+                addr && h("div",{style:{fontSize:12,color:C.mid,marginTop:3}},addr),
+                h("div",{style:{display:"flex",gap:8,marginTop:6,flexWrap:"wrap"}},
                   h("span",{style:{fontSize:10,fontWeight:700,color:C.cyan,background:`${C.cyan}18`,border:`1px solid ${C.cyan}33`,borderRadius:6,padding:"2px 8px",textTransform:"uppercase",letterSpacing:0.8}},`Est #${estNum}`),
-                  optCount > 0 && h("span",{style:{fontSize:10,fontWeight:700,color:C.amber,background:`${C.amber}18`,border:`1px solid ${C.amber}33`,borderRadius:6,padding:"2px 8px",textTransform:"uppercase",letterSpacing:0.8}},`${optCount} option${optCount>1?"s":""} in HCP`)
+                  status && h("span",{style:{fontSize:10,fontWeight:700,color:C.mid,background:C.bgInner,border:`1px solid ${C.border}`,borderRadius:6,padding:"2px 8px",textTransform:"uppercase",letterSpacing:0.8}},status.replace(/_/g," ")),
+                  optCount>0 && h("span",{style:{fontSize:10,fontWeight:700,color:C.amber,background:`${C.amber}18`,border:`1px solid ${C.amber}33`,borderRadius:6,padding:"2px 8px",textTransform:"uppercase",letterSpacing:0.8}},`${optCount} option${optCount>1?"s":""} in HCP`)
                 )
               ),
               h("div",{style:{fontSize:20,color:C.dim}},"→")
@@ -302,8 +345,8 @@ Return ONLY valid JSON:
       const recRef = useRef(null);
       const sectionKey = meta.num===1?"request":meta.num===2?"safety":"enhancements";
 
-      const startVoice = () => {
-        const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+      const startVoice=()=>{
+        const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
         if(!SR){alert("Voice not available — use Type mode.");return;}
         const r=new SR(); r.continuous=true; r.interimResults=true; r.lang="en-US";
         let final=text;
@@ -315,9 +358,8 @@ Return ONLY valid JSON:
 
       const analyze=async()=>{
         if(!text.trim())return; setAna(true); setError(null);
-        const parsed = await callClaude(buildSystemPrompt(rules,sectionKey), text);
-        if(parsed) setExt(parsed);
-        else setError("Something went wrong — please try again");
+        const parsed=await callClaude(buildSystemPrompt(rules,sectionKey),text);
+        if(parsed) setExt(parsed); else setError("Something went wrong — please try again");
         setAna(false);
       };
 
@@ -420,47 +462,45 @@ Return ONLY valid JSON:
 
     // ── Options Step ──────────────────────────────────────────────
     function OptionsStep({scopes, rules, estimate}) {
-      const [options,setOptions]   = useState(null);
-      const [loading,setLoading]   = useState(true);
-      const [selected,setSelected] = useState({});
-      const [expanded,setExpanded] = useState(null);
-      const [sending,setSending]   = useState(false);
-      const [sent,setSent]         = useState(false);
+      const [options,setOptions]     = useState(null);
+      const [loading,setLoading]     = useState(true);
+      const [selected,setSelected]   = useState({});
+      const [expanded,setExpanded]   = useState(null);
+      const [sending,setSending]     = useState(false);
+      const [sent,setSent]           = useState(false);
       const [sendError,setSendError] = useState(null);
-      const [error,setError]       = useState(null);
+      const [error,setError]         = useState(null);
 
       useEffect(()=>{
         (async()=>{
-          const parsed = await callClaude(null, buildOptionsPrompt(scopes, rules));
+          const parsed=await callClaude(null,buildOptionsPrompt(scopes,rules));
           if(parsed&&parsed.options) setOptions(parsed.options);
           else setError("Could not build options — please try again");
           setLoading(false);
         })();
       },[]);
 
-      const toggleSelect = (num) => setSelected(prev=>({...prev,[num]:!prev[num]}));
-      const selectedCount = Object.values(selected).filter(Boolean).length;
+      const toggleSelect=(num)=>setSelected(prev=>({...prev,[num]:!prev[num]}));
+      const selectedCount=Object.values(selected).filter(Boolean).length;
 
-      const sendToHCP = async () => {
-        const toSend = options.filter(o=>selected[o.number]);
-        if(!toSend.length) return;
+      const sendToHCP=async()=>{
+        const toSend=options.filter(o=>selected[o.number]);
+        if(!toSend.length)return;
         setSending(true); setSendError(null);
         try {
           for(const opt of toSend) {
-            await callHCP(`/estimates/${estimate.id}/options`, "POST", {
+            await callHCP(`/estimates/${estimate.id}/options`,"POST",{
               name: opt.name,
               line_items: opt.includes.map(item=>({
                 name: item,
-                description: opt.permits_required ? "Permits may be required" : "",
+                description: opt.permits_required?"Permits may be required":"",
                 unit_price: 0,
                 quantity: 1,
               }))
             });
           }
           setSent(true);
-        } catch(e) {
-          setSendError("Failed to send to Housecall Pro — please try again");
-        }
+        } catch(e) { setSendError("Failed to send — please try again"); }
         setSending(false);
       };
 
@@ -474,7 +514,7 @@ Return ONLY valid JSON:
         h("div",{style:{width:80,height:80,borderRadius:"50%",background:`${C.green}22`,border:`3px solid ${C.green}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:36,boxShadow:`0 0 32px ${C.green}44`}},"✓"),
         h("div",{style:{fontSize:22,fontWeight:900,color:C.white,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1}},"Sent to Housecall Pro"),
         h("div",{style:{fontSize:14,color:C.mid,textAlign:"center",lineHeight:1.6}},`${selectedCount} option${selectedCount>1?"s":""} added to Estimate #${estimate.estimate_number}`),
-        h("div",{style:{fontSize:13,color:C.green,fontWeight:600}},"Open HCP to review and present to customer")
+        h("div",{style:{fontSize:13,color:C.green,fontWeight:600,textAlign:"center"}},"Open HCP to review and present to customer")
       );
 
       if(error) return h("div",{style:{padding:"32px 0",textAlign:"center",color:C.red,fontSize:15,fontWeight:600}},error);
@@ -484,14 +524,11 @@ Return ONLY valid JSON:
           h("div",{style:{fontSize:22,fontWeight:900,color:C.white,fontFamily:"'Barlow Condensed',sans-serif",letterSpacing:1}},`${options?.length} Options Ready`),
           h("div",{style:{fontSize:13,color:C.mid,marginTop:2}},"Select which options to add to HCP")
         ),
-
-        // HCP estimate info
         h("div",{style:{background:`${C.cyan}12`,border:`1px solid ${C.cyan}33`,borderRadius:12,padding:"12px 16px",marginBottom:4}},
           h("div",{style:{fontSize:11,fontWeight:700,color:C.cyan,textTransform:"uppercase",letterSpacing:1.5,marginBottom:4}},"Adding to Estimate"),
           h("div",{style:{fontSize:14,fontWeight:700,color:C.bright}},(estimate.customer?`${estimate.customer.first_name} ${estimate.customer.last_name}`:"Customer")+" — Est #"+estimate.estimate_number),
-          h("div",{style:{fontSize:12,color:C.mid}},estimate.address?`${estimate.address.street}, ${estimate.address.city}`:"")
+          estimate.address&&h("div",{style:{fontSize:12,color:C.mid}},`${estimate.address.street}, ${estimate.address.city}`)
         ),
-
         options?.map((opt,oi)=>{
           const color=OPTION_COLORS[oi%OPTION_COLORS.length];
           const isSel=!!selected[opt.number];
@@ -522,9 +559,7 @@ Return ONLY valid JSON:
             )
           );
         }),
-
         sendError&&h("div",{style:{padding:"10px 14px",background:C.redSoft,border:`1px solid ${C.red}44`,borderRadius:10,fontSize:13,color:C.red,fontWeight:600}},sendError),
-
         selectedCount>0&&h("button",{onClick:sendToHCP,disabled:sending,style:{marginTop:8,width:"100%",background:sending?"rgba(0,0,0,0.2)":C.amber,color:sending?C.mid:C.bg,border:"none",borderRadius:16,padding:"17px",fontSize:16,fontWeight:900,letterSpacing:1,textTransform:"uppercase",boxShadow:sending?"none":`0 6px 28px ${C.amber}55`,animation:"fadeUp 0.25s ease",display:"flex",alignItems:"center",justifyContent:"center",gap:8}},
           sending?[h("span",{key:"s",style:{animation:"spin 0.8s linear infinite",display:"inline-block"}},"◌")," Sending to Housecall Pro..."]:
           `📋 Add ${selectedCount} Option${selectedCount>1?"s":""} to Housecall Pro`
@@ -532,21 +567,19 @@ Return ONLY valid JSON:
       );
     }
 
-    // ── Field Intelligence Screen ─────────────────────────────────
+    // ── Field Intelligence ────────────────────────────────────────
     function IntelligenceScreen({rules, onBack, onSave}) {
-      const [localRules,setLocalRules] = useState(rules);
-      const [newTrigger,setNewTrigger] = useState("");
-      const [newResult,setNewResult]   = useState("");
-      const [showAdd,setShowAdd]       = useState(false);
-
+      const [localRules,setLocalRules]=useState(rules);
+      const [newTrigger,setNewTrigger]=useState("");
+      const [newResult,setNewResult]=useState("");
+      const [showAdd,setShowAdd]=useState(false);
       const addRule=()=>{
         if(!newTrigger.trim()||!newResult.trim())return;
         const updated=[...localRules,{id:Date.now(),trigger:newTrigger.trim(),result:newResult.trim()}];
         setLocalRules(updated); onSave(updated);
         setNewTrigger(""); setNewResult(""); setShowAdd(false);
       };
-      const deleteRule=(id)=>{const updated=localRules.filter(r=>r.id!==id);setLocalRules(updated);onSave(updated);};
-
+      const deleteRule=(id)=>{const u=localRules.filter(r=>r.id!==id);setLocalRules(u);onSave(u);};
       return h("div",{style:{minHeight:"100vh",background:C.bg}},
         h("div",{style:{background:C.bgCard,borderBottom:`1px solid ${C.border}`,padding:"16px 18px",display:"flex",alignItems:"center",gap:12,position:"sticky",top:0,zIndex:100}},
           h("div",{style:{height:3,background:`linear-gradient(90deg,${C.amber},${C.amber}44)`,position:"absolute",top:0,left:0,right:0}}),
@@ -562,10 +595,10 @@ Return ONLY valid JSON:
           ),
           h("button",{onClick:()=>setShowAdd(!showAdd),style:{width:"100%",background:showAdd?C.bgCard:`${C.green}18`,border:`1px solid ${showAdd?C.border:C.green}`,borderRadius:12,padding:"13px",fontSize:14,fontWeight:700,color:showAdd?C.mid:C.green,marginBottom:16,textTransform:"uppercase",letterSpacing:0.8}},showAdd?"Cancel":"+ Add New Rule"),
           showAdd&&h("div",{style:{background:C.bgCard,border:`1px solid ${C.green}33`,borderRadius:14,padding:16,marginBottom:16,animation:"fadeUp 0.2s ease"}},
-            h("div",{style:{fontSize:11,fontWeight:700,color:C.green,textTransform:"uppercase",letterSpacing:1.5,marginBottom:8}},"When tech sees or mentions..."),
+            h("div",{style:{fontSize:11,fontWeight:700,color:C.green,textTransform:"uppercase",letterSpacing:1.5,marginBottom:8}},"When tech sees..."),
             h("textarea",{value:newTrigger,onChange:e=>setNewTrigger(e.target.value),placeholder:"e.g. double tapped breakers on a 200 amp panel",style:{width:"100%",minHeight:70,background:C.bgInner,border:`1px solid ${C.border}`,borderRadius:10,padding:"10px 12px",fontSize:13,color:C.bright,resize:"vertical",outline:"none",marginBottom:12},onFocus:e=>e.target.style.borderColor=C.green,onBlur:e=>e.target.style.borderColor=C.border}),
-            h("div",{style:{fontSize:11,fontWeight:700,color:C.green,textTransform:"uppercase",letterSpacing:1.5,marginBottom:8}},"The AI should include..."),
-            h("textarea",{value:newResult,onChange:e=>setNewResult(e.target.value),placeholder:"e.g. Offer sub-panel installation as an option since panel is 150A+",style:{width:"100%",minHeight:70,background:C.bgInner,border:`1px solid ${C.border}`,borderRadius:10,padding:"10px 12px",fontSize:13,color:C.bright,resize:"vertical",outline:"none",marginBottom:12},onFocus:e=>e.target.style.borderColor=C.green,onBlur:e=>e.target.style.borderColor=C.border}),
+            h("div",{style:{fontSize:11,fontWeight:700,color:C.green,textTransform:"uppercase",letterSpacing:1.5,marginBottom:8}},"AI should include..."),
+            h("textarea",{value:newResult,onChange:e=>setNewResult(e.target.value),placeholder:"e.g. Offer sub-panel installation since panel is 150A+",style:{width:"100%",minHeight:70,background:C.bgInner,border:`1px solid ${C.border}`,borderRadius:10,padding:"10px 12px",fontSize:13,color:C.bright,resize:"vertical",outline:"none",marginBottom:12},onFocus:e=>e.target.style.borderColor=C.green,onBlur:e=>e.target.style.borderColor=C.border}),
             h("button",{onClick:addRule,style:{width:"100%",background:C.green,color:C.bg,border:"none",borderRadius:10,padding:"12px",fontSize:14,fontWeight:900,letterSpacing:0.8,textTransform:"uppercase",boxShadow:`0 4px 16px ${C.green}44`}},"Save Rule")
           ),
           h("div",{style:{fontSize:11,fontWeight:700,color:C.dim,textTransform:"uppercase",letterSpacing:1.5,marginBottom:12}},`${localRules.length} Active Rules`),
@@ -590,6 +623,7 @@ Return ONLY valid JSON:
 
     // ── App Root ──────────────────────────────────────────────────
     function FieldGuide() {
+      const [tech,setTech]           = useState(null);
       const [step,setStep]           = useState("job");
       const [data,setData]           = useState({});
       const [scopes,setScopes]       = useState(null);
@@ -603,19 +637,21 @@ Return ONLY valid JSON:
         else if(key==="safety")       setStep("enhancements");
         else if(key==="enhancements") setStep("review");
       };
-
       const selectEstimate=(est)=>{setEstimate(est);setStep("request");};
-      const handleSaveRules=(updated)=>{setRules(updated);saveRules(updated);};
+      const handleSaveRules=(u)=>{setRules(u);saveRules(u);};
       const reset=()=>{setStep("job");setData({});setScopes(null);setEstimate(null);};
 
-      const jobName = estimate ? `${estimate.customer?.first_name} ${estimate.customer?.last_name} — Est #${estimate.estimate_number}` : null;
+      const jobName = estimate
+        ? `${estimate.customer?.first_name||""} ${estimate.customer?.last_name||""} — Est #${estimate.estimate_number}`.trim()
+        : null;
 
+      if(!tech) return h(TechSelector,{onSelect:setTech});
       if(showIntel) return h(IntelligenceScreen,{rules,onBack:()=>setShowIntel(false),onSave:handleSaveRules});
 
       return h("div",{style:{minHeight:"100vh",background:C.bg}},
-        h(Header,{step,onReset:reset,onIntelligence:()=>setShowIntel(true),jobName}),
+        h(Header,{step,onReset:reset,onIntelligence:()=>setShowIntel(true),jobName,techName:tech}),
         h("div",{style:{maxWidth:480,margin:"0 auto",padding:"20px 16px 56px"}},
-          step==="job"          && h(JobPicker,{onSelect:selectEstimate}),
+          step==="job"          && h(JobPicker,{techName:tech,onSelect:selectEstimate}),
           step==="request"      && h(InputStep,{meta:STEP_META.request,      onDone:r=>handleStep("request",r),      saved:data.request,      rules}),
           step==="safety"       && h(InputStep,{meta:STEP_META.safety,       onDone:r=>handleStep("safety",r),       saved:data.safety,       rules}),
           step==="enhancements" && h(InputStep,{meta:STEP_META.enhancements, onDone:r=>handleStep("enhancements",r), saved:data.enhancements, rules}),
