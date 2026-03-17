@@ -1,10 +1,11 @@
 const https = require("https");
 const http  = require("http");
+const crypto = require("crypto");
 
 function makeRequest(url, options, body) {
   return new Promise((resolve, reject) => {
-    const urlObj  = new URL(url);
-    const lib     = urlObj.protocol === "https:" ? https : http;
+    const urlObj = new URL(url);
+    const lib    = urlObj.protocol === "https:" ? https : http;
     const reqOpts = {
       hostname: urlObj.hostname,
       path:     urlObj.pathname + urlObj.search,
@@ -16,52 +17,37 @@ function makeRequest(url, options, body) {
       res.on("data", c => chunks.push(c));
       res.on("end", () => {
         const buf = Buffer.concat(chunks);
-        try   { resolve({ status: res.statusCode, body: JSON.parse(buf.toString()), headers: res.headers }); }
-        catch { resolve({ status: res.statusCode, body: buf.toString(), headers: res.headers }); }
+        try   { resolve({ status: res.statusCode, body: JSON.parse(buf.toString()) }); }
+        catch { resolve({ status: res.statusCode, body: buf.toString() }); }
       });
     });
     req.on("error", reject);
     if (body) {
-      if (Buffer.isBuffer(body)) req.write(body);
-      else req.write(typeof body === "string" ? body : JSON.stringify(body));
+      const data = typeof body === "string" ? body : JSON.stringify(body);
+      req.write(data);
     }
     req.end();
   });
 }
 
-// Fetch a remote URL and return as buffer
-function fetchBuffer(url) {
+function followRedirects(url, maxRedirects) {
   return new Promise((resolve, reject) => {
+    if (maxRedirects === undefined) maxRedirects = 5;
     const urlObj = new URL(url);
     const lib    = urlObj.protocol === "https:" ? https : http;
     lib.get(url, (res) => {
-      if (res.statusCode === 301 || res.statusCode === 302) {
-        fetchBuffer(res.headers.location).then(resolve).catch(reject);
+      if ((res.statusCode === 301 || res.statusCode === 302) && res.headers.location && maxRedirects > 0) {
+        followRedirects(res.headers.location, maxRedirects - 1).then(resolve).catch(reject);
         return;
       }
       const chunks = [];
       res.on("data", c => chunks.push(c));
-      res.on("end", () => resolve({ buffer: Buffer.concat(chunks), contentType: res.headers["content-type"] || "image/jpeg" }));
+      res.on("end", () => resolve({
+        buffer: Buffer.concat(chunks),
+        contentType: res.headers["content-type"] || "image/jpeg"
+      }));
     }).on("error", reject);
   });
-}
-
-// Build multipart form data
-function buildMultipart(fields, boundary) {
-  const parts = [];
-  for (const [key, value] of Object.entries(fields)) {
-    if (value && value.buffer) {
-      parts.push(
-        `--${boundary}\r\nContent-Disposition: form-data; name="${key}"; filename="photo.jpg"\r\nContent-Type: ${value.contentType || "image/jpeg"}\r\n\r\n`
-      );
-      parts.push(value.buffer);
-      parts.push("\r\n");
-    } else {
-      parts.push(`--${boundary}\r\nContent-Disposition: form-data; name="${key}"\r\n\r\n${value}\r\n`);
-    }
-  }
-  parts.push(`--${boundary}--\r\n`);
-  return Buffer.concat(parts.map(p => Buffer.isBuffer(p) ? p : Buffer.from(p)));
 }
 
 module.exports = async function handler(req, res) {
@@ -76,6 +62,7 @@ module.exports = async function handler(req, res) {
   const cloudName   = process.env.CLOUDINARY_CLOUD_NAME;
   const cloudKey    = process.env.CLOUDINARY_API_KEY;
   const cloudSecret = process.env.CLOUDINARY_API_SECRET;
+  const unsplashKey = process.env.UNSPLASH_ACCESS_KEY;
 
   // ── HCP proxy ─────────────────────────────────────────────────
   if (req.method === "POST" && req.query.action === "hcp") {
@@ -83,86 +70,140 @@ module.exports = async function handler(req, res) {
     try {
       const r = await makeRequest(
         `https://api.housecallpro.com${endpoint}`,
-        { method: method||"GET", headers: { "Authorization": `Token ${hcpKey}`, "Content-Type": "application/json" } },
+        {
+          method: method || "GET",
+          headers: {
+            "Authorization": `Token ${hcpKey}`,
+            "Content-Type": "application/json"
+          }
+        },
         body || null
       );
       res.status(r.status).json(r.body);
-    } catch(e) { res.status(500).json({ error: e.message }); }
-    return;
-  }
-
-  // ── Upload image URL to Cloudinary, then attach to HCP estimate option ──
-  if (req.method === "POST" && req.query.action === "attach_photo") {
-    const { imageUrl, estimateOptionId, caption } = req.body;
-    try {
-      // 1. Fetch the image
-      const { buffer, contentType } = await fetchBuffer(imageUrl);
-
-      // 2. Upload to Cloudinary
-      const timestamp = Math.floor(Date.now() / 1000).toString();
-      const folder    = "fieldguide";
-      const crypto    = require("crypto");
-      const sigString = `folder=${folder}&timestamp=${timestamp}${cloudSecret}`;
-      const signature = crypto.createHash("sha1").update(sigString).digest("hex");
-
-      const boundary  = "----FormBoundary" + Math.random().toString(36).slice(2);
-      const formData  = buildMultipart({
-        file:      { buffer, contentType },
-        api_key:   cloudKey,
-        timestamp,
-        folder,
-        signature,
-      }, boundary);
-
-      const uploadRes = await makeRequest(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        { method: "POST", headers: { "Content-Type": `multipart/form-data; boundary=${boundary}`, "Content-Length": formData.length } },
-        formData
-      );
-
-      if (uploadRes.status !== 200) {
-        res.status(500).json({ error: "Cloudinary upload failed", detail: uploadRes.body });
-        return;
-      }
-
-      const cloudinaryUrl = uploadRes.body.secure_url;
-
-      // 3. Attach to HCP estimate option
-      const hcpRes = await makeRequest(
-        `https://api.housecallpro.com/estimate_options/${estimateOptionId}/attachments`,
-        { method: "POST", headers: { "Authorization": `Token ${hcpKey}`, "Content-Type": "application/json" } },
-        { url: cloudinaryUrl, description: caption || "" }
-      );
-
-      res.status(200).json({ cloudinaryUrl, hcp: hcpRes.body });
     } catch(e) {
       res.status(500).json({ error: e.message });
     }
     return;
   }
 
-  // ── Unsplash search proxy ─────────────────────────────────────
+  // ── Unsplash search ───────────────────────────────────────────
   if (req.method === "GET" && req.query.action === "unsplash") {
-    const query = req.query.q || "electrical work";
+    const query = req.query.q || "electrical work finished";
     try {
       const r = await makeRequest(
         `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=12&orientation=landscape`,
-        { method: "GET", headers: { "Authorization": "Authorization": `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`
+        {
+          method: "GET",
+          headers: { "Authorization": `Client-ID ${unsplashKey}` }
+        }
       );
       res.status(200).json(r.body);
-    } catch(e) { res.status(500).json({ error: e.message }); }
+    } catch(e) {
+      res.status(500).json({ error: e.message });
+    }
+    return;
+  }
+
+  // ── Attach photo to HCP estimate option via Cloudinary ────────
+  if (req.method === "POST" && req.query.action === "attach_photo") {
+    const { imageUrl, estimateOptionId, caption } = req.body;
+    try {
+      // 1. Fetch image bytes
+      const { buffer, contentType } = await followRedirects(imageUrl);
+
+      // 2. Upload to Cloudinary via multipart
+      const timestamp = Math.floor(Date.now() / 1000).toString();
+      const folder    = "fieldguide";
+      const sigStr    = `folder=${folder}&timestamp=${timestamp}${cloudSecret}`;
+      const signature = crypto.createHash("sha1").update(sigStr).digest("hex");
+      const boundary  = "FGboundary" + Date.now();
+
+      const parts = [];
+      const addField = (name, value) => {
+        parts.push(Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="${name}"\r\n\r\n${value}\r\n`));
+      };
+      addField("api_key",   cloudKey);
+      addField("timestamp", timestamp);
+      addField("folder",    folder);
+      addField("signature", signature);
+      parts.push(Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="photo.jpg"\r\nContent-Type: ${contentType}\r\n\r\n`));
+      parts.push(buffer);
+      parts.push(Buffer.from(`\r\n--${boundary}--\r\n`));
+      const formData = Buffer.concat(parts);
+
+      const uploadRes = await new Promise((resolve, reject) => {
+        const urlObj = new URL(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`);
+        const reqOpts = {
+          hostname: urlObj.hostname,
+          path:     urlObj.pathname,
+          method:   "POST",
+          headers:  {
+            "Content-Type":   `multipart/form-data; boundary=${boundary}`,
+            "Content-Length": formData.length,
+          }
+        };
+        const req2 = https.request(reqOpts, (r2) => {
+          const chunks = [];
+          r2.on("data", c => chunks.push(c));
+          r2.on("end", () => {
+            try   { resolve(JSON.parse(Buffer.concat(chunks).toString())); }
+            catch { resolve({}); }
+          });
+        });
+        req2.on("error", reject);
+        req2.write(formData);
+        req2.end();
+      });
+
+      if (!uploadRes.secure_url) {
+        res.status(500).json({ error: "Cloudinary upload failed", detail: uploadRes });
+        return;
+      }
+
+      // 3. Attach to HCP estimate option
+      const hcpRes = await makeRequest(
+        `https://api.housecallpro.com/estimate_options/${estimateOptionId}/attachments`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": `Token ${hcpKey}`,
+            "Content-Type": "application/json"
+          }
+        },
+        { url: uploadRes.secure_url, description: caption || "" }
+      );
+
+      res.status(200).json({ cloudinaryUrl: uploadRes.secure_url, hcp: hcpRes.body });
+    } catch(e) {
+      res.status(500).json({ error: e.message });
+    }
     return;
   }
 
   // ── Claude API ────────────────────────────────────────────────
-  if (req.method !== "POST") { res.status(405).json({ error: "Method not allowed" }); return; }
-  if (!claudeKey) { res.status(500).json({ error: "Missing API key" }); return; }
+  if (req.method !== "POST") {
+    res.status(405).json({ error: "Method not allowed" });
+    return;
+  }
+  if (!claudeKey) {
+    res.status(500).json({ error: "Missing API key" });
+    return;
+  }
   try {
     const r = await makeRequest(
       "https://api.anthropic.com/v1/messages",
-      { method: "POST", headers: { "Content-Type": "application/json", "x-api-key": claudeKey, "anthropic-version": "2023-06-01" } },
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":      "application/json",
+          "x-api-key":         claudeKey,
+          "anthropic-version": "2023-06-01"
+        }
+      },
       req.body
     );
     res.status(200).json(r.body);
-  } catch(e) { res.status(500).json({ error: e.message }); }
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
 };
