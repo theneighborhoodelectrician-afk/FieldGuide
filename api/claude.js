@@ -113,7 +113,7 @@ module.exports = async function handler(req, res) {
 
       // 2. Upload to Cloudinary via multipart
       const timestamp = Math.floor(Date.now() / 1000).toString();
-      const folder    = "fieldguide";
+      const folder    = "fieldguide/estimates";
       const sigStr    = `folder=${folder}&timestamp=${timestamp}${cloudSecret}`;
       const signature = crypto.createHash("sha1").update(sigStr).digest("hex");
       const boundary  = "FGboundary" + Date.now();
