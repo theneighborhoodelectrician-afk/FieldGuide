@@ -94,8 +94,4 @@ module.exports = async function handler(req, res) {
     res.status(500).json({ error: e.message });
   }
 };
-```
 
-Commit, wait 30 seconds, hit the test URL again:
-```
-https://field-guide-nu.vercel.app/api/claude?action=test_estimate
