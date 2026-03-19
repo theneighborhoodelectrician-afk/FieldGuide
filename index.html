@@ -1666,18 +1666,22 @@ Return ONLY valid JSON:
             const photo = photos[option.number];
             if (photo && !optionId) {
               warnings.push(`"${option.name}" was created, but FieldGuide could not find the new HCP option ID to attach the photo.`);
-            }
-            if (photo && optionId) {
+             }
+              if (photo && optionId) {
              const attachResult = await attachPhoto(photo.url, optionId, photo.label);
              if (!attachResult || attachResult.error) {
-              const detail =
-              attachResult?.hcp?.error ||
-             attachResult?.hcp?.message ||
-             attachResult?.error ||
-             "Unknown attachment error";
-              warnings.push(`"${option.name}" was created, but the photo did not attach in HCP. ${detail}`);}
-            }
-          }
+             const detail = [
+              attachResult?.error,
+               attachResult?.status ? `status ${attachResult.status}` : null,
+               attachResult?.hcp ? JSON.stringify(attachResult.hcp) : null
+              ].filter(Boolean).join(" | ");
+
+              warnings.push(
+              `"${option.name}" was created, but the photo did not attach in HCP.${detail ? ` ${detail}` : ""}`
+              );
+              }
+               }
+
 
           if (warnings.length) {
             setSendError(warnings.join(" "));
