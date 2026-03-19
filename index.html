@@ -1712,6 +1712,20 @@ Return ONLY valid JSON:
             key: "body",
             style: { margin: "10px 0 0", color: "var(--text-muted)", lineHeight: 1.6 }
           }, `${selectedOptions.length} option${selectedOptions.length > 1 ? "s were" : " was"} added to Estimate #${estimate.estimate_number || ""}.`)
+        , sendError ? h("div", {
+            key: "warning",
+            style: {
+              marginTop: 14,
+              padding: "12px 14px",
+              borderRadius: "14px",
+              border: "1px solid rgba(255,176,32,0.22)",
+              background: "var(--amber-deep)",
+              color: "var(--amber)",
+              fontWeight: 700,
+              lineHeight: 1.5,
+              textAlign: "left"
+            }
+          }, sendError) : null
         ]));
       }
 
