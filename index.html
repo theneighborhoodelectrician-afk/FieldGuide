@@ -4,79 +4,59 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#11151c" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>FieldGuide - Electrical Estimating</title>
+  <title>FieldGuide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #11151c;
-      --bg-elevated: #181d27;
-      --bg-panel: #1f2531;
-      --bg-soft: rgba(255, 255, 255, 0.04);
-      --border: rgba(255, 255, 255, 0.09);
-      --border-strong: rgba(255, 255, 255, 0.18);
-      --text: #edf2f7;
-      --text-muted: #93a0b7;
-      --text-dim: #647289;
-      --cyan: #32d4ff;
-      --cyan-deep: rgba(50, 212, 255, 0.15);
-      --amber: #ffb020;
-      --amber-deep: rgba(255, 176, 32, 0.14);
-      --green: #31d78c;
-      --green-deep: rgba(49, 215, 140, 0.14);
-      --red: #ff667a;
-      --red-deep: rgba(255, 102, 122, 0.14);
-      --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.35);
-      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.28);
+      --bg: #10141b;
+      --panel: #1a202b;
+      --panel-soft: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.1);
+      --text: #eef2f7;
+      --muted: #96a3ba;
+      --dim: #6c7890;
+      --cyan: #31d4ff;
+      --cyan-soft: rgba(49,212,255,0.14);
+      --amber: #ffb11f;
+      --amber-soft: rgba(255,177,31,0.14);
+      --green: #34d58b;
+      --green-soft: rgba(52,213,139,0.14);
+      --red: #ff6a7f;
+      --red-soft: rgba(255,106,127,0.14);
+      --shadow: 0 16px 40px rgba(0,0,0,0.32);
       --radius-xl: 24px;
       --radius-lg: 18px;
       --radius-md: 14px;
-      --radius-sm: 10px;
-      --container: 520px;
+      --container: 560px;
     }
 
     * { box-sizing: border-box; }
     html, body { min-height: 100%; }
     body {
       margin: 0;
-      color: var(--text);
       font-family: "Barlow", system-ui, sans-serif;
+      color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(50, 212, 255, 0.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(255, 176, 32, 0.08), transparent 22%),
+        radial-gradient(circle at top left, rgba(49,212,255,0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(255,177,31,0.08), transparent 22%),
         linear-gradient(180deg, #11151c 0%, #0d1015 100%);
       -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
     }
 
-    button, input, textarea, select {
+    button, input, textarea {
       font: inherit;
     }
 
     button {
-      cursor: pointer;
       border: 0;
+      cursor: pointer;
     }
 
     img {
-      max-width: 100%;
       display: block;
-    }
-
-    ::selection {
-      background: rgba(50, 212, 255, 0.25);
-      color: white;
-    }
-
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.12);
-      border-radius: 999px;
+      max-width: 100%;
     }
 
     @keyframes spin {
@@ -84,22 +64,9 @@
       to { transform: rotate(360deg); }
     }
 
-    @keyframes floatUp {
+    @keyframes fadeUp {
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes pulseRing {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 102, 122, 0.36); }
-      50% { box-shadow: 0 0 0 18px rgba(255, 102, 122, 0); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation: none !important;
-        transition: none !important;
-        scroll-behavior: auto !important;
-      }
     }
   </style>
 </head>
@@ -121,7 +88,16 @@
 
     const h = React.createElement;
 
-    const TECHS = ["Brandon", "Steve", "David", "Joe", "Lou", "Brayden", "Andrew", "Nate"];
+    const TECHS = [
+      { label: "Brandon", hcpName: "Brandon" },
+      { label: "Steve", hcpName: "Steve" },
+      { label: "David", hcpName: "David" },
+      { label: "Joe", hcpName: "Joe" },
+      { label: "Lou", hcpName: "Lou" },
+      { label: "Brayden", hcpName: "Brayden" },
+      { label: "Andrew", hcpName: "Andrew" },
+      { label: "Nate", hcpName: "Nate" }
+    ];
 
     const DEFAULT_RULES = [
       { id: 1, trigger: "oxidation on breaker or main breaker", result: "Full panel replacement + service upgrade + outside disconnect + new ground system + permits required" },
@@ -132,60 +108,42 @@
       { id: 6, trigger: "double tapped breakers and panel is 150 amps or above", result: "Offer sub-panel installation OR full new service upgrade + outside disconnect + new ground system + permits" },
       { id: 7, trigger: "panel is full, no open breakers, does not accept tandem breakers, under 150 amps", result: "Full new service upgrade required + outside disconnect + new ground system + permits" },
       { id: 8, trigger: "panel is full, no open breakers, does not accept tandem breakers, 150 amps or above", result: "Offer sub-panel installation OR full new service upgrade" },
-      { id: 9, trigger: "panel is full but accepts tandem breakers", result: "Offer tandem breaker installation as a solution" },
-      { id: 10, trigger: "any panel upgrade", result: "Always includes: new ground system + outside service upgrade + permits required" },
-      { id: 11, trigger: "permit pulled for panel upgrade", result: "Outside disconnect is required by code" },
-      { id: 12, trigger: "aluminum wiring on branch circuits (not ranges, dryers, or AC)", result: "Must replace wiring OR install CO/ALR rated devices at every location" },
-      { id: 13, trigger: "ungrounded outlets or two-prong outlets", result: "Offer GFCI protection at each location OR GFCI breaker in panel" },
-      { id: 14, trigger: "no GFCI protection in bathroom, kitchen, garage, or exterior", result: "Separate line item: GFCI protection required at all wet and exterior locations" },
-      { id: 15, trigger: "knob and tube wiring", result: "Only two options: leave it completely alone OR full house rewire" },
-      { id: 16, trigger: "home built before 1980", result: "Flag for: bad panel brands, grounding system tied to water pipe/PEX, aluminum grounds oxidizing, outdated smoke detectors, outlet/GFCI condition" },
-      { id: 17, trigger: "grounding system tied to water pipe or PEX plumbing", result: "Ground system has lost continuity - new ground system required" },
-      { id: 18, trigger: "aluminum grounds to water pipe", result: "Oxidation risk - recommend replacing ground connections" },
-      { id: 19, trigger: "EV charger request", result: "Perform load calculation first - only recommend panel upgrade if load calc shows it cannot handle it" },
-      { id: 20, trigger: "no smoke detectors or outdated smoke detectors", result: "Recommend: wired smoke/carbon in basement + wireless smoke in each bedroom + wireless combo on all other floors" },
-      { id: 21, trigger: "any job", result: "Always offer whole-home surge protection as an enhancement" }
+      { id: 9, trigger: "aluminum wiring on branch circuits", result: "Must replace wiring OR install CO/ALR rated devices at every location" },
+      { id: 10, trigger: "ungrounded outlets or two-prong outlets", result: "Offer GFCI protection at each location OR GFCI breaker in panel" },
+      { id: 11, trigger: "knob and tube wiring", result: "Only two options: leave it completely alone OR full house rewire" },
+      { id: 12, trigger: "EV charger request", result: "Perform load calculation first - only recommend panel upgrade if load calc shows it cannot handle it" },
+      { id: 13, trigger: "any job", result: "Always offer whole-home surge protection as an enhancement" }
     ];
 
     const PHOTO_LIBRARY = [
-      { id: "recessed", label: "Recessed Lighting", emoji: "💡", tags: ["recessed", "lights", "ceiling", "lighting", "can light"], url: "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=1200&q=80&auto=format&fit=crop" },
-      { id: "panel", label: "Panel Upgrade", emoji: "⚡", tags: ["panel", "breaker", "service", "upgrade", "electrical panel"], url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80&auto=format&fit=crop" },
-      { id: "ev", label: "EV Charger", emoji: "🔌", tags: ["ev", "charger", "electric vehicle", "car charger"], url: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1200&q=80&auto=format&fit=crop" },
-      { id: "gfci", label: "GFCI Outlets", emoji: "🔧", tags: ["gfci", "outlet", "bathroom", "kitchen", "safety"], url: "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=1200&q=80&auto=format&fit=crop" },
-      { id: "surge", label: "Surge Protection", emoji: "🛡️", tags: ["surge", "protection", "whole home"], url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80&auto=format&fit=crop" },
-      { id: "smart", label: "Smart Controls", emoji: "📱", tags: ["smart", "switch", "automation", "wifi"], url: "https://images.unsplash.com/photo-1558618047-3c8c76f2e949?w=1200&q=80&auto=format&fit=crop" }
+      { id: "recessed", label: "Recessed Lighting", emoji: "💡", tags: ["recessed", "lighting", "can"], url: "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=1200&q=80&auto=format&fit=crop" },
+      { id: "panel", label: "Panel Upgrade", emoji: "⚡", tags: ["panel", "service", "breaker"], url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80&auto=format&fit=crop" },
+      { id: "ev", label: "EV Charger", emoji: "🔌", tags: ["ev", "charger"], url: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1200&q=80&auto=format&fit=crop" },
+      { id: "gfci", label: "GFCI", emoji: "🔧", tags: ["gfci", "outlet"], url: "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=1200&q=80&auto=format&fit=crop" },
+      { id: "surge", label: "Surge Protection", emoji: "🛡️", tags: ["surge", "protection"], url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80&auto=format&fit=crop" }
     ];
 
     const STEP_META = {
       request: {
-        num: 1,
-        label: "Their Request",
-        emoji: "🏠",
-        accent: "var(--cyan)",
-        accentSoft: "var(--cyan-deep)",
-        question: "What did the customer ask for?",
-        sub: "Capture the homeowner's ask in plain language.",
-        placeholder: "Example: add 6 recessed lights in the living room, troubleshoot dead garage outlets, quote EV charger install..."
+        title: "What They Called For",
+        subtitle: "Start with the homeowner's exact ask.",
+        color: "var(--cyan)",
+        soft: "var(--cyan-soft)",
+        placeholder: "Example: add 6 recessed lights in the kitchen, quote an EV charger, replace a ceiling fan..."
       },
       safety: {
-        num: 2,
-        label: "What You Found",
-        emoji: "⚡",
-        accent: "var(--amber)",
-        accentSoft: "var(--amber-deep)",
-        question: "What did you find on site?",
-        sub: "Describe panel conditions, hazards, age clues, and anything code-related.",
-        placeholder: "Example: panel has oxidation on main breaker, no GFCIs in kitchen, aluminum branch wiring, original 1970s service..."
+        title: "What's Directly Connected",
+        subtitle: "Describe findings, code issues, and anything logically tied to the ask.",
+        color: "var(--amber)",
+        soft: "var(--amber-soft)",
+        placeholder: "Example: no brace box, panel corrosion, no GFCI, aluminum branch wiring, no room in panel..."
       },
       enhancements: {
-        num: 3,
-        label: "Good Ideas",
-        emoji: "💡",
-        accent: "var(--green)",
-        accentSoft: "var(--green-deep)",
-        question: "What else would genuinely improve the home?",
-        sub: "Keep it helpful, not salesy.",
-        placeholder: "Example: dimmers, under-cabinet lighting, surge protection, smart switches..."
+        title: "What's Good / What's More",
+        subtitle: "Note positives and worthwhile long-term improvements.",
+        color: "var(--green)",
+        soft: "var(--green-soft)",
+        placeholder: "Example: open attic above, wiring in wall looks good, add dimmers, surge, smart controls..."
       }
     };
 
@@ -195,22 +153,7 @@
       premium: "Premium"
     };
 
-    const OPTION_COLORS = ["#3b82f6", "#0d9488", "#7c3aed", "#f59e0b", "#00c97a", "#4f46e5"];
-
-    function loadRules() {
-      try {
-        const saved = localStorage.getItem("fg_rules");
-        return saved ? JSON.parse(saved) : DEFAULT_RULES;
-      } catch {
-        return DEFAULT_RULES;
-      }
-    }
-
-    function saveRules(rules) {
-      try {
-        localStorage.setItem("fg_rules", JSON.stringify(rules));
-      } catch {}
-    }
+    const OPTION_COLORS = ["#2f7ef7", "#0f9b8e", "#6d41ea", "#f5a51f", "#22c86a", "#db4d88"];
 
     function safeJsonParse(value, fallback = null) {
       try {
@@ -225,7 +168,7 @@
       const text = await response.text();
       const data = safeJsonParse(text, null);
       if (!response.ok) {
-        throw new Error(data?.error || response.statusText || "Request failed");
+        throw new Error(data?.error || text || response.statusText || "Request failed");
       }
       return data;
     }
@@ -233,7 +176,7 @@
     async function callClaude(system, userText) {
       const body = {
         model: "claude-sonnet-4-20250514",
-        max_tokens: 1500,
+        max_tokens: 1800,
         messages: [{ role: "user", content: userText }]
       };
       if (system) body.system = system;
@@ -244,8 +187,8 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body)
         });
-        const rawText = data?.content?.[0]?.text || "";
-        const cleaned = rawText.replace(/```json|```/g, "").trim();
+        const raw = data?.content?.[0]?.text || "";
+        const cleaned = raw.replace(/```json|```/g, "").trim();
         return safeJsonParse(cleaned, null);
       } catch {
         return null;
@@ -265,36 +208,25 @@
     }
 
     async function attachPhoto(imageUrl, estimateOptionId, caption) {
-  try {
-    const response = await fetch("/api/claude?action=attach_photo", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ imageUrl, estimateOptionId, caption })
-    });
-
-    const text = await response.text();
-    let data = null;
-
-    try {
-      data = JSON.parse(text);
-    } catch {
-      data = { raw: text };
-    }
-
-    if (!response.ok) {
-      return {
-        error: data?.error || "Attachment failed",
-        hcp: data?.hcp || data,
-        status: response.status
-      };
-    }
-
-    return data;
-  } catch (e) {
-    return { error: e.message };
-  }
-}
-
+      try {
+        const response = await fetch("/api/claude?action=attach_photo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ imageUrl, estimateOptionId, caption })
+        });
+        const text = await response.text();
+        const data = safeJsonParse(text, { raw: text });
+        if (!response.ok) {
+          return {
+            error: data?.error || "Attachment failed",
+            status: response.status,
+            hcp: data?.hcp || data
+          };
+        }
+        return data;
+      } catch (error) {
+        return { error: error.message };
+      }
     }
 
     async function fetchCloudinaryEstimatePhotos() {
@@ -315,62 +247,90 @@
       }
     }
 
-    function buildSystemPrompt(rules, section) {
-      const rulesText = rules.map((rule) => `- IF: "${rule.trigger}" THEN: "${rule.result}"`).join("\n");
-      const sectionPrompts = {
-        request: "Extract what the customer specifically asked for. Return requested_scopes array.",
-        safety: "Analyze safety observations. Apply ALL Field Intelligence rules. Return safety_scopes with full expanded scopes.",
-        enhancements: "Extract honest upgrade opportunities. Always include whole-home surge protection. Return enhancement_scopes array."
-      };
+    function loadRules() {
+      try {
+        const raw = localStorage.getItem("fg_rules");
+        return raw ? JSON.parse(raw) : DEFAULT_RULES;
+      } catch {
+        return DEFAULT_RULES;
+      }
+    }
 
-      return `You are a master electrician with 30 years of estimating and service experience.
+    function saveRules(rules) {
+      try {
+        localStorage.setItem("fg_rules", JSON.stringify(rules));
+      } catch {}
+    }
+
+    function buildAnalysisSystemPrompt(rules, section) {
+      const rulesText = rules.map((rule) => `- IF: "${rule.trigger}" THEN: "${rule.result}"`).join("\n");
+      const sectionPrompt = {
+        request: "Extract the homeowner's actual ask. Return requested_scopes only for what they called for.",
+        safety: "Extract what is directly connected to the ask, along with safety findings and code-related scope.",
+        enhancements: "Extract positives and worthwhile long-term improvements. Always include whole-home surge protection when appropriate."
+      }[section];
+
+      return `You are a master electrician with 30 years of estimating experience.
 
 FIELD INTELLIGENCE RULES:
 ${rulesText}
 
-YOUR JOB:
-${sectionPrompts[section]}
+TASK:
+${sectionPrompt}
 
 Return ONLY valid JSON with no markdown.
-For request use: {"requested_scopes":["scope"],"job_facts":{"location":"","quantity":"","panel_condition":"","structural_conditions":[],"home_age":""}}
-For safety use: {"safety_scopes":["scope"],"job_facts":{"panel_condition":"","safety_risks":[],"urgency":"","triggers_panel_upgrade":false,"triggers_service_upgrade":false,"requires_permits":false}}
-For enhancements use: {"enhancement_scopes":["scope"],"future_opportunities":[]}`;
+For request use: {"requested_scopes":["scope"],"job_facts":{"panel_condition":"","home_age":"","notes":[]}}
+For safety use: {"safety_scopes":["scope"],"job_facts":{"panel_condition":"","safety_risks":[],"requires_permits":false}}
+For enhancements use: {"enhancement_scopes":["scope"],"job_facts":{"positives":[],"future_opportunities":[]}}`;
     }
 
-    function buildOptionsPrompt(scopes, rules, pricebookItems, pricingMode) {
-      return `You are a seasoned electrical estimator helping a field tech build homeowner-friendly estimate options.
-Customer requested: ${JSON.stringify(scopes.requested)}
-Safety items: ${JSON.stringify(scopes.safety)}
-Enhancements: ${JSON.stringify(scopes.enhancements)}
-Key rules: ${rules.slice(0, 10).map((r) => `${r.trigger} -> ${r.result}`).join("; ")}
+    function buildPromptCatalog(items, pricingMode) {
+      return items
+        .filter((item) => item?.pricing?.[pricingMode] != null)
+        .map((item) => ({
+          id: item.id,
+          name: item.name,
+          category: item.category,
+          description: item.description || "",
+          price: item.pricing[pricingMode]
+        }));
+    }
+
+    function buildOptionsPrompt(scopes, rules, catalog, pricingMode) {
+      return `You are helping an electrical service technician build six clear estimate options for a homeowner.
+
 Pricing mode: ${pricingMode === "in_home" ? "In Home" : "Preferred Builder"}
-Available catalog items for this pricing mode:
-${JSON.stringify(pricebookItems)}
 
-You are building options around this presentation framework:
-- What did they call you for?
-- What is directly connected to that?
-- What's good?
-- What's more?
+What they called for:
+${JSON.stringify(scopes.requested)}
 
-Create exactly 6 estimate options in this exact structure:
-- 2 economy options
-- 2 midrange options
-- 2 premium options
+What's directly connected:
+${JSON.stringify(scopes.safety)}
 
-Required logic:
-- Every option must include the original customer ask.
-- Economy options should focus on the immediate need and the bare minimum directly connected work.
-- Midrange options should include the immediate need, directly connected work, and a stronger reliability or safety package.
+What's good / what's more:
+${JSON.stringify(scopes.enhancements)}
+
+Field rules:
+${rules.slice(0, 10).map((rule) => `${rule.trigger} -> ${rule.result}`).join("; ")}
+
+Available catalog items:
+${JSON.stringify(catalog)}
+
+Build exactly 6 options with this structure:
+- 2 economy
+- 2 midrange
+- 2 premium
+
+Rules:
+- Every option must include the original homeowner ask.
+- Economy options should focus on the immediate need and bare-minimum directly connected work.
+- Midrange options should include the immediate need, directly connected work, and a stronger reliability/safety package.
 - Premium options should feel turnkey, future-minded, and built to put the problem to rest for life.
-- "What's directly connected" should be handled before "what's more".
-- Do not randomly mix items across tiers.
-- Be practical and honest.
+- "What's directly connected" must be addressed before "what's more".
+- Use only catalog items provided above.
 - Never invent pricing.
-- Use only items from the provided catalog.
-- Return 1 or more matched catalog items in pricebook_items for each option.
-- Include a short focus_statement that explains the buyer intent of the option.
-- Include permit flag where appropriate.
+- Each option must include at least one catalog item.
+- Include a short focus_statement that explains the buyer intent.
 
 Return ONLY valid JSON:
 {"options":[
@@ -380,54 +340,41 @@ Return ONLY valid JSON:
   {"number":4,"name":"Option name","tier":"midrange","focus_statement":"Stronger reliability and safety package","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]},
   {"number":5,"name":"Option name","tier":"premium","focus_statement":"Turnkey solution with convenience and longevity","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]},
   {"number":6,"name":"Option name","tier":"premium","focus_statement":"Best long-term put-it-to-rest solution","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]}
-]}`;
-    }
-
-    function buildPromptPricebookItems(items, pricingMode) {
-      return items
-        .filter((item) => item?.pricing?.[pricingMode] != null)
-        .map((item) => ({
-          id: item.id,
-          name: item.name,
-          category: item.category,
-          description: item.description,
-          price: item.pricing[pricingMode]
-        }));
-    }
-
-    function getOptionId(response) {
-      if (!response || typeof response !== "object") return null;
-      if (typeof response.estimate_option_id === "string") return response.estimate_option_id;
-      if (typeof response.id === "string") return response.id;
-      for (const value of Object.values(response)) {
-        if (Array.isArray(value)) continue;
-        const nested = getOptionId(value);
-        if (nested) return nested;
-      }
-      return null;
-    }
-
-    function dollarsToCents(amount) {
-      return Math.round((Number(amount) || 0) * 100);
+]} `;
     }
 
     function getSuggestedPhotos(optionName, includes) {
       const haystack = `${optionName} ${(includes || []).join(" ")}`.toLowerCase();
       const scored = PHOTO_LIBRARY
-        .map((photo) => ({
-          ...photo,
-          score: photo.tags.filter((tag) => haystack.includes(tag)).length
+        .map((item) => ({
+          ...item,
+          score: item.tags.filter((tag) => haystack.includes(tag)).length
         }))
         .sort((a, b) => b.score - a.score);
       return scored.some((item) => item.score > 0) ? scored.filter((item) => item.score > 0) : PHOTO_LIBRARY;
     }
 
-    function shellCardStyle(extra = {}) {
+    function getOptionId(value) {
+      if (!value || typeof value !== "object") return null;
+      if (typeof value.estimate_option_id === "string") return value.estimate_option_id;
+      if (typeof value.id === "string") return value.id;
+      for (const nested of Object.values(value)) {
+        const found = getOptionId(nested);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    function dollarsToCents(value) {
+      return Math.round((Number(value) || 0) * 100);
+    }
+
+    function shellCard(extra = {}) {
       return {
         background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03))",
         border: "1px solid var(--border)",
         borderRadius: "var(--radius-xl)",
-        boxShadow: "var(--shadow-md)",
+        boxShadow: "var(--shadow)",
         ...extra
       };
     }
@@ -443,9 +390,9 @@ Return ONLY valid JSON:
       }, children);
     }
 
-    function PrimaryButton({ children, onClick, disabled = false, color = "var(--cyan)", style = {}, type = "button" }) {
+    function PrimaryButton({ children, onClick, disabled = false, color = "var(--cyan)", style = {} }) {
       return h("button", {
-        type,
+        type: "button",
         onClick,
         disabled,
         style: {
@@ -453,17 +400,16 @@ Return ONLY valid JSON:
           padding: "15px 18px",
           borderRadius: "16px",
           background: disabled ? "rgba(255,255,255,0.08)" : color,
-          color: disabled ? "var(--text-dim)" : "#091018",
+          color: disabled ? "var(--dim)" : "#071017",
           fontWeight: 800,
           letterSpacing: "0.05em",
           textTransform: "uppercase",
-          boxShadow: disabled ? "none" : "0 12px 28px rgba(0,0,0,0.24)",
           ...style
         }
       }, children);
     }
 
-    function SoftButton({ children, onClick, style = {}, selected = false }) {
+    function SoftButton({ children, onClick, selected = false, style = {} }) {
       return h("button", {
         type: "button",
         onClick,
@@ -471,8 +417,8 @@ Return ONLY valid JSON:
           padding: "10px 14px",
           borderRadius: "12px",
           background: selected ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.04)",
-          border: selected ? "1px solid var(--border-strong)" : "1px solid var(--border)",
-          color: selected ? "var(--text)" : "var(--text-muted)",
+          border: selected ? "1px solid rgba(255,255,255,0.18)" : "1px solid var(--border)",
+          color: selected ? "var(--text)" : "var(--muted)",
           fontWeight: 700,
           ...style
         }
@@ -481,42 +427,29 @@ Return ONLY valid JSON:
 
     function Badge({ children, tone = "default" }) {
       const toneMap = {
-        default: { bg: "rgba(255,255,255,0.06)", color: "var(--text-muted)", border: "var(--border)" },
-        cyan: { bg: "var(--cyan-deep)", color: "var(--cyan)", border: "rgba(50,212,255,0.24)" },
-        amber: { bg: "var(--amber-deep)", color: "var(--amber)", border: "rgba(255,176,32,0.24)" },
-        green: { bg: "var(--green-deep)", color: "var(--green)", border: "rgba(49,215,140,0.24)" }
+        default: { bg: "rgba(255,255,255,0.06)", color: "var(--muted)", border: "var(--border)" },
+        cyan: { bg: "var(--cyan-soft)", color: "var(--cyan)", border: "rgba(49,212,255,0.22)" },
+        amber: { bg: "var(--amber-soft)", color: "var(--amber)", border: "rgba(255,177,31,0.22)" },
+        green: { bg: "var(--green-soft)", color: "var(--green)", border: "rgba(52,213,139,0.22)" },
+        red: { bg: "var(--red-soft)", color: "var(--red)", border: "rgba(255,106,127,0.22)" }
       };
-      const t = toneMap[tone] || toneMap.default;
+      const toneValue = toneMap[tone] || toneMap.default;
       return h("span", {
         style: {
           display: "inline-flex",
           alignItems: "center",
           gap: 6,
           padding: "4px 9px",
-          borderRadius: 999,
-          background: t.bg,
-          border: `1px solid ${t.border}`,
-          color: t.color,
+          borderRadius: "999px",
+          background: toneValue.bg,
+          border: `1px solid ${toneValue.border}`,
+          color: toneValue.color,
           fontSize: 11,
           fontWeight: 800,
           textTransform: "uppercase",
           letterSpacing: "0.08em"
         }
       }, children);
-    }
-
-    function EmptyState({ title, body, emoji = "📋" }) {
-      return h("div", {
-        style: {
-          ...shellCardStyle(),
-          padding: "28px 20px",
-          textAlign: "center"
-        }
-      }, [
-        h("div", { key: "emoji", style: { fontSize: 34, marginBottom: 10 } }, emoji),
-        h("div", { key: "title", style: { fontSize: 18, fontWeight: 800, marginBottom: 6 } }, title),
-        h("div", { key: "body", style: { fontSize: 14, color: "var(--text-muted)", lineHeight: 1.6 } }, body)
-      ]);
     }
 
     function LoadingState({ title, body }) {
@@ -532,62 +465,30 @@ Return ONLY valid JSON:
         h("div", {
           key: "spinner",
           style: {
-            width: 58,
-            height: 58,
+            width: 56,
+            height: 56,
             borderRadius: "50%",
             border: "3px solid rgba(255,255,255,0.1)",
             borderTopColor: "var(--cyan)",
             animation: "spin 0.9s linear infinite"
           }
         }),
-        h("div", { key: "title", style: { fontSize: 18, fontWeight: 800 } }, title),
-        h("div", { key: "body", style: { fontSize: 14, color: "var(--text-muted)" } }, body)
+        h("div", { key: "title", style: { fontWeight: 800, fontSize: 18 } }, title),
+        h("div", { key: "body", style: { color: "var(--muted)", fontSize: 14 } }, body)
       ]);
     }
 
-    function ScopeChip({ text, color, onRemove }) {
+    function EmptyState({ title, body, emoji = "📋" }) {
       return h("div", {
         style: {
-          display: "flex",
-          alignItems: "stretch",
-          gap: 0,
-          marginBottom: 10,
-          borderRadius: "16px",
-          overflow: "hidden",
-          boxShadow: "var(--shadow-md)",
-          animation: "floatUp 0.22s ease"
+          ...shellCard(),
+          padding: "28px 20px",
+          textAlign: "center"
         }
       }, [
-        h("div", {
-          key: "stripe",
-          style: {
-            width: 10,
-            background: color
-          }
-        }),
-        h("div", {
-          key: "body",
-          style: {
-            flex: 1,
-            padding: "14px 16px",
-            background: "rgba(255,255,255,0.06)",
-            fontSize: 14,
-            lineHeight: 1.45,
-            fontWeight: 700
-          }
-        }, text),
-        onRemove ? h("button", {
-          key: "remove",
-          type: "button",
-          onClick: onRemove,
-          "aria-label": `Remove scope: ${text}`,
-          style: {
-            width: 54,
-            background: "rgba(255,255,255,0.08)",
-            color: "var(--text)",
-            fontSize: 24
-          }
-        }, "×") : null
+        h("div", { key: "emoji", style: { fontSize: 34, marginBottom: 10 } }, emoji),
+        h("div", { key: "title", style: { fontWeight: 800, fontSize: 18, marginBottom: 6 } }, title),
+        h("div", { key: "body", style: { color: "var(--muted)", lineHeight: 1.6 } }, body)
       ]);
     }
 
@@ -598,93 +499,86 @@ Return ONLY valid JSON:
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          padding: "28px 18px"
+          padding: "26px 18px"
         }
       }, pageWrap([
         h("div", {
           key: "hero",
           style: {
-            ...shellCardStyle(),
+            ...shellCard(),
             padding: "26px 22px",
-            marginBottom: 18,
-            overflow: "hidden",
-            position: "relative"
+            marginBottom: 16,
+            position: "relative",
+            overflow: "hidden"
           }
         }, [
           h("div", {
             key: "orb",
             style: {
               position: "absolute",
-              inset: "auto -40px -40px auto",
+              right: -40,
+              bottom: -40,
               width: 120,
               height: 120,
               borderRadius: "50%",
-              background: "radial-gradient(circle, rgba(50,212,255,0.22), transparent 70%)"
+              background: "radial-gradient(circle, rgba(49,212,255,0.22), transparent 70%)"
             }
           }),
-          h("div", { key: "eyebrow", style: { fontSize: 11, color: "var(--cyan)", fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 10 } }, "Electrical Estimating"),
-          h("div", { key: "title", style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 38, lineHeight: 0.95, letterSpacing: "0.06em" } }, [
+          h("div", { key: "eyebrow", style: { color: "var(--cyan)", fontSize: 11, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 10 } }, "Electrical Estimating"),
+          h("div", { key: "title", style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 38, letterSpacing: "0.06em", lineHeight: 0.95 } }, [
             "FIELD",
             h("span", { key: "guide", style: { color: "var(--cyan)" } }, "GUIDE")
           ]),
-          h("p", { key: "copy", style: { margin: "12px 0 0", fontSize: 15, lineHeight: 1.6, color: "var(--text-muted)", maxWidth: 360 } },
-            "Faster estimate building for field techs: capture the ask, decode the field conditions, and send clean options into Housecall Pro.")
+          h("p", { key: "copy", style: { margin: "12px 0 0", color: "var(--muted)", lineHeight: 1.6 } },
+            "Capture the ask, structure the scope, build six purposeful options, and send clean estimates to Housecall Pro.")
         ]),
         h("div", {
-          key: "list",
+          key: "grid",
           style: {
             display: "grid",
             gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
             gap: 12
           }
         }, TECHS.map((tech, index) => h("button", {
-          key: tech,
+          key: tech.label,
           type: "button",
           onClick: () => onSelect(tech),
           style: {
-            ...shellCardStyle(),
+            ...shellCard(),
             padding: "18px 14px",
-            textAlign: "center",
             color: "var(--text)",
+            textAlign: "center",
             fontWeight: 800,
             fontSize: 16,
-            animation: "floatUp 0.24s ease both",
+            animation: "fadeUp 0.25s ease both",
             animationDelay: `${index * 0.04}s`
           }
-        }, tech)))
+        }, tech.label)))
       ]));
     }
 
-    function Header({ techName, jobName, step, onReset, onRestart, onOpenRules }) {
-      const labels = [
-        { key: "request", title: "Request" },
-        { key: "safety", title: "Field" },
-        { key: "enhancements", title: "Ideas" },
-        { key: "review", title: "Review" },
-        { key: "options", title: "Options" }
-      ];
-
-      const stepIndex = labels.findIndex((item) => item.key === step);
-      const visible = step !== "job";
+    function Header({ tech, jobName, step, onJobs, onRestart, onRules }) {
+      const labels = ["request", "safety", "enhancements", "review", "options"];
+      const stepIndex = labels.indexOf(step);
 
       return h("header", {
         style: {
           position: "sticky",
           top: 0,
           zIndex: 20,
-          backdropFilter: "blur(16px)",
-          background: "rgba(17, 21, 28, 0.76)",
+          backdropFilter: "blur(14px)",
+          background: "rgba(16,20,27,0.82)",
           borderBottom: "1px solid rgba(255,255,255,0.06)"
         }
       }, pageWrap([
         h("div", {
           key: "top",
           style: {
-            paddingTop: 14,
-            paddingBottom: visible ? 10 : 14,
             display: "flex",
             alignItems: "center",
-            gap: 12
+            gap: 12,
+            paddingTop: 14,
+            paddingBottom: 12
           }
         }, [
           h("div", {
@@ -695,27 +589,21 @@ Return ONLY valid JSON:
               borderRadius: 14,
               display: "grid",
               placeItems: "center",
-              background: "linear-gradient(135deg, rgba(50,212,255,0.22), rgba(50,212,255,0.06))",
-              border: "1px solid rgba(50,212,255,0.22)"
+              background: "linear-gradient(135deg, rgba(49,212,255,0.24), rgba(49,212,255,0.06))",
+              border: "1px solid rgba(49,212,255,0.18)"
             }
           }, "🧭"),
-          h("div", { key: "name", style: { flex: 1, minWidth: 0 } }, [
-            h("div", {
-              key: "brand",
-              style: {
-                fontFamily: '"Barlow Condensed", sans-serif',
-                fontWeight: 900,
-                fontSize: 24,
-                lineHeight: 1,
-                letterSpacing: "0.08em"
-              }
-            }, ["FIELD", h("span", { key: "guide", style: { color: "var(--cyan)" } }, "GUIDE")]),
-            h("div", { key: "job", style: { marginTop: 4, fontSize: 12, color: "var(--text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
-              jobName || "Electrical Estimating")
+          h("div", { key: "meta", style: { flex: 1, minWidth: 0 } }, [
+            h("div", { key: "brand", style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 24, letterSpacing: "0.08em", lineHeight: 1 } }, [
+              "FIELD",
+              h("span", { key: "guide", style: { color: "var(--cyan)" } }, "GUIDE")
+            ]),
+            h("div", { key: "job", style: { marginTop: 4, color: "var(--muted)", fontSize: 12, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, jobName || "Electrical Estimating")
           ]),
           h("div", { key: "actions", style: { display: "flex", gap: 8, alignItems: "center" } }, [
-            h(SoftButton, { key: "rules", onClick: onOpenRules, style: { color: "var(--amber)" } }, "Rules"),
-            visible ? h(SoftButton, { key: "reset", onClick: onReset }, "Jobs") : null
+            h(SoftButton, { key: "rules", onClick: onRules, style: { color: "var(--amber)" } }, "Rules"),
+            h(SoftButton, { key: "jobs", onClick: onJobs }, "Jobs"),
+            h(SoftButton, { key: "restart", onClick: onRestart, style: { color: "var(--red)" } }, "Restart")
           ])
         ]),
         h("div", {
@@ -725,37 +613,35 @@ Return ONLY valid JSON:
             alignItems: "center",
             justifyContent: "space-between",
             gap: 10,
-            paddingBottom: visible ? 12 : 0
+            paddingBottom: 12
           }
         }, [
-          h(Badge, { key: "tech", tone: "green" }, techName),
-          h(SoftButton, { key: "restart", onClick: onRestart, style: { color: "var(--red)" } }, "Restart"),
-          visible ? h("div", {
+          h(Badge, { key: "tech", tone: "green" }, tech.label),
+          stepIndex >= 0 ? h("div", {
             key: "steps",
             style: {
               display: "flex",
               gap: 8,
-              overflowX: "auto",
-              paddingBottom: 2
+              overflowX: "auto"
             }
-          }, labels.map((item, index) => {
-            const active = step === item.key;
+          }, labels.map((label, index) => {
+            const active = step === label;
             const done = stepIndex > index;
             return h("div", {
-              key: item.key,
+              key: label,
               style: {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 7,
-                whiteSpace: "nowrap",
                 padding: "6px 10px",
-                borderRadius: 999,
-                background: active ? "rgba(50,212,255,0.14)" : "rgba(255,255,255,0.04)",
-                border: active ? "1px solid rgba(50,212,255,0.22)" : "1px solid var(--border)"
+                whiteSpace: "nowrap",
+                borderRadius: "999px",
+                background: active ? "rgba(49,212,255,0.14)" : "rgba(255,255,255,0.04)",
+                border: active ? "1px solid rgba(49,212,255,0.22)" : "1px solid var(--border)"
               }
             }, [
               h("span", {
-                key: "dot",
+                key: "num",
                 style: {
                   width: 18,
                   height: 18,
@@ -763,42 +649,32 @@ Return ONLY valid JSON:
                   display: "grid",
                   placeItems: "center",
                   background: active ? "var(--cyan)" : done ? "var(--green)" : "rgba(255,255,255,0.14)",
-                  color: active || done ? "#091018" : "var(--text-muted)",
+                  color: active || done ? "#091018" : "var(--muted)",
                   fontSize: 11,
                   fontWeight: 900
                 }
               }, done ? "✓" : String(index + 1)),
-              h("span", {
-                key: "label",
-                style: {
-                  fontSize: 11,
-                  fontWeight: 800,
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  color: active ? "var(--cyan)" : done ? "var(--green)" : "var(--text-muted)"
-                }
-              }, item.title)
+              h("span", { key: "text", style: { color: active ? "var(--cyan)" : done ? "var(--green)" : "var(--muted)", fontSize: 11, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" } }, label)
             ]);
           })) : null
         ])
       ]));
     }
 
-    function JobPicker({ techName, onSelect }) {
+    function JobPicker({ tech, onSelect }) {
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState("");
       const [estimates, setEstimates] = useState([]);
 
       useEffect(() => {
         let live = true;
-
         (async () => {
           setLoading(true);
           setError("");
 
           const employeeData = await callHCP("/employees?page_size=100", "GET");
           const employee = employeeData?.employees?.find((item) =>
-            (item.first_name || "").trim().toLowerCase() === techName.toLowerCase()
+            (item.first_name || "").trim().toLowerCase() === tech.hcpName.toLowerCase()
           );
 
           if (!employee?.id) {
@@ -813,6 +689,7 @@ Return ONLY valid JSON:
           const now = new Date();
           const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).toISOString();
           const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
+
           const estimateData = await callHCP(`/estimates?page_size=100&scheduled_start_min=${start}&scheduled_start_max=${end}`, "GET");
           const rawEstimates = estimateData?.estimates || (Array.isArray(estimateData) ? estimateData : []);
           const assigned = rawEstimates.filter((estimate) =>
@@ -837,30 +714,26 @@ Return ONLY valid JSON:
         return () => {
           live = false;
         };
-      }, [techName]);
+      }, [tech]);
 
       if (loading) {
-        return h(LoadingState, {
+        return pageWrap(h(LoadingState, {
           title: "Loading estimates...",
-          body: `Pulling ${techName}'s schedule from Housecall Pro`
-        });
+          body: `Pulling ${tech.label}'s jobs from Housecall Pro`
+        }));
       }
 
       return pageWrap([
         h("div", { key: "intro", style: { marginBottom: 16 } }, [
-          h("div", {
-            key: "title",
-            style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 32, letterSpacing: "0.04em" }
-          }, "Today's Estimates"),
-          h("div", { key: "sub", style: { fontSize: 14, color: "var(--text-muted)", marginTop: 4 } }, `${techName}'s jobs for today`)
+          h("div", { key: "title", style: { fontFamily: '"Barlow Condensed", sans-serif', fontSize: 34, fontWeight: 900, letterSpacing: "0.04em" } }, "Today's Estimates"),
+          h("div", { key: "sub", style: { color: "var(--muted)", fontSize: 14, marginTop: 4 } }, `${tech.label}'s jobs for today`)
         ]),
         error ? h("div", {
           key: "error",
           style: {
-            ...shellCardStyle({ marginBottom: 14 }),
+            ...shellCard({ marginBottom: 14, borderColor: "rgba(255,106,127,0.22)" }),
             padding: "14px 16px",
-            color: "var(--red)",
-            borderColor: "rgba(255,102,122,0.2)"
+            color: "var(--red)"
           }
         }, error) : null,
         estimates.length === 0 ? h(EmptyState, {
@@ -870,146 +743,83 @@ Return ONLY valid JSON:
           emoji: "🗓️"
         }) : null,
         ...estimates.map((estimate, index) => {
-          const firstName = estimate.customer?.first_name || "";
-          const lastName = estimate.customer?.last_name || "";
-          const customer = `${firstName} ${lastName}`.trim() || "Unknown Customer";
-          const street = estimate.address?.street || "";
-          const city = estimate.address?.city || "";
-          const address = [street, city].filter(Boolean).join(", ");
-          const optionCount = estimate.options?.length || 0;
+          const customer = `${estimate.customer?.first_name || ""} ${estimate.customer?.last_name || ""}`.trim() || "Unknown Customer";
+          const address = [estimate.address?.street, estimate.address?.city].filter(Boolean).join(", ");
           const estimateNumber = estimate.estimate_number || estimate.id?.slice(-6) || "Pending";
-
+          const optionCount = estimate.options?.length || 0;
           return h("button", {
             key: estimate.id,
             type: "button",
             onClick: () => onSelect(estimate),
             style: {
-              ...shellCardStyle(),
+              ...shellCard(),
               width: "100%",
-              marginBottom: 12,
               padding: 0,
               textAlign: "left",
               overflow: "hidden",
-              animation: "floatUp 0.24s ease both",
+              marginBottom: 12,
+              animation: "fadeUp 0.24s ease both",
               animationDelay: `${index * 0.04}s`
             }
           }, [
-            h("div", {
-              key: "line",
-              style: {
-                height: 4,
-                background: "linear-gradient(90deg, var(--cyan), rgba(50,212,255,0.15))"
-              }
-            }),
+            h("div", { key: "line", style: { height: 4, background: "linear-gradient(90deg, var(--cyan), rgba(49,212,255,0.14))" } }),
             h("div", {
               key: "body",
               style: {
-                padding: "16px 16px 18px",
                 display: "flex",
                 gap: 14,
-                alignItems: "center"
+                alignItems: "center",
+                padding: "16px"
               }
             }, [
               h("div", {
                 key: "icon",
                 style: {
-                  width: 50,
-                  height: 50,
+                  width: 48,
+                  height: 48,
                   borderRadius: 16,
                   display: "grid",
                   placeItems: "center",
-                  background: "rgba(50,212,255,0.12)",
-                  border: "1px solid rgba(50,212,255,0.18)",
-                  fontSize: 24,
-                  flexShrink: 0
+                  background: "rgba(49,212,255,0.12)",
+                  border: "1px solid rgba(49,212,255,0.18)",
+                  flexShrink: 0,
+                  fontSize: 22
                 }
               }, "🏠"),
               h("div", { key: "meta", style: { flex: 1, minWidth: 0 } }, [
-                h("div", { key: "customer", style: { fontSize: 17, fontWeight: 800 } }, customer),
-                address ? h("div", { key: "address", style: { marginTop: 4, color: "var(--text-muted)", fontSize: 13 } }, address) : null,
+                h("div", { key: "customer", style: { fontWeight: 800, fontSize: 17 } }, customer),
+                address ? h("div", { key: "address", style: { marginTop: 4, color: "var(--muted)", fontSize: 13 } }, address) : null,
                 h("div", { key: "badges", style: { marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" } }, [
-                  h(Badge, { key: "num", tone: "cyan" }, `Est #${estimateNumber}`),
+                  h(Badge, { key: "est", tone: "cyan" }, `Est #${estimateNumber}`),
                   estimate.work_status ? h(Badge, { key: "status" }, estimate.work_status.replace(/_/g, " ")) : null,
-                  optionCount ? h(Badge, { key: "opt", tone: "amber" }, `${optionCount} option${optionCount > 1 ? "s" : ""}`) : null
+                  optionCount ? h(Badge, { key: "options", tone: "amber" }, `${optionCount} option${optionCount > 1 ? "s" : ""}`) : null
                 ])
               ]),
-              h("div", { key: "arrow", style: { color: "var(--text-dim)", fontSize: 24 } }, "›")
+              h("div", { key: "arrow", style: { color: "var(--dim)", fontSize: 22 } }, "›")
             ])
           ]);
         })
       ]);
     }
 
-    function InputStep({ meta, saved, rules, onDone }) {
-      const [mode, setMode] = useState(saved?.mode || "type");
+    function InputStep({ stepKey, saved, rules, onDone }) {
+      const meta = STEP_META[stepKey];
       const [text, setText] = useState(saved?.text || "");
-      const [recording, setRecording] = useState(false);
       const [analyzing, setAnalyzing] = useState(false);
       const [error, setError] = useState("");
       const [extracted, setExtracted] = useState(saved?.extracted || null);
-      const recognitionRef = useRef(null);
-
-      useEffect(() => {
-        return () => {
-          recognitionRef.current?.stop?.();
-        };
-      }, []);
-
-      const sectionKey = meta.num === 1 ? "request" : meta.num === 2 ? "safety" : "enhancements";
       const scopeKey = extracted ? Object.keys(extracted).find((key) => key.includes("scopes")) : null;
       const scopes = scopeKey ? extracted?.[scopeKey] || [] : [];
-
-      function startVoice() {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-          setError("Voice input is not available in this browser.");
-          return;
-        }
-
-        setError("");
-        const recognition = new SpeechRecognition();
-        recognition.continuous = true;
-        recognition.interimResults = true;
-        recognition.lang = "en-US";
-
-        let committed = text;
-
-        recognition.onresult = (event) => {
-          let interim = "";
-          for (let i = event.resultIndex; i < event.results.length; i += 1) {
-            const transcript = event.results[i][0].transcript;
-            if (event.results[i].isFinal) committed += `${transcript} `;
-            else interim += transcript;
-          }
-          setText(`${committed}${interim}`.trimStart());
-        };
-
-        recognition.onerror = () => {
-          setRecording(false);
-        };
-        recognition.onend = () => {
-          setRecording(false);
-        };
-
-        recognition.start();
-        recognitionRef.current = recognition;
-        setRecording(true);
-      }
-
-      function stopVoice() {
-        recognitionRef.current?.stop?.();
-        setRecording(false);
-      }
 
       async function analyze() {
         if (!text.trim()) return;
         setAnalyzing(true);
         setError("");
-        const result = await callClaude(buildSystemPrompt(rules, sectionKey), text.trim());
-        if (!result) {
-          setError("The AI response could not be parsed. Try re-running it or tightening the notes.");
+        const parsed = await callClaude(buildAnalysisSystemPrompt(rules, stepKey), text.trim());
+        if (!parsed) {
+          setError("The AI response could not be parsed. Try again or tighten the notes.");
         } else {
-          setExtracted(result);
+          setExtracted(parsed);
         }
         setAnalyzing(false);
       }
@@ -1022,146 +832,52 @@ Return ONLY valid JSON:
         });
       }
 
-      const factEntries = Object.entries(extracted?.job_facts || {}).filter(([, value]) => {
-        if (!value) return false;
-        if (Array.isArray(value)) return value.length > 0;
-        if (typeof value === "boolean") return value;
-        return !["unknown", "not mentioned"].includes(String(value).toLowerCase());
-      });
-
       return pageWrap([
         h("section", {
           key: "card",
           style: {
-            ...shellCardStyle({
-              overflow: "hidden",
-              borderColor: "rgba(255,255,255,0.11)"
-            })
+            ...shellCard(),
+            overflow: "hidden"
           }
         }, [
-          h("div", {
-            key: "band",
-            style: {
-              height: 5,
-              background: `linear-gradient(90deg, ${meta.accent}, transparent)`
-            }
-          }),
-          h("div", { key: "body", style: { padding: "22px 18px 20px" } }, [
-            h("div", { key: "intro", style: { display: "flex", gap: 14, alignItems: "flex-start", marginBottom: 16 } }, [
-              h("div", {
-                key: "icon",
-                style: {
-                  width: 56,
-                  height: 56,
-                  borderRadius: 18,
-                  display: "grid",
-                  placeItems: "center",
-                  background: meta.accentSoft,
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  fontSize: 27,
-                  flexShrink: 0
-                }
-              }, meta.emoji),
-              h("div", { key: "copy" }, [
-                h("div", { key: "label", style: { color: meta.accent, fontWeight: 800, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 6 } },
-                  `Step ${meta.num} of 3 - ${meta.label}`),
-                h("div", { key: "question", style: { fontSize: 22, fontWeight: 800, lineHeight: 1.2 } }, meta.question),
-                h("div", { key: "sub", style: { marginTop: 6, color: "var(--text-muted)", fontSize: 14, lineHeight: 1.5 } }, meta.sub)
-              ])
-            ]),
-            h("div", {
-              key: "modes",
+          h("div", { key: "band", style: { height: 5, background: `linear-gradient(90deg, ${meta.color}, transparent)` } }),
+          h("div", { key: "body", style: { padding: "22px 18px" } }, [
+            h("div", { key: "eyebrow", style: { color: meta.color, fontWeight: 800, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 8 } }, meta.title),
+            h("div", { key: "sub", style: { color: "var(--muted)", lineHeight: 1.6, marginBottom: 14 } }, meta.subtitle),
+            h("textarea", {
+              key: "textarea",
+              value: text,
+              onChange: (event) => setText(event.target.value),
+              placeholder: meta.placeholder,
               style: {
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 8,
-                marginBottom: 14
+                width: "100%",
+                minHeight: 160,
+                padding: "14px 16px",
+                borderRadius: "18px",
+                border: "1px solid var(--border)",
+                background: "rgba(255,255,255,0.03)",
+                color: "var(--text)",
+                lineHeight: 1.6,
+                resize: "vertical"
               }
-            }, [
-              h(SoftButton, { key: "type", onClick: () => setMode("type"), selected: mode === "type" }, "Type"),
-              h(SoftButton, { key: "voice", onClick: () => setMode("voice"), selected: mode === "voice" }, "Voice")
-            ]),
-            mode === "voice"
-              ? h("div", {
-                  key: "voice-ui",
-                  style: {
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid var(--border)",
-                    borderRadius: "18px",
-                    padding: "18px 16px",
-                    textAlign: "center"
-                  }
-                }, [
-                  h("button", {
-                    key: "mic",
-                    type: "button",
-                    onClick: recording ? stopVoice : startVoice,
-                    style: {
-                      width: 92,
-                      height: 92,
-                      borderRadius: "50%",
-                      margin: "0 auto 12px",
-                      display: "grid",
-                      placeItems: "center",
-                      fontSize: 34,
-                      background: recording ? "rgba(255,102,122,0.14)" : meta.accentSoft,
-                      border: `2px solid ${recording ? "var(--red)" : meta.accent}`,
-                      animation: recording ? "pulseRing 1.6s ease-in-out infinite" : "none"
-                    }
-                  }, recording ? "⏹" : "🎤"),
-                  h("div", { key: "label", style: { fontWeight: 800, color: recording ? "var(--red)" : "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.12em", fontSize: 12 } },
-                    recording ? "Listening" : "Tap to start voice capture"),
-                  text ? h("div", {
-                    key: "preview",
-                    style: {
-                      marginTop: 14,
-                      background: "rgba(0,0,0,0.18)",
-                      border: "1px solid var(--border)",
-                      borderRadius: "14px",
-                      padding: "12px 14px",
-                      textAlign: "left",
-                      lineHeight: 1.6,
-                      color: "var(--text-muted)",
-                      maxHeight: 130,
-                      overflowY: "auto"
-                    }
-                  }, text) : null
-                ])
-              : h("textarea", {
-                  key: "textarea",
-                  value: text,
-                  onChange: (event) => setText(event.target.value),
-                  placeholder: meta.placeholder,
-                  style: {
-                    width: "100%",
-                    minHeight: 148,
-                    padding: "14px 16px",
-                    borderRadius: "18px",
-                    border: "1px solid var(--border)",
-                    background: "rgba(255,255,255,0.03)",
-                    color: "var(--text)",
-                    resize: "vertical",
-                    lineHeight: 1.6
-                  }
-                }),
+            }),
             error ? h("div", {
               key: "error",
               style: {
                 marginTop: 12,
                 padding: "12px 14px",
                 borderRadius: "14px",
-                border: "1px solid rgba(255,102,122,0.22)",
-                background: "var(--red-deep)",
+                background: "var(--red-soft)",
+                border: "1px solid rgba(255,106,127,0.22)",
                 color: "var(--red)",
-                fontWeight: 700,
-                lineHeight: 1.5
+                fontWeight: 700
               }
             }, error) : null,
             !extracted ? h(PrimaryButton, {
               key: "analyze",
               onClick: analyze,
               disabled: analyzing || !text.trim(),
-              color: meta.accent,
+              color: meta.color,
               style: { marginTop: 14 }
             }, analyzing ? "Analyzing..." : "Analyze Notes") : null
           ])
@@ -1169,59 +885,44 @@ Return ONLY valid JSON:
         extracted ? h("section", {
           key: "results",
           style: {
-            ...shellCardStyle(),
+            ...shellCard(),
             marginTop: 14,
             padding: "18px 16px"
           }
         }, [
-          h("div", {
-            key: "top",
+          h("div", { key: "top", style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 12 } }, [
+            h("div", { key: "label", style: { color: meta.color, fontWeight: 800, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase" } }, "Extracted Scope"),
+            h(Badge, { key: "count", tone: stepKey === "request" ? "cyan" : stepKey === "safety" ? "amber" : "green" }, String(scopes.length))
+          ]),
+          scopes.length ? scopes.map((scope, index) => h("div", {
+            key: `${scope}-${index}`,
             style: {
               display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 10,
-              marginBottom: 12
+              alignItems: "stretch",
+              marginBottom: 10,
+              overflow: "hidden",
+              borderRadius: "16px",
+              boxShadow: "var(--shadow)"
             }
           }, [
-            h("div", { key: "label", style: { fontSize: 12, color: meta.accent, fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase" } }, "Extracted Scopes"),
-            h(Badge, { key: "count", tone: meta.num === 1 ? "cyan" : meta.num === 2 ? "amber" : "green" }, String(scopes.length))
-          ]),
-          scopes.length ? scopes.map((scope, index) => h(ScopeChip, {
-            key: `${scope}-${index}`,
-            text: scope,
-            color: meta.accent,
-            onRemove: () => removeScope(index)
-          })) : h("div", { key: "none", style: { color: "var(--text-muted)" } }, "No scopes were extracted."),
-          factEntries.length ? h("div", {
-            key: "facts",
-            style: {
-              marginTop: 14,
-              paddingTop: 14,
-              borderTop: "1px solid var(--border)"
-            }
-          }, [
-            h("div", { key: "title", style: { fontSize: 12, color: "var(--text-dim)", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 10 } }, "Field Intelligence"),
-            h("div", { key: "wrap", style: { display: "flex", flexWrap: "wrap", gap: 8 } },
-              factEntries.map(([key, value]) => h("div", {
-                key,
-                style: {
-                  padding: "7px 10px",
-                  borderRadius: "12px",
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid var(--border)",
-                  fontSize: 12,
-                  lineHeight: 1.4
-                }
-              }, [
-                h("span", { key: "k", style: { color: "var(--text-dim)" } }, `${key.replace(/_/g, " ")}: `),
-                h("span", { key: "v", style: { color: "var(--text)" } }, Array.isArray(value) ? value.join(", ") : String(value))
-              ])))
-          ]) : null,
+            h("div", { key: "bar", style: { width: 10, background: meta.color } }),
+            h("div", { key: "text", style: { flex: 1, padding: "14px 16px", background: "rgba(255,255,255,0.06)", fontWeight: 700, lineHeight: 1.45 } }, scope),
+            h("button", {
+              key: "remove",
+              type: "button",
+              onClick: () => removeScope(index),
+              style: {
+                width: 52,
+                background: "rgba(255,255,255,0.08)",
+                color: "var(--text)",
+                fontSize: 24
+              }
+            }, "×")
+          ])) : h("div", { key: "none", style: { color: "var(--muted)" } }, "No scope extracted."),
           h(PrimaryButton, {
             key: "next",
-            onClick: () => onDone({ text, mode, extracted }),
-            color: meta.accent,
+            onClick: () => onDone({ text, extracted }),
+            color: meta.color,
             style: { marginTop: 16 }
           }, "Looks Good - Next")
         ]) : null
@@ -1230,65 +931,40 @@ Return ONLY valid JSON:
 
     function ReviewStep({ data, onConfirm }) {
       const sections = [
-        { label: "Customer Request", emoji: "🏠", color: "var(--cyan)", scopes: data.request?.extracted?.requested_scopes || [] },
-        { label: "Field Findings", emoji: "⚡", color: "var(--amber)", scopes: data.safety?.extracted?.safety_scopes || [] },
-        { label: "Upgrade Ideas", emoji: "💡", color: "var(--green)", scopes: data.enhancements?.extracted?.enhancement_scopes || [] }
+        { label: "What They Called For", color: "var(--cyan)", scopes: data.request?.extracted?.requested_scopes || [] },
+        { label: "What's Directly Connected", color: "var(--amber)", scopes: data.safety?.extracted?.safety_scopes || [] },
+        { label: "What's Good / What's More", color: "var(--green)", scopes: data.enhancements?.extracted?.enhancement_scopes || [] }
       ];
 
-      const payload = {
-        requested: sections[0].scopes,
-        safety: sections[1].scopes,
-        enhancements: sections[2].scopes
-      };
-
-      const total = Object.values(payload).reduce((sum, list) => sum + list.length, 0);
-
       return pageWrap([
-        h("div", {
-          key: "hero",
-          style: {
-            textAlign: "center",
-            marginBottom: 16
-          }
-        }, [
+        h("div", { key: "hero", style: { textAlign: "center", marginBottom: 16 } }, [
           h("div", { key: "emoji", style: { fontSize: 40, marginBottom: 8 } }, "📋"),
-          h("div", {
-            key: "title",
-            style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 34, letterSpacing: "0.04em" }
-          }, "Ready to Build"),
-          h("div", { key: "sub", style: { color: "var(--text-muted)", fontSize: 14, marginTop: 6 } }, `${total} scopes gathered across the visit`)
+          h("div", { key: "title", style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 34, letterSpacing: "0.04em" } }, "Ready to Build"),
+          h("div", { key: "sub", style: { color: "var(--muted)", marginTop: 6 } }, "Review the scope before generating options.")
         ]),
         ...sections.map((section) => h("section", {
           key: section.label,
           style: {
-            ...shellCardStyle(),
+            ...shellCard(),
             marginBottom: 12,
             overflow: "hidden"
           }
         }, [
-          h("div", {
-            key: "head",
-            style: {
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "14px 16px",
-              borderBottom: "1px solid var(--border)",
-              background: "rgba(255,255,255,0.02)"
-            }
-          }, [
-            h("div", { key: "emoji", style: { fontSize: 18 } }, section.emoji),
-            h("div", { key: "label", style: { color: section.color, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", fontSize: 12 } }, section.label),
-            h("div", { key: "count", style: { marginLeft: "auto" } }, h(Badge, { tone: section.color.includes("cyan") ? "cyan" : section.color.includes("amber") ? "amber" : "green" }, String(section.scopes.length)))
+          h("div", { key: "head", style: { padding: "14px 16px", borderBottom: "1px solid var(--border)", background: "rgba(255,255,255,0.02)" } }, [
+            h("div", { key: "label", style: { color: section.color, fontWeight: 800, fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase" } }, section.label)
           ]),
-          h("div", { key: "body", style: { padding: "14px 14px 8px" } },
+          h("div", { key: "body", style: { padding: "14px 16px" } },
             section.scopes.length
-              ? section.scopes.map((scope, index) => h(ScopeChip, { key: `${scope}-${index}`, text: scope, color: section.color }))
-              : h("div", { style: { color: "var(--text-muted)", padding: "4px 2px 10px" } }, "Nothing captured in this section."))
+              ? section.scopes.map((scope, index) => h("div", { key: `${scope}-${index}`, style: { marginBottom: 8, color: "var(--text)", lineHeight: 1.5, fontWeight: 600 } }, `• ${scope}`))
+              : h("div", { style: { color: "var(--muted)" } }, "Nothing captured in this section."))
         ])),
         h(PrimaryButton, {
           key: "build",
-          onClick: () => onConfirm(payload)
+          onClick: () => onConfirm({
+            requested: data.request?.extracted?.requested_scopes || [],
+            safety: data.safety?.extracted?.safety_scopes || [],
+            enhancements: data.enhancements?.extracted?.enhancement_scopes || []
+          })
         }, "Build Estimate Options")
       ]);
     }
@@ -1299,29 +975,26 @@ Return ONLY valid JSON:
       const [searching, setSearching] = useState(false);
       const [results, setResults] = useState([]);
       const [cloudinaryLoading, setCloudinaryLoading] = useState(false);
-      const [cloudinaryLoaded, setCloudinaryLoaded] = useState(false);
       const [cloudinaryPhotos, setCloudinaryPhotos] = useState([]);
+      const [cloudinaryLoaded, setCloudinaryLoaded] = useState(false);
 
       const suggested = useMemo(
-        () => getSuggestedPhotos(option.name, option.includes),
+        () => getSuggestedPhotos(option.name, option.includes || []),
         [option.name, option.includes]
       );
 
       useEffect(() => {
         let live = true;
+        if (tab !== "cloudinary" || cloudinaryLoaded) return undefined;
 
-        async function loadCloudinary() {
+        (async () => {
           setCloudinaryLoading(true);
           const photos = await fetchCloudinaryEstimatePhotos();
           if (!live) return;
           setCloudinaryPhotos(photos);
           setCloudinaryLoaded(true);
           setCloudinaryLoading(false);
-        }
-
-        if (tab === "cloudinary" && !cloudinaryLoaded) {
-          loadCloudinary();
-        }
+        })();
 
         return () => {
           live = false;
@@ -1340,76 +1013,58 @@ Return ONLY valid JSON:
         setSearching(false);
       }
 
+      function renderGrid(items, mapFn) {
+        return h("div", {
+          style: {
+            display: "grid",
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: 10
+          }
+        }, items.map(mapFn));
+      }
+
       return h("div", {
         style: {
           position: "fixed",
           inset: 0,
-          background: "rgba(7, 10, 15, 0.88)",
-          backdropFilter: "blur(14px)",
           zIndex: 40,
+          background: "rgba(7,10,15,0.88)",
+          backdropFilter: "blur(14px)",
+          padding: "20px 14px",
           display: "flex",
-          justifyContent: "center",
-          padding: "20px 14px"
+          justifyContent: "center"
         }
       }, h("div", {
         style: {
+          ...shellCard({ overflow: "hidden" }),
           width: "100%",
           maxWidth: 560,
           maxHeight: "100%",
           display: "flex",
-          flexDirection: "column",
-          ...shellCardStyle({
-            overflow: "hidden"
-          })
+          flexDirection: "column"
         }
       }, [
-        h("div", {
-          key: "head",
-          style: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 10,
-            padding: "16px 16px 14px",
-            borderBottom: "1px solid var(--border)"
-          }
-        }, [
+        h("div", { key: "head", style: { padding: "16px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 } }, [
           h("div", { key: "copy" }, [
             h("div", { key: "title", style: { fontWeight: 800, fontSize: 18 } }, "Add a Finished Work Photo"),
-            h("div", { key: "sub", style: { color: "var(--text-muted)", fontSize: 13, marginTop: 3 } }, option.name)
+            h("div", { key: "sub", style: { color: "var(--muted)", fontSize: 13, marginTop: 3 } }, option.name)
           ]),
           h(SoftButton, { key: "close", onClick: onClose }, "Close")
         ]),
-        h("div", {
-          key: "tabs",
-          style: {
-            display: "flex",
-            gap: 8,
-            padding: "12px 16px 0"
-          }
-        }, [
+        h("div", { key: "tabs", style: { display: "flex", gap: 8, padding: "12px 16px 0" } }, [
           h(SoftButton, { key: "s", onClick: () => setTab("suggested"), selected: tab === "suggested" }, "Suggested"),
-          h(SoftButton, { key: "a", onClick: () => setTab("library"), selected: tab === "library" }, "Library"),
+          h(SoftButton, { key: "l", onClick: () => setTab("library"), selected: tab === "library" }, "Library"),
           h(SoftButton, { key: "c", onClick: () => setTab("cloudinary"), selected: tab === "cloudinary" }, "Cloudinary"),
-          h(SoftButton, { key: "q", onClick: () => setTab("search"), selected: tab === "search" }, "Search")
+          h(SoftButton, { key: "u", onClick: () => setTab("search"), selected: tab === "search" }, "Search")
         ]),
-        h("div", {
-          key: "body",
-          style: {
-            flex: 1,
-            overflowY: "auto",
-            padding: "16px"
-          }
-        }, [
+        h("div", { key: "body", style: { flex: 1, overflowY: "auto", padding: "16px" } }, [
           tab === "search" ? h("div", { key: "search" }, [
-            h("div", { key: "searchbar", style: { display: "flex", gap: 8, marginBottom: 14 } }, [
+            h("div", { key: "bar", style: { display: "flex", gap: 8, marginBottom: 14 } }, [
               h("input", {
                 key: "input",
                 value: query,
                 onChange: (event) => setQuery(event.target.value),
-                onKeyDown: (event) => {
-                  if (event.key === "Enter") searchUnsplash();
-                },
+                onKeyDown: (event) => event.key === "Enter" && searchUnsplash(),
                 placeholder: "Search finished electrical work...",
                 style: {
                   flex: 1,
@@ -1420,137 +1075,48 @@ Return ONLY valid JSON:
                   color: "var(--text)"
                 }
               }),
-              h(PrimaryButton, {
-                key: "go",
-                onClick: searchUnsplash,
-                disabled: searching || !query.trim(),
-                style: { width: "auto", padding: "12px 16px", minWidth: 108 }
-              }, searching ? "Searching" : "Search")
+              h(PrimaryButton, { key: "go", onClick: searchUnsplash, disabled: searching || !query.trim(), style: { width: "auto", minWidth: 104 } }, searching ? "Searching" : "Search")
             ]),
             searching ? h(LoadingState, { key: "loading", title: "Searching photos...", body: "Looking for finished-work imagery" }) : null,
-            !searching && query && results.length === 0 ? h(EmptyState, { key: "empty", title: "No results found", body: "Try different wording or use the built-in library.", emoji: "🔍" }) : null,
-            h("div", {
-              key: "results",
-              style: {
-                display: "grid",
-                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                gap: 10
-              }
-            }, results.map((photo, index) => h("button", {
-              key: `${photo.id || index}`,
+            !searching && query && results.length === 0 ? h(EmptyState, { key: "empty", title: "No results found", body: "Try different wording or use another tab.", emoji: "🔍" }) : null,
+            renderGrid(results, (photo, index) => h("button", {
+              key: photo.id || index,
               type: "button",
               onClick: () => onSelect(photo.urls?.regular, photo.alt_description || "Electrical work"),
-              style: {
-                padding: 0,
-                borderRadius: "16px",
-                overflow: "hidden",
-                background: "transparent",
-                border: "1px solid var(--border)"
-              }
+              style: { padding: 0, background: "transparent", borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border)" }
             }, [
-              h("div", { key: "wrap", style: { aspectRatio: "4 / 3", background: "var(--bg-panel)" } }, [
-                h("img", {
-                  key: "img",
-                  src: photo.urls?.small,
-                  alt: photo.alt_description || "Electrical work",
-                  loading: "lazy",
-                  style: { width: "100%", height: "100%", objectFit: "cover" }
-                })
+              h("div", { key: "imgWrap", style: { aspectRatio: "4 / 3", background: "var(--panel)" } }, [
+                h("img", { key: "img", src: photo.urls?.small, alt: photo.alt_description || "Electrical work", style: { width: "100%", height: "100%", objectFit: "cover" } })
               ]),
-              h("div", { key: "credit", style: { padding: "8px 10px", color: "var(--text-muted)", fontSize: 11 } }, photo.user?.name || "Unsplash")
+              h("div", { key: "credit", style: { padding: "8px 10px", color: "var(--muted)", fontSize: 11 } }, photo.user?.name || "Unsplash")
             ])))
           ]) : null,
           tab === "cloudinary" ? h("div", { key: "cloudinary" }, [
-            cloudinaryLoading ? h(LoadingState, { key: "loading", title: "Loading Cloudinary photos...", body: "Pulling from the Estimate Pics folder" }) : null,
-            !cloudinaryLoading && cloudinaryLoaded && cloudinaryPhotos.length === 0 ? h(EmptyState, {
-              key: "empty",
-              title: "No Cloudinary photos found",
-              body: "Check that the backend route is returning assets from the Estimate Pics folder.",
-              emoji: "☁️"
-            }) : null,
-            h("div", {
-              key: "grid",
-              style: {
-                display: "grid",
-                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                gap: 10
-              }
-            }, cloudinaryPhotos.map((photo, index) => h("button", {
+            cloudinaryLoading ? h(LoadingState, { key: "loading", title: "Loading Cloudinary photos...", body: "Pulling from Estimate Pics" }) : null,
+            !cloudinaryLoading && cloudinaryLoaded && cloudinaryPhotos.length === 0 ? h(EmptyState, { key: "empty", title: "No Cloudinary photos found", body: "Check the Estimate Pics folder.", emoji: "☁️" }) : null,
+            renderGrid(cloudinaryPhotos, (photo, index) => h("button", {
               key: photo.id || photo.public_id || index,
               type: "button",
               onClick: () => onSelect(photo.url, photo.label || photo.public_id || "Estimate photo"),
-              style: {
-                padding: 0,
-                borderRadius: "16px",
-                overflow: "hidden",
-                background: "transparent",
-                border: "1px solid var(--border)"
-              }
+              style: { padding: 0, background: "transparent", borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border)" }
             }, [
-              h("div", { key: "imgWrap", style: { position: "relative", aspectRatio: "4 / 3", background: "var(--bg-panel)" } }, [
-                h("img", {
-                  key: "img",
-                  src: photo.thumb || photo.url,
-                  alt: photo.label || photo.public_id || "Estimate photo",
-                  loading: "lazy",
-                  style: { width: "100%", height: "100%", objectFit: "cover" }
-                }),
-                h("div", {
-                  key: "overlay",
-                  style: {
-                    position: "absolute",
-                    inset: "auto 0 0 0",
-                    padding: "18px 10px 10px",
-                    background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.82))",
-                    textAlign: "left"
-                  }
-                }, [
-                  h("div", { key: "title", style: { fontWeight: 800, fontSize: 12, color: "white" } }, photo.label || photo.public_id || "Estimate photo")
-                ])
+              h("div", { key: "imgWrap", style: { position: "relative", aspectRatio: "4 / 3", background: "var(--panel)" } }, [
+                h("img", { key: "img", src: photo.thumb || photo.url, alt: photo.label || "Estimate photo", style: { width: "100%", height: "100%", objectFit: "cover" } }),
+                h("div", { key: "overlay", style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "18px 10px 10px", background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.82))", color: "white", fontWeight: 800, fontSize: 12, textAlign: "left" } }, photo.label || photo.public_id || "Estimate photo")
               ])
             ])))
           ]) : null,
-          (tab === "suggested" || tab === "library") ? h("div", {
-            key: "grid",
-            style: {
-              display: "grid",
-              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-              gap: 10
-            }
-          }, (tab === "suggested" ? suggested : PHOTO_LIBRARY).map((photo) => h("button", {
+          (tab === "suggested" || tab === "library") ? renderGrid(tab === "suggested" ? suggested : PHOTO_LIBRARY, (photo) => h("button", {
             key: photo.id,
             type: "button",
             onClick: () => onSelect(photo.url, photo.label),
-            style: {
-              padding: 0,
-              borderRadius: "16px",
-              overflow: "hidden",
-              background: "transparent",
-              border: "1px solid var(--border)"
-            }
+            style: { padding: 0, background: "transparent", borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border)" }
           }, [
-            h("div", { key: "imgWrap", style: { position: "relative", aspectRatio: "4 / 3", background: "var(--bg-panel)" } }, [
-              h("img", {
-                key: "img",
-                src: photo.url,
-                alt: photo.label,
-                loading: "lazy",
-                style: { width: "100%", height: "100%", objectFit: "cover" }
-              }),
-              h("div", {
-                key: "overlay",
-                style: {
-                  position: "absolute",
-                  inset: "auto 0 0 0",
-                  padding: "18px 10px 10px",
-                  background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.82))",
-                  textAlign: "left"
-                }
-              }, [
-                h("div", { key: "title", style: { fontWeight: 800, fontSize: 12, color: "white" } }, `${photo.emoji} ${photo.label}`)
-              ])
+            h("div", { key: "imgWrap", style: { position: "relative", aspectRatio: "4 / 3", background: "var(--panel)" } }, [
+              h("img", { key: "img", src: photo.url, alt: photo.label, style: { width: "100%", height: "100%", objectFit: "cover" } }),
+              h("div", { key: "overlay", style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "18px 10px 10px", background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.82))", color: "white", fontWeight: 800, fontSize: 12, textAlign: "left" } }, `${photo.emoji} ${photo.label}`)
             ])
-          ]))) : null
+          ])) : null
         ])
       ]));
     }
@@ -1558,35 +1124,37 @@ Return ONLY valid JSON:
     function OptionsStep({ scopes, rules, estimate }) {
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState("");
-      const [options, setOptions] = useState([]);
       const [pricebook, setPricebook] = useState([]);
       const [pricingMode, setPricingMode] = useState("in_home");
+      const [options, setOptions] = useState([]);
       const [selected, setSelected] = useState({});
       const [expanded, setExpanded] = useState(null);
       const [photos, setPhotos] = useState({});
       const [pickerFor, setPickerFor] = useState(null);
       const [sending, setSending] = useState(false);
       const [sent, setSent] = useState(false);
-      const [sendError, setSendError] = useState("");
+      const [sendMessage, setSendMessage] = useState("");
 
       useEffect(() => {
         let live = true;
 
         (async () => {
+          setLoading(true);
+          setError("");
           const pricebookItems = await fetchPricebook();
           if (!live) return;
           setPricebook(pricebookItems);
 
-          const promptItems = buildPromptPricebookItems(pricebookItems, pricingMode);
-          const result = await callClaude(null, buildOptionsPrompt(scopes, rules, promptItems, pricingMode));
+          const catalog = buildPromptCatalog(pricebookItems, pricingMode);
+          const aiResult = await callClaude(null, buildOptionsPrompt(scopes, rules, catalog, pricingMode));
           if (!live) return;
 
-          const pricebookById = Object.fromEntries(pricebookItems.map((item) => [item.id, item]));
-          const built = Array.isArray(result?.options) ? result.options.map((option) => {
-            const matchedItems = Array.isArray(option?.pricebook_items)
+          const byId = Object.fromEntries(pricebookItems.map((item) => [item.id, item]));
+          const built = Array.isArray(aiResult?.options) ? aiResult.options.map((option) => {
+            const matched = Array.isArray(option?.pricebook_items)
               ? option.pricebook_items
                   .map((match) => {
-                    const item = pricebookById[match?.id];
+                    const item = byId[match?.id];
                     if (!item || item?.pricing?.[pricingMode] == null) return null;
                     return {
                       id: item.id,
@@ -1599,12 +1167,12 @@ Return ONLY valid JSON:
                   .filter(Boolean)
               : [];
 
-            if (!option || !option.number || !option.name || !matchedItems.length) return null;
+            if (!option || !option.number || !option.name || !matched.length) return null;
 
             return {
               ...option,
-              pricebook_items: matchedItems,
-              includes: matchedItems.map((item) => `${item.quantity > 1 ? `${item.quantity}x ` : ""}${item.name}`)
+              pricebook_items: matched,
+              includes: matched.map((item) => `${item.quantity > 1 ? `${item.quantity}x ` : ""}${item.name}`)
             };
           }).filter(Boolean) : [];
 
@@ -1627,27 +1195,14 @@ Return ONLY valid JSON:
       }, [scopes, rules, pricingMode]);
 
       const selectedOptions = options.filter((option) => selected[option.number]);
-      const availablePricebookItems = pricebook.filter((item) => item?.pricing?.[pricingMode] != null);
       const inHomeCount = pricebook.filter((item) => item?.pricing?.in_home != null).length;
-      const preferredBuilderCount = pricebook.filter((item) => item?.pricing?.preferred_builder != null).length;
-
-      function toggleSelected(number) {
-        setSelected((current) => ({ ...current, [number]: !current[number] }));
-      }
-
-      function handlePhotoSelect(url, label) {
-        if (!pickerFor || !url) return;
-        setPhotos((current) => ({
-          ...current,
-          [pickerFor.number]: { url, label }
-        }));
-        setPickerFor(null);
-      }
+      const preferredCount = pricebook.filter((item) => item?.pricing?.preferred_builder != null).length;
+      const availableCount = pricebook.filter((item) => item?.pricing?.[pricingMode] != null).length;
 
       async function sendToHCP() {
         if (!estimate?.id || !selectedOptions.length) return;
         setSending(true);
-        setSendError("");
+        setSendMessage("");
         const warnings = [];
 
         try {
@@ -1656,7 +1211,7 @@ Return ONLY valid JSON:
               name: option.name,
               line_items: option.pricebook_items.map((item) => ({
                 name: item.name,
-                description: item.description || (option.permits_required ? "Permits may be required." : ""),
+                description: item.description || "",
                 unit_price: dollarsToCents(item.price),
                 quantity: item.quantity
               }))
@@ -1664,31 +1219,28 @@ Return ONLY valid JSON:
 
             const optionId = getOptionId(response);
             const photo = photos[option.number];
+
             if (photo && !optionId) {
               warnings.push(`"${option.name}" was created, but FieldGuide could not find the new HCP option ID to attach the photo.`);
-             }
-              if (photo && optionId) {
-             const attachResult = await attachPhoto(photo.url, optionId, photo.label);
-             if (!attachResult || attachResult.error) {
-             const detail = [
-              attachResult?.error,
-               attachResult?.status ? `status ${attachResult.status}` : null,
-               attachResult?.hcp ? JSON.stringify(attachResult.hcp) : null
-              ].filter(Boolean).join(" | ");
+            }
 
-              warnings.push(
-              `"${option.name}" was created, but the photo did not attach in HCP.${detail ? ` ${detail}` : ""}`
-              );
+            if (photo && optionId) {
+              const attachResult = await attachPhoto(photo.url, optionId, photo.label);
+              if (!attachResult || attachResult.error) {
+                const detail = [
+                  attachResult?.error,
+                  attachResult?.status ? `status ${attachResult.status}` : null,
+                  attachResult?.hcp ? JSON.stringify(attachResult.hcp) : null
+                ].filter(Boolean).join(" | ");
+                warnings.push(`"${option.name}" was created, but the photo did not attach in HCP.${detail ? ` ${detail}` : ""}`);
               }
-               }
-
-
-          if (warnings.length) {
-            setSendError(warnings.join(" "));
+            }
           }
+
+          setSendMessage(warnings.join(" "));
           setSent(true);
         } catch {
-          setSendError("Sending failed. Please try again.");
+          setSendMessage("Sending failed. Please try again.");
         }
 
         setSending(false);
@@ -1697,7 +1249,7 @@ Return ONLY valid JSON:
       if (loading) {
         return pageWrap(h(LoadingState, {
           title: "Building options...",
-          body: "Grouping scopes into homeowner-friendly estimate choices"
+          body: "Grouping scope into homeowner-friendly choices"
         }));
       }
 
@@ -1712,7 +1264,7 @@ Return ONLY valid JSON:
       if (sent) {
         return pageWrap(h("div", {
           style: {
-            ...shellCardStyle(),
+            ...shellCard(),
             padding: "34px 22px",
             textAlign: "center"
           }
@@ -1726,35 +1278,29 @@ Return ONLY valid JSON:
               margin: "0 auto 14px",
               display: "grid",
               placeItems: "center",
-              background: "var(--green-deep)",
-              border: "1px solid rgba(49,215,140,0.28)",
+              background: "var(--green-soft)",
+              border: "1px solid rgba(52,213,139,0.28)",
               color: "var(--green)",
               fontSize: 36,
               fontWeight: 900
             }
           }, "✓"),
-          h("div", {
-            key: "title",
-            style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 32, letterSpacing: "0.04em" }
-          }, "Sent to Housecall Pro"),
-          h("p", {
-            key: "body",
-            style: { margin: "10px 0 0", color: "var(--text-muted)", lineHeight: 1.6 }
-          }, `${selectedOptions.length} option${selectedOptions.length > 1 ? "s were" : " was"} added to Estimate #${estimate.estimate_number || ""}.`)
-        , sendError ? h("div", {
+          h("div", { key: "title", style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 34, letterSpacing: "0.04em" } }, "Sent to Housecall Pro"),
+          h("p", { key: "body", style: { margin: "10px 0 0", color: "var(--muted)", lineHeight: 1.6 } }, `${selectedOptions.length} option${selectedOptions.length > 1 ? "s were" : " was"} added to Estimate #${estimate.estimate_number || ""}.`),
+          sendMessage ? h("div", {
             key: "warning",
             style: {
               marginTop: 14,
               padding: "12px 14px",
               borderRadius: "14px",
-              border: "1px solid rgba(255,176,32,0.22)",
-              background: "var(--amber-deep)",
+              border: "1px solid rgba(255,177,31,0.22)",
+              background: "var(--amber-soft)",
               color: "var(--amber)",
               fontWeight: 700,
               lineHeight: 1.5,
               textAlign: "left"
             }
-          }, sendError) : null
+          }, sendMessage) : null
         ]));
       }
 
@@ -1763,102 +1309,56 @@ Return ONLY valid JSON:
           key: "picker",
           option: pickerFor,
           onClose: () => setPickerFor(null),
-          onSelect: handlePhotoSelect
+          onSelect: (url, label) => {
+            if (!pickerFor || !url) return;
+            setPhotos((current) => ({ ...current, [pickerFor.number]: { url, label } }));
+            setPickerFor(null);
+          }
         }) : null,
         h("div", { key: "intro", style: { marginBottom: 16 } }, [
-          h("div", {
-            key: "title",
-            style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 32, letterSpacing: "0.04em" }
-          }, `${options.length} Options Ready`),
-          h("div", { key: "sub", style: { color: "var(--text-muted)", fontSize: 14, marginTop: 4 } }, "Pick the options you want to send, then add photos if helpful.")
+          h("div", { key: "title", style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 34, letterSpacing: "0.04em" } }, `${options.length} Options Ready`),
+          h("div", { key: "sub", style: { color: "var(--muted)", marginTop: 4 } }, "Two economy, two midrange, two premium.")
         ]),
         h("div", {
-          key: "context",
+          key: "estimate",
           style: {
-            ...shellCardStyle(),
+            ...shellCard(),
             marginBottom: 14,
             padding: "14px 16px"
           }
         }, [
           h("div", { key: "label", style: { color: "var(--cyan)", fontWeight: 800, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 6 } }, "Estimate Target"),
-          h("div", { key: "name", style: { fontWeight: 800, fontSize: 15 } },
-            `${estimate.customer?.first_name || ""} ${estimate.customer?.last_name || ""}`.trim() || "Customer"),
-          estimate.address ? h("div", { key: "address", style: { marginTop: 4, color: "var(--text-muted)", fontSize: 13 } },
-            [estimate.address.street, estimate.address.city].filter(Boolean).join(", ")) : null,
+          h("div", { key: "name", style: { fontWeight: 800, fontSize: 15 } }, `${estimate.customer?.first_name || ""} ${estimate.customer?.last_name || ""}`.trim() || "Customer"),
+          estimate.address ? h("div", { key: "address", style: { marginTop: 4, color: "var(--muted)", fontSize: 13 } }, [estimate.address.street, estimate.address.city].filter(Boolean).join(", ")) : null,
           h("div", { key: "num", style: { marginTop: 8 } }, h(Badge, { tone: "cyan" }, `Est #${estimate.estimate_number || "Pending"}`))
         ]),
         h("div", {
-          key: "pricing-mode",
+          key: "pricing",
           style: {
-            ...shellCardStyle(),
+            ...shellCard(),
             marginBottom: 14,
             padding: "14px 16px"
           }
         }, [
           h("div", { key: "label", style: { color: "var(--green)", fontWeight: 800, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 6 } }, "Pricing Mode"),
-          h("div", { key: "sub", style: { color: "var(--text-muted)", fontSize: 13, lineHeight: 1.5, marginBottom: 12 } },
-            "Choose which price book this estimate should follow before sending it to Housecall Pro."),
-          h("div", {
-            key: "toggle",
-            style: {
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 8
-            }
-          }, [
-            h(SoftButton, {
-              key: "in-home",
-              onClick: () => setPricingMode("in_home"),
-              selected: pricingMode === "in_home",
-              style: {
-                width: "100%",
-                padding: "14px 12px",
-                textAlign: "left",
-                color: pricingMode === "in_home" ? "var(--text)" : "var(--text-muted)"
-              }
-            }, `In Home (${inHomeCount})`),
-            h(SoftButton, {
-              key: "preferred-builder",
-              onClick: () => setPricingMode("preferred_builder"),
-              selected: pricingMode === "preferred_builder",
-              style: {
-                width: "100%",
-                padding: "14px 12px",
-                textAlign: "left",
-                color: pricingMode === "preferred_builder" ? "var(--text)" : "var(--text-muted)"
-              }
-            }, `Preferred Builder (${preferredBuilderCount})`)
+          h("div", { key: "sub", style: { color: "var(--muted)", fontSize: 13, lineHeight: 1.5, marginBottom: 12 } }, "Choose which price book this estimate should follow before sending to Housecall Pro."),
+          h("div", { key: "toggle", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 } }, [
+            h(SoftButton, { key: "in", onClick: () => setPricingMode("in_home"), selected: pricingMode === "in_home", style: { width: "100%", padding: "14px 12px", textAlign: "left" } }, `In Home (${inHomeCount})`),
+            h(SoftButton, { key: "pb", onClick: () => setPricingMode("preferred_builder"), selected: pricingMode === "preferred_builder", style: { width: "100%", padding: "14px 12px", textAlign: "left" } }, `Preferred Builder (${preferredCount})`)
           ]),
-          h("div", {
-            key: "available",
-            style: {
-              marginTop: 12,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 10,
-              flexWrap: "wrap"
-            }
-          }, [
-            h("div", { key: "copy", style: { color: "var(--text-muted)", fontSize: 13 } },
-              `${availablePricebookItems.length} catalog item${availablePricebookItems.length === 1 ? "" : "s"} available for ${pricingMode === "in_home" ? "In Home" : "Preferred Builder"} pricing.`),
-            h(Badge, { key: "mode", tone: "green" }, pricingMode === "in_home" ? "In Home" : "Preferred Builder")
-          ])
+          h("div", { key: "count", style: { marginTop: 12, color: "var(--muted)", fontSize: 13 } }, `${availableCount} catalog item${availableCount === 1 ? "" : "s"} available for this mode.`)
         ]),
         ...options.map((option, index) => {
           const color = OPTION_COLORS[index % OPTION_COLORS.length];
           const isSelected = !!selected[option.number];
           const isExpanded = expanded === option.number;
           const photo = photos[option.number];
+          const total = option.pricebook_items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
           return h("section", {
             key: option.number,
             style: {
-              ...shellCardStyle({
-                marginBottom: 12,
-                overflow: "hidden",
-                borderColor: isSelected ? color : "var(--border)"
-              })
+              ...shellCard({ marginBottom: 12, overflow: "hidden", borderColor: isSelected ? color : "var(--border)" })
             }
           }, [
             h("div", {
@@ -1873,8 +1373,7 @@ Return ONLY valid JSON:
               h("button", {
                 key: "check",
                 type: "button",
-                onClick: () => toggleSelected(option.number),
-                "aria-label": `${isSelected ? "Deselect" : "Select"} ${option.name}`,
+                onClick: () => setSelected((current) => ({ ...current, [option.number]: !current[option.number] })),
                 style: {
                   background: "rgba(0,0,0,0.18)",
                   display: "grid",
@@ -1905,26 +1404,9 @@ Return ONLY valid JSON:
                 }
               }, [
                 h("div", { key: "name", style: { fontWeight: 800, fontSize: 17, lineHeight: 1.2 } }, option.name),
-                option.focus_statement ? h("div", {
-                  key: "focus",
-                  style: {
-                    marginTop: 4,
-                    fontSize: 12,
-                    fontWeight: 700,
-                    color: "rgba(255,255,255,0.82)"
-                  }
-                }, option.focus_statement) : null,
+                option.focus_statement ? h("div", { key: "focus", style: { marginTop: 4, fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.82)" } }, option.focus_statement) : null,
                 h("div", { key: "badges", style: { marginTop: 7, display: "flex", gap: 8, flexWrap: "wrap" } }, [
-                  h("span", {
-                    key: "tier",
-                    style: {
-                      fontSize: 11,
-                      fontWeight: 800,
-                      letterSpacing: "0.08em",
-                      textTransform: "uppercase",
-                      color: "rgba(255,255,255,0.78)"
-                    }
-                  }, TIER_LABELS[option.tier] || option.tier),
+                  h(Badge, { key: "tier", tone: "default" }, TIER_LABELS[option.tier] || option.tier),
                   option.permits_required ? h(Badge, { key: "permits", tone: "amber" }, "Permits") : null,
                   photo ? h(Badge, { key: "photo", tone: "green" }, "Photo") : null
                 ])
@@ -1943,82 +1425,54 @@ Return ONLY valid JSON:
             isExpanded ? h("div", {
               key: "detail",
               style: {
-                padding: "16px 16px 18px",
+                padding: "16px",
                 borderTop: "1px solid var(--border)"
               }
             }, [
+              h("div", { key: "value", style: { color: "var(--muted)", fontStyle: "italic", lineHeight: 1.6, marginBottom: 12 } }, `"${option.value_statement}"`),
+              option.focus_statement ? h("div", { key: "focus2", style: { marginBottom: 12, color: "var(--text)", fontSize: 13, fontWeight: 700 } }, `Focus: ${option.focus_statement}`) : null,
               h("div", {
-                key: "value",
+                key: "total",
                 style: {
-                  color: "var(--text-muted)",
-                  fontSize: 14,
-                  fontStyle: "italic",
-                  lineHeight: 1.6,
-                  marginBottom: 12
-                }
-              }, `"${option.value_statement}"`),
-              option.focus_statement ? h("div", {
-                key: "focus-detail",
-                style: {
-                  marginBottom: 12,
-                  color: "var(--text)",
-                  fontSize: 13,
-                  fontWeight: 700
-                }
-              }, `Focus: ${option.focus_statement}`) : null,
-              h("div", {
-                key: "price-total",
-                style: {
-                  marginBottom: 12,
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 6,
+                  marginBottom: 12,
                   padding: "6px 10px",
                   borderRadius: "999px",
                   background: "rgba(255,255,255,0.06)",
                   border: "1px solid var(--border)",
-                  color: "var(--text)"
+                  fontWeight: 700
                 }
-              }, `Estimated total: $${option.pricebook_items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}`),
-              h("div", { key: "inclabel", style: { color: "var(--text-dim)", fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 10 } }, "What's Included"),
+              }, `Estimated total: $${total.toFixed(2)}`),
+              h("div", { key: "inclabel", style: { color: "var(--dim)", fontSize: 12, fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 10 } }, "What's Included"),
               ...option.pricebook_items.map((item, itemIndex) => h("div", {
                 key: `${option.number}-${itemIndex}`,
                 style: {
                   display: "flex",
                   alignItems: "center",
                   gap: 10,
-                  marginBottom: 8,
                   padding: "11px 12px",
+                  marginBottom: 8,
                   borderRadius: "14px",
                   background: "rgba(255,255,255,0.04)",
                   border: "1px solid var(--border)"
                 }
               }, [
-                h("div", {
-                  key: "dot",
-                  style: {
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    background: color,
-                    flexShrink: 0
-                  }
-                }),
+                h("div", { key: "dot", style: { width: 8, height: 8, borderRadius: "50%", background: color, flexShrink: 0 } }),
                 h("div", { key: "text", style: { flex: 1, fontWeight: 600, lineHeight: 1.5 } }, `${item.quantity > 1 ? `${item.quantity}x ` : ""}${item.name}`),
-                h("div", { key: "price", style: { fontWeight: 700, color: "var(--text-muted)" } }, `$${(item.price * item.quantity).toFixed(2)}`)
+                h("div", { key: "price", style: { color: "var(--muted)", fontWeight: 700 } }, `$${(item.price * item.quantity).toFixed(2)}`)
               ])),
               h("div", {
-                key: "photoBlock",
+                key: "photo-block",
                 style: {
                   marginTop: 14,
                   paddingTop: 14,
                   borderTop: "1px solid var(--border)"
                 }
               }, [
-                h("div", { key: "photolabel", style: { color: "var(--text-dim)", fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 10 } }, "Finished Work Photo"),
-                photo ? h("div", {
-                  key: "withPhoto"
-                }, [
+                h("div", { key: "photo-title", style: { color: "var(--dim)", fontSize: 12, fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 10 } }, "Finished Work Photo"),
+                photo ? h("div", { key: "photo-wrap" }, [
                   h("div", {
                     key: "img",
                     style: {
@@ -2028,27 +1482,10 @@ Return ONLY valid JSON:
                       border: "1px solid var(--border)"
                     }
                   }, [
-                    h("img", {
-                      key: "photo",
-                      src: photo.url,
-                      alt: photo.label,
-                      style: { width: "100%", height: 180, objectFit: "cover" }
-                    }),
-                    h("div", {
-                      key: "cap",
-                      style: {
-                        position: "absolute",
-                        left: 10,
-                        bottom: 10,
-                        padding: "5px 8px",
-                        borderRadius: "10px",
-                        background: "rgba(0,0,0,0.68)",
-                        color: "white",
-                        fontSize: 12
-                      }
-                    }, photo.label)
+                    h("img", { key: "photo", src: photo.url, alt: photo.label, style: { width: "100%", height: 180, objectFit: "cover" } }),
+                    h("div", { key: "caption", style: { position: "absolute", left: 10, bottom: 10, padding: "5px 8px", borderRadius: "10px", background: "rgba(0,0,0,0.68)", color: "white", fontSize: 12 } }, photo.label)
                   ]),
-                  h("div", { key: "photoactions", style: { display: "flex", gap: 8, marginTop: 10 } }, [
+                  h("div", { key: "actions", style: { display: "flex", gap: 8, marginTop: 10 } }, [
                     h(SoftButton, { key: "change", onClick: () => setPickerFor(option) }, "Change"),
                     h(SoftButton, {
                       key: "remove",
@@ -2074,16 +1511,15 @@ Return ONLY valid JSON:
             ]) : null
           ]);
         }),
-        sendError ? h("div", {
-          key: "senderr",
+        sendMessage && !sent ? h("div", {
+          key: "error",
           style: {
-            ...shellCardStyle(),
+            ...shellCard({ borderColor: "rgba(255,106,127,0.22)" }),
             marginBottom: 12,
             padding: "12px 14px",
-            color: "var(--red)",
-            borderColor: "rgba(255,102,122,0.2)"
+            color: "var(--red)"
           }
-        }, sendError) : null,
+        }, sendMessage) : null,
         selectedOptions.length ? h(PrimaryButton, {
           key: "send",
           onClick: sendToHCP,
@@ -2093,7 +1529,7 @@ Return ONLY valid JSON:
       ]);
     }
 
-    function IntelligenceScreen({ rules, onBack, onSave }) {
+    function RulesScreen({ rules, onBack, onSave }) {
       const [localRules, setLocalRules] = useState(rules);
       const [showAdd, setShowAdd] = useState(false);
       const [trigger, setTrigger] = useState("");
@@ -2115,103 +1551,81 @@ Return ONLY valid JSON:
         onSave(updated);
       }
 
-      return h("div", null, [
-        h("div", { key: "top", style: { paddingTop: 10 } }, pageWrap([
-          h("div", { key: "back", style: { marginBottom: 12 } }, h(SoftButton, { onClick: onBack }, "Back")),
-          h("div", {
-            key: "hero",
+      return pageWrap([
+        h("div", { key: "back", style: { marginBottom: 12 } }, h(SoftButton, { onClick: onBack }, "Back")),
+        h("div", {
+          key: "hero",
+          style: {
+            ...shellCard(),
+            padding: "22px 18px",
+            marginBottom: 14
+          }
+        }, [
+          h("div", { key: "eyebrow", style: { color: "var(--amber)", fontWeight: 800, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 10 } }, "Electrical Rules Engine"),
+          h("div", { key: "title", style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 34, letterSpacing: "0.04em" } }, "Field Intelligence"),
+          h("div", { key: "copy", style: { color: "var(--muted)", lineHeight: 1.6, marginTop: 10 } }, "These rules teach FieldGuide how to expand field notes into real scope.")
+        ]),
+        h(SoftButton, { key: "toggle", onClick: () => setShowAdd((current) => !current), style: { width: "100%", padding: "14px 16px", color: showAdd ? "var(--muted)" : "var(--green)" } }, showAdd ? "Cancel" : "Add New Rule"),
+        showAdd ? h("div", {
+          key: "form",
+          style: {
+            ...shellCard(),
+            padding: "16px",
+            marginTop: 12,
+            marginBottom: 12
+          }
+        }, [
+          h("div", { key: "l1", style: { marginBottom: 8, color: "var(--green)", fontWeight: 800, fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase" } }, "When tech sees..."),
+          h("textarea", {
+            key: "trigger",
+            value: trigger,
+            onChange: (event) => setTrigger(event.target.value),
             style: {
-              ...shellCardStyle(),
-              padding: "22px 18px"
-            }
-          }, [
-            h("div", { key: "eyebrow", style: { color: "var(--amber)", fontWeight: 800, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", marginBottom: 10 } }, "Electrical Rules Engine"),
-            h("div", {
-              key: "title",
-              style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 34, letterSpacing: "0.04em" }
-            }, "Field Intelligence"),
-            h("p", { key: "body", style: { margin: "10px 0 0", color: "var(--text-muted)", lineHeight: 1.6 } },
-              "These rules teach FieldGuide how to expand field notes into real scope. Keep them practical and specific so the AI stays grounded.")
-          ]),
-          h(SoftButton, {
-            key: "toggle",
-            onClick: () => setShowAdd((current) => !current),
-            style: {
-              marginTop: 14,
               width: "100%",
-              padding: "14px 16px",
-              color: showAdd ? "var(--text-muted)" : "var(--green)"
+              minHeight: 84,
+              padding: "12px 14px",
+              borderRadius: "14px",
+              border: "1px solid var(--border)",
+              background: "rgba(255,255,255,0.03)",
+              color: "var(--text)",
+              resize: "vertical"
             }
-          }, showAdd ? "Cancel" : "Add New Rule"),
-          showAdd ? h("div", {
-            key: "form",
+          }),
+          h("div", { key: "l2", style: { margin: "14px 0 8px", color: "var(--green)", fontWeight: 800, fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase" } }, "AI should include..."),
+          h("textarea", {
+            key: "result",
+            value: result,
+            onChange: (event) => setResult(event.target.value),
             style: {
-              ...shellCardStyle(),
-              marginTop: 12,
-              padding: "16px"
+              width: "100%",
+              minHeight: 84,
+              padding: "12px 14px",
+              borderRadius: "14px",
+              border: "1px solid var(--border)",
+              background: "rgba(255,255,255,0.03)",
+              color: "var(--text)",
+              resize: "vertical"
             }
-          }, [
-            h("div", { key: "l1", style: { marginBottom: 8, color: "var(--green)", fontWeight: 800, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.14em" } }, "When tech sees..."),
-            h("textarea", {
-              key: "trigger",
-              value: trigger,
-              onChange: (event) => setTrigger(event.target.value),
-              placeholder: "Example: panel is full, 200A service, no room for EV charger breaker",
-              style: {
-                width: "100%",
-                minHeight: 84,
-                resize: "vertical",
-                padding: "12px 14px",
-                borderRadius: "14px",
-                border: "1px solid var(--border)",
-                background: "rgba(255,255,255,0.03)",
-                color: "var(--text)"
-              }
-            }),
-            h("div", { key: "l2", style: { margin: "14px 0 8px", color: "var(--green)", fontWeight: 800, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.14em" } }, "AI should include..."),
-            h("textarea", {
-              key: "result",
-              value: result,
-              onChange: (event) => setResult(event.target.value),
-              placeholder: "Example: offer sub-panel or load calculation before recommending full service upgrade",
-              style: {
-                width: "100%",
-                minHeight: 84,
-                resize: "vertical",
-                padding: "12px 14px",
-                borderRadius: "14px",
-                border: "1px solid var(--border)",
-                background: "rgba(255,255,255,0.03)",
-                color: "var(--text)"
-              }
-            }),
-            h(PrimaryButton, {
-              key: "save",
-              onClick: addRule,
-              color: "var(--green)",
-              style: { marginTop: 14 }
-            }, "Save Rule")
-          ]) : null,
-          h("div", { key: "count", style: { marginTop: 16, marginBottom: 10 } }, h(Badge, { tone: "amber" }, `${localRules.length} active rules`)),
-          ...localRules.map((rule) => h("div", {
-            key: rule.id,
-            style: {
-              ...shellCardStyle(),
-              marginBottom: 12,
-              overflow: "hidden"
-            }
-          }, [
-            h("div", { key: "a", style: { padding: "14px 16px", borderBottom: "1px solid var(--border)" } }, [
-              h("div", { key: "label", style: { color: "var(--amber)", fontWeight: 800, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 6 } }, "When tech sees..."),
-              h("div", { key: "trigger", style: { lineHeight: 1.55, fontWeight: 700 } }, rule.trigger)
-            ]),
-            h("div", { key: "b", style: { padding: "14px 16px", background: "rgba(49,215,140,0.04)", borderBottom: "1px solid var(--border)" } }, [
-              h("div", { key: "label", style: { color: "var(--green)", fontWeight: 800, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 6 } }, "AI includes..."),
-              h("div", { key: "result", style: { lineHeight: 1.55, color: "var(--text-muted)" } }, rule.result)
-            ]),
-            h("div", { key: "c", style: { padding: "10px 16px", display: "flex", justifyContent: "flex-end" } },
-              h(SoftButton, { onClick: () => removeRule(rule.id), style: { color: "var(--red)" } }, "Remove"))
-          ]))
+          }),
+          h(PrimaryButton, { key: "save", onClick: addRule, color: "var(--green)", style: { marginTop: 14 } }, "Save Rule")
+        ]) : null,
+        ...localRules.map((rule) => h("div", {
+          key: rule.id,
+          style: {
+            ...shellCard(),
+            overflow: "hidden",
+            marginBottom: 12
+          }
+        }, [
+          h("div", { key: "a", style: { padding: "14px 16px", borderBottom: "1px solid var(--border)" } }, [
+            h("div", { key: "l", style: { color: "var(--amber)", fontWeight: 800, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 6 } }, "When tech sees..."),
+            h("div", { key: "t", style: { lineHeight: 1.55, fontWeight: 700 } }, rule.trigger)
+          ]),
+          h("div", { key: "b", style: { padding: "14px 16px", background: "rgba(52,213,139,0.04)", borderBottom: "1px solid var(--border)" } }, [
+            h("div", { key: "l", style: { color: "var(--green)", fontWeight: 800, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 6 } }, "AI includes..."),
+            h("div", { key: "r", style: { color: "var(--muted)", lineHeight: 1.55 } }, rule.result)
+          ]),
+          h("div", { key: "c", style: { padding: "10px 16px", display: "flex", justifyContent: "flex-end" } }, h(SoftButton, { onClick: () => removeRule(rule.id), style: { color: "var(--red)" } }, "Remove"))
         ]))
       ]);
     }
@@ -2222,21 +1636,23 @@ Return ONLY valid JSON:
       const [estimate, setEstimate] = useState(null);
       const [data, setData] = useState({});
       const [scopes, setScopes] = useState(null);
-      const [rules, setRules] = useState(loadRules);
+      const [rules, setRules] = useState(loadRules());
       const [showRules, setShowRules] = useState(false);
 
-      function resetFlow() {
+      function restartApp() {
+        setTech(null);
         setStep("job");
         setEstimate(null);
         setData({});
         setScopes(null);
+        setShowRules(false);
       }
 
-      function restartApp() {
-        setTech(null);
-        setShowRules(false);
-        setRules(loadRules());
-        resetFlow();
+      function goToJobs() {
+        setStep("job");
+        setEstimate(null);
+        setData({});
+        setScopes(null);
       }
 
       function saveStep(key, result) {
@@ -2256,69 +1672,55 @@ Return ONLY valid JSON:
         return h(TechSelector, { onSelect: setTech });
       }
 
-      if (showRules) {
-        return h(React.Fragment, null, [
-          h(Header, {
-          key: "header",
-          techName: tech,
-          jobName: jobName(),
-          step,
-          onReset: resetFlow,
-          onRestart: restartApp,
-          onOpenRules: () => setShowRules(false)
-        }),
-          h(IntelligenceScreen, {
-            key: "rules",
-            rules,
-            onBack: () => setShowRules(false),
-            onSave: (updated) => {
-              setRules(updated);
-              saveRules(updated);
-            }
-          })
-        ]);
-      }
-
       return h("div", null, [
         h(Header, {
           key: "header",
-          techName: tech,
+          tech,
           jobName: jobName(),
-          step,
-          onReset: resetFlow,
+          step: showRules ? "rules" : step,
+          onJobs: goToJobs,
           onRestart: restartApp,
-          onOpenRules: () => setShowRules(true)
+          onRules: () => setShowRules(true)
         }),
-        step === "job" ? h(JobPicker, {
-          key: "jobs",
-          techName: tech,
+        showRules ? h(RulesScreen, {
+          key: "rules",
+          rules,
+          onBack: () => setShowRules(false),
+          onSave: (updated) => {
+            setRules(updated);
+            saveRules(updated);
+          }
+        }) : null,
+        !showRules && step === "job" ? h(JobPicker, {
+          key: "job",
+          tech,
           onSelect: (selectedEstimate) => {
             setEstimate(selectedEstimate);
             setStep("request");
           }
         }) : null,
-        step === "request" ? h(InputStep, {
+        !showRules && step === "request" ? h(InputStep, {
           key: "request",
-          meta: STEP_META.request,
+          stepKey: "request",
           saved: data.request,
           rules,
           onDone: (result) => saveStep("request", result)
         }) : null,
-        step === "safety" ? h(InputStep, {
+        !showRules && step === "safety" ? h(InputStep, {
           key: "safety",
-          meta: STEP_META.safety,
+          stepKey: "safety",
           saved: data.safety,
           rules,
           onDone: (result) => saveStep("safety", result)
         }) : null,
-        step === "enhancements" ? h(InputStep, {
+        !showRules && step === "enhancements" ? h(InputStep, {
           key: "enhancements",
-          meta: STEP_META.enhancements,
+          stepKey: "enhancements",
           saved: data.enhancements,
           rules,
           onDone: (result) => saveStep("enhancements", result)
         }) : null,
-        step === "review" ? h(ReviewStep, {
+        !showRules && step === "review" ? h(ReviewStep, {
           key: "review",
           data,
           onConfirm: (payload) => {
@@ -2326,7 +1728,7 @@ Return ONLY valid JSON:
             setStep("options");
           }
         }) : null,
-        step === "options" && scopes ? h(OptionsStep, {
+        !showRules && step === "options" && scopes ? h(OptionsStep, {
           key: "options",
           scopes,
           rules,
