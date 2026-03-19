@@ -1,1 +1,3256 @@
-
+[
+  {
+    "id": "12-awg-home-run-100-150",
+    "name": "#12 awg home run 100-150'",
+    "description": "A #12 AWG home run circuit (100-150 ft) delivers safe, reliable power directly from your panel to a dedicated area or device. Proper installation prevents voltage drop, ensures code compliance, and supports efficient, uninterrupted electrical performance.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_0bea159ed2154d4abe9e15cf953b8db5",
+          "raw_name": "#12 awg home run 100-150'  (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 480.33,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "12-awg-home-run-50",
+    "name": "#12 awg home run 50'",
+    "description": "A 12 AWG home run (50 ft) is a dedicated electrical wire run from your panel to an outlet or device, ensuring safe, reliable power. Ideal for high-demand circuits, it reduces voltage drop and increases safety, supporting optimal performance for your appliances.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_4d6e9e25b7e34d278fd9efb37b72808c",
+          "raw_name": "#12 awg home run 50'  (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 332.4,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "14-awg-home-run-150-200",
+    "name": "#14 awg home run 150-200'",
+    "description": "A #14 AWG home run circuit (150-200') delivers safe, dedicated power from your panel to a specific outlet or device. Proper installation ensures reliable performance, reduces voltage drop, and meets code requirements for worry-free use of your home's electrical system.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_875f21e0f7ad4617b018c2e882266c6d",
+          "raw_name": "#14 awg home run 150-200'  (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 511.3,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "100-amp-30-60-homeline-panel-with-inlet-box-and-transfer-switch-inside-only",
+    "name": "100 amp 30/60 homeline panel with inlet box and transfer switch (Inside only)",
+    "description": "Upgrade your home\u2019s safety and convenience with a 100 amp Homeline panel, inlet box, and transfer switch. This service ensures reliable power distribution and allows safe, easy connection of a generator during outages, protecting your family and electronics.",
+    "category": "Service Change",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_8b4edd1db6db45d5ab13cb1ea070d5b7",
+          "raw_name": "100 amp 30/60 homeline panel with inlet box and transfer switch (Inside only) (InHome)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 3211.04,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 844.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "100-amp-30-60-service-change-inside",
+    "name": "100 amp 30/60 service change inside",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_fbae66c2556d4d9fbae87eb224ff306e",
+          "raw_name": "100 amp 30/60 service change inside",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 2200.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "100-amp-outside-service-no-riser",
+    "name": "100 amp outside service no riser",
+    "description": "Upgrade your home\u2019s electrical system with a 100 amp outside service (no riser). This service ensures safe, reliable power delivery, meets modern electrical demands, and enhances home value. Professional installation keeps your system up to code and worry-free.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_3409d7575eb14cc68468ee8edf7e44bf",
+          "raw_name": "100 amp outside service no riser (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 1100.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "110-cfm-panasonic-fan-installed-does-not-include-venting",
+    "name": "110 cfm Panasonic fan installed (does not include venting)",
+    "description": "Upgrade your bathroom with a 110 CFM Panasonic fan installation. This high-quality fan efficiently removes moisture and odors, improving air quality and preventing mold growth. Enjoy a quieter, healthier home environment. (Venting not included.)",
+    "category": "Exhaust Fan",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_e3f9ede831724764adf7964d2a7815e4",
+          "raw_name": "110 cfm Panasonic fan installed (does not include venting)  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 515.27,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 357.78,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "150-amp-outside-service-no-riser",
+    "name": "150 amp outside service no riser",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_43e9ae74bf564041b0dd565ba36555eb",
+          "raw_name": "150 amp outside service no riser (in home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 1400.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "150-amp-service-change-with-ground-system-underground-with-disconnect",
+    "name": "150 amp service change with ground system (Underground with disconnect)",
+    "description": "Upgrade your home\u2019s electrical capacity and safety with a 150 amp service change and new ground system (Underground). This service ensures reliable power for modern needs, enhanced protection from electrical hazards, and compliance with current codes.",
+    "category": "Service Change",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_d6aff1793d26446788143b6e624d2dfa",
+          "raw_name": "150 amp service change with ground system (Underground with disconnect) (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 4915.1,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "150-amp-weatherproof-disconnect",
+    "name": "150 amp weatherproof Disconnect",
+    "description": "A 150 amp weatherproof disconnect safely cuts power to your home\u2019s electrical system or equipment, even in harsh outdoor conditions. Essential for safety during maintenance or emergencies, it provides reliable protection and peace of mind year-round.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_58da05cf0427426791ffd6f026f0b1ca",
+          "raw_name": "150 amp weatherproof Disconnect (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 750.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "16kw-generator-with-150-amp-transfer-switch",
+    "name": "16kw generator with 150 amp transfer switch",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_0b9baf58838a45bfa4ea63d4039b3d4f",
+          "raw_name": "16kw generator with 150 amp transfer switch",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 9500.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "20-amp-circuit-to-panel-mc",
+    "name": "20 amp circuit to panel (mc)",
+    "description": "A dedicated 20 amp circuit run directly to your panel using MC (metal-clad) cable ensures safe, reliable power for high-demand appliances or outlets. This service boosts electrical capacity, reduces overload risk, and helps meet modern code requirements.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_89ffa2755d604cf2a6c375c695a1a934",
+          "raw_name": "20 amp circuit to panel (mc)  (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 421.3,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "20-amp-fished-in-plug-garage-less-than-50-with-gfci",
+    "name": "20 amp Fished in plug garage less than 50' with GFCI",
+    "description": "Install a 20-amp GFCI-protected outlet in your garage (within 50 feet), seamlessly fished into walls for a clean look. This upgrade enhances safety against electrical shocks and supports high-powered tools or appliances. Essential for any modern garage!",
+    "category": "Fished Plug",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_337ee0ec9ad44b49a5b3c45837f27a21",
+          "raw_name": "20 amp Fished in plug garage less than 50' with GFCI  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 542.45,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 325.8,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "200-amp-complete-service-change-with-ground-system-underground-with-disconnect",
+    "name": "200 amp complete service change with ground system (Underground with disconnect)",
+    "description": "Upgrade your home\u2019s safety and power capacity with a 200 amp complete service change and ground system (Underground). This essential service ensures reliable electricity, meets modern demands, and provides enhanced protection for your home and family.",
+    "category": "Service Change",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_b3b35c65de1e4a80bfd9548ab6817d11",
+          "raw_name": "200 amp complete service change with ground system (Underground with disconnect)  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 5198.08,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "200-amp-disconnect",
+    "name": "200 amp disconnect",
+    "description": "A 200 amp disconnect provides a safe and reliable way to shut off power to your entire home or specific areas. Essential for upgrades, repairs, or emergencies, it protects your electrical system and ensures compliance with electrical codes.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_f1f12ed0c34341498a3d2abd9470ea4d",
+          "raw_name": "200 amp disconnect (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 875.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "200-amp-pcm",
+    "name": "200 amp PCM",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_f84af1e2a14c425081266843ecb5d472",
+          "raw_name": "200 amp PCM",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 1600.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "22-kw-generac-generator-with-200-amp-disconnect-installed",
+    "name": "22 kw Generac generator with 200 amp disconnect installed",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_b291bc1cac8e4b9fa36ac5ff1e3be3cc",
+          "raw_name": "22 kw Generac generator with 200 amp disconnect installed",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 14500.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "220v",
+    "name": "220v",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_7b2a7264f0e64c7295eccd89657b3695",
+          "raw_name": "220v (preferred builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 325.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "220v-30-amp-circuit-in-home-less-than-25",
+    "name": "220v 30 amp circuit (In Home) (Less than 25')",
+    "description": "Upgrade your home's power with a dedicated 220V 30 amp circuit. Ideal for heavy-duty appliances like dryers or workshop equipment, this service ensures safe, reliable operation and reduces the risk of overloading existing circuits\u2014protecting your home and investment.",
+    "category": "220v",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_3e61a83a9f1345aa8bd65f3a3f50bd8e",
+          "raw_name": "220v 30 amp circuit  (In Home) (Less than 25')",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 598.3,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "220v-50-amp-circuit-in-home-less-than-25",
+    "name": "220v 50 amp Circuit (In Home) (Less than 25')",
+    "description": "A 220v 50 amp circuit delivers high-capacity power for demanding appliances like EV chargers, ranges, or workshop equipment. Professionally installed to ensure safety and code compliance, this upgrade boosts your home\u2019s electrical capability and reliability.",
+    "category": "220v",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_07aa8adbd3e745e5aa07b05157eafc69",
+          "raw_name": "220v 50 amp Circuit  (In Home) (Less than 25')",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 655.21,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "22kw-whole-house-generac-generator-with-200-amp-transfer-switch-does-not-include-gas-line",
+    "name": "22kw whole house generac generator with 200 amp transfer switch (does not include gas line)",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_40667195daf9412ba07128dbea5e4031",
+          "raw_name": "22kw whole house generac generator with 200 amp transfer switch (does not include gas line)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 13000.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "25kw-standby-generator-liquid-cooled-includes-everything-but-the-pad",
+    "name": "25KW Standby Generator - Liquid Cooled Includes everything but the Pad",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_13beb4e6d6a84fd8a7a066bb23b4922a",
+          "raw_name": "25KW Standby Generator - Liquid Cooled Includes everything but the Pad",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 17782.21
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "27kw-standby-generator-liquid-cooled-includes-everything-but-the-pad",
+    "name": "27KW Standby Generator - Liquid Cooled Includes everything but the Pad",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_f8218c9e62b34eb38b386bf33c0345b1",
+          "raw_name": "27KW Standby Generator - Liquid Cooled Includes everything but the Pad",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 21256.21
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "2x2-or-2x4-led-flat-panel",
+    "name": "2x2 or 2x4 LED flat panel",
+    "description": "Upgrade your lighting with our 2x2 or 2x4 LED flat panel installation. Enjoy bright, energy-efficient illumination that reduces energy costs, improves visibility, and enhances the look of any room. Perfect for modern homes\u2014long-lasting and low maintenance!",
+    "category": "Recessed Lighting",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_f543ae7fa5524a388e06cbcca7775a69",
+          "raw_name": "2x2 or 2x4 LED flat panel  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 243.51,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 160.01,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "4-soffit-light-roof-line",
+    "name": "4\" Soffit Light roof line",
+    "description": "Enhance your home\u2019s curb appeal and safety with professionally installed soffit lights along your roofline. This service adds elegant exterior lighting, improves nighttime visibility, and increases property value\u2014all with expert, safe electrical work.",
+    "category": "Recessed Lighting",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_131c3cc48de24458b29ef6dc54810817",
+          "raw_name": "4\" Soffit Light roof line  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 190.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "4-ic-rated-can",
+    "name": "4\u201d IC rated can",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_8bc4c1d29d3a4642b0d20ba2dee3d23f",
+          "raw_name": "4\u201d IC rated can (preferred builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 140.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "4-recessed-gimbal",
+    "name": "4\u201d recessed gimbal",
+    "description": "Our 4\u201d recessed gimbal installation provides sleek, adjustable lighting that blends seamlessly with your d\u00e9cor. Perfect for highlighting art or brightening workspaces, this energy-efficient upgrade offers flexibility, improved ambiance, and modern style.",
+    "category": "Recessed Lighting",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_2f225340f68f4d46a2ddf68f8b9427f7",
+          "raw_name": "4\u201d recessed gimbal  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 180.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "4-recessed-light",
+    "name": "4\u201d recessed light",
+    "description": "Upgrade your home with a 4\u201d recessed light installation. This sleek, modern lighting enhances any room\u2019s ambiance and provides bright, energy-efficient illumination. Perfect for kitchens, hallways, or living spaces\u2014improving both style and safety in your home.",
+    "category": "Recessed Lighting",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_aead9f3a07594fdebd47f66e25d7829a",
+          "raw_name": "4\u201d recessed light  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 180.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "50-amp-interlock-kit-with-inlet-box",
+    "name": "50 amp interlock kit with inlet box",
+    "description": "A 50 amp interlock kit with inlet box lets you safely connect a portable generator to your home\u2019s electrical panel. This system protects utility workers and your home, enabling reliable backup power during outages. Stay safe and keep essentials running!",
+    "category": "Interlock",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_f2b86a88acb348459e91bdc5d009dd8a",
+          "raw_name": "50 amp interlock kit with inlet box  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 1595.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "6-inch-recessed-light-with-led-gimbal",
+    "name": "6 inch recessed light with LED gimbal",
+    "description": "Upgrade your home with a 6-inch recessed LED gimbal light! This modern fixture offers adjustable, energy-efficient lighting\u2014perfect for highlighting features or brightening any room. Enjoy long-lasting performance, lower energy bills, and a sleek look.",
+    "category": "Recessed Lighting",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_88fe8a9e17bb472e8dbc81c7e13fee27",
+          "raw_name": "6 inch recessed light with LED gimbal  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 195.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "6-gimbal",
+    "name": "6\u201d gimbal",
+    "description": "Our 6\u201d gimbal LED installation offers versatile, adjustable lighting for any space. Perfect for sloped ceilings or accent lighting, it enhances ambiance and energy efficiency while providing a modern look. Enjoy bright, focused light where you need it most!",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_9f53a8f7a8bc4e3ea9ef423022df9715",
+          "raw_name": "6\u201d gimbal  (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 85.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "6-ic-rated-can",
+    "name": "6\u201d IC rated can",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_e6cb313d48da4101806670494c77eca0",
+          "raw_name": "6\u201d IC rated can (preferred builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 140.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "6-led-retrofit",
+    "name": "6\u201d LED Retrofit",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_e5de3830333a4be9b4e6d9df454edf08",
+          "raw_name": "6\u201d LED Retrofit",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 50.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "6-recessed-light",
+    "name": "6\u201d recessed light",
+    "description": "Brighten your space with a 6\u201d recessed light installation! These modern, low-profile fixtures provide even, efficient lighting while blending seamlessly with your ceiling. Ideal for any room, they enhance ambiance, boost visibility, and add stylish value to your home.",
+    "category": "Recessed Lighting",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_5cca1d2a18a24e4b9b684c8fbc3c41fe",
+          "raw_name": "6\u201d recessed light  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 180.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "90-amp-main-lug-sub-panel",
+    "name": "90 amp main lug sub panel",
+    "description": "Upgrade your home\u2019s electrical capacity with a 90 amp main lug sub panel. Ideal for adding circuits or powering new areas, this panel ensures safe, reliable electricity distribution and helps prevent overloads, keeping your property protected and future-ready.",
+    "category": "Panel Only",
+    "unit": "Each",
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_269ebcaf5bde49a3b5099d4c7b752a57",
+          "raw_name": "90 amp main lug sub panel (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 1402.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 512.26,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "a-c-disconnect",
+    "name": "A/C disconnect",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_2b1589fd557145269efe55fa8f532048",
+          "raw_name": "A/C disconnect",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 525.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "add-to-and-plug-or-switch-over-50-per-foot",
+    "name": "Add to and plug or switch over 50' (per foot)",
+    "description": "Running new wire for a switch or plug over 50 feet (fished through walls, ceilings, or floors) ensures safe, code-compliant power where you need it. Professional installation protects your home and guarantees reliable, long-lasting connections. Price is per foot.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_34c5861603334d218ad82442cbafaa61",
+          "raw_name": "Add to and plug or switch over 50' (per foot) (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 9.32,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 5.96,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "air-conditioning-circuit-doe-not-include-disconnect",
+    "name": "Air conditioning circuit (Doe not include disconnect)",
+    "description": "Ensure your air conditioning runs safely and efficiently with a dedicated circuit installation. This service protects your home from overloads, improves system performance, and meets code requirements\u2014delivering reliable comfort and peace of mind.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_cbe46e54bf6844d0b54e761ab9b1342b",
+          "raw_name": "Air conditioning circuit (Doe not include disconnect)  (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 679.01,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "builders-grade-exhaust-fan-does-not-include-venting",
+    "name": "Builders grade exhaust fan (does not include venting)",
+    "description": "A builder\u2019s grade exhaust fan efficiently removes moisture and odors from bathrooms or other spaces, helping prevent mold and mildew. Ideal for basic ventilation needs, it improves air quality and comfort in your home. (Venting not included.)",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_4b4a5b8d2d9842239f5e6d3aa311d175",
+          "raw_name": "Builders grade exhaust fan (does not include venting)  (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 211.54,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "cable-line",
+    "name": "Cable line",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_fbb12217bdb64c12b12401de9204a38c",
+          "raw_name": "Cable line (preferred builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 120.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "caseta",
+    "name": "Caseta",
+    "description": "Upgrade your home with a Lutron Caseta smart lighting system! Enjoy convenient, wireless control of your lights via smartphone, voice, or remote. Enhance comfort, save energy, and boost security with professional installation for reliable, seamless operation.",
+    "category": "Switches",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_e932a604fce9436f86d9fd0a95d8b9b5",
+          "raw_name": "Caseta  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 165.12,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 102.7,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "caseta-with-hub",
+    "name": "Caseta with hub",
+    "description": "Upgrade your home with a Caseta smart lighting system and hub. Enjoy convenient remote control, custom schedules, and enhanced security. This installation delivers energy savings, increased comfort, and seamless integration with smart home devices.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_1529af2b23e04838ac48752985bbc27b",
+          "raw_name": "Caseta with hub  (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 385.05,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "ceiling-fan-with-crank-out-box",
+    "name": "Ceiling fan with crank out box",
+    "description": "Upgrade your comfort and safety with professional ceiling fan installation using a crank-out box. This service ensures secure mounting, reduces vibration, and prevents ceiling damage\u2014ideal for heavy fans or older homes. Enjoy efficient, reliable airflow year-round!",
+    "category": "Fixture",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_2da1dd9f5fa845768fd34d885d5ea1c6",
+          "raw_name": "Ceiling fan with crank out box  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 382.25,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 280.25,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "circuit",
+    "name": "Circuit",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_c9e3a7de919b405f8778548960cb8235",
+          "raw_name": "Circuit (preferred builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 175.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "complete-100-amp-20-40-panel-with-ground-system-underground-with-disconnect",
+    "name": "Complete 100 amp 20/40 panel with ground system (Underground with disconnect)",
+    "description": "Upgrade your home's electrical system with a complete 100 amp 20/40 panel and ground system. This service ensures safe, reliable power distribution, enhances electrical capacity, and protects your home from electrical hazards. Essential for modern households!",
+    "category": "Service Change",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_98a9d5e6e8824d1a8f480a445394f2db",
+          "raw_name": "Complete 100 amp 20/40 panel with ground system (Underground with disconnect) (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 4301.55,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "fish-in-and-install-wall-sconce-dining-room",
+    "name": "Fish in and install wall sconce dining room",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_bf8e4a27755e4a8f88165c822838ae5a",
+          "raw_name": "Fish in and install wall sconce dining room",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 250.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "fish-in-fan-box-and-install-fan",
+    "name": "Fish in fan box and install fan",
+    "description": "Our expert electricians will fish wires into your fan box and install your new fan, ensuring safe, reliable operation and proper support. Enhance your comfort and improve airflow while meeting electrical safety standards for your peace of mind.",
+    "category": "Fixture",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_923cc716c7b44a9d8e6d11b81168bb43",
+          "raw_name": "Fish in fan box and install fan (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 500.41,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 336.13,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "fished-in-plug",
+    "name": "Fished in plug",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_972f79a320654fe88932f9d9cd53714d",
+          "raw_name": "Fished in plug (preferred builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 175.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "fished-in-switch",
+    "name": "Fished in switch",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_9dd65dc968734d1c8e318127a5740bce",
+          "raw_name": "Fished in switch (preferred builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 175.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "fished-in-switch-not-difficult",
+    "name": "Fished in switch (Not DIfficult)",
+    "description": "A professionally fished-in switch is installed with minimal wall damage, seamlessly adding or relocating a switch to meet your needs. This ensures safe, code-compliant operation and a clean appearance, enhancing convenience and home functionality.",
+    "category": "Fished Plug",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_bf72122249b84ad4852eebc5e5c64e48",
+          "raw_name": "Fished in switch  (Not DIfficult)  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 381.12,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 214.39,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "fished-in-wall-sconce",
+    "name": "Fished in Wall Sconce",
+    "description": "Enhance your home's ambiance with a professionally installed in-wall sconce. Our expert electricians safely fish wiring through walls, minimizing damage and ensuring a seamless look. Enjoy improved lighting and style with a clean, code-compliant installation.",
+    "category": "Fixture",
+    "unit": "Each",
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_bcde4df71bb34d6ebb80f4a19eb656f8",
+          "raw_name": "Fished in Wall Sconce  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 312.51,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "fished-new-plug-1st-floor-15-amp-circuit-less-than-25-from-power-source",
+    "name": "Fished New plug 1st floor 15 amp circuit (Less than 25' from Power Source)",
+    "description": "Install a new 15 amp plug on the 1st floor, less than 25' from the power source. Enjoy safe, convenient access to power for your devices while meeting electrical codes. Professional installation ensures reliable performance and peace of mind.",
+    "category": "Fished Plug",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_62eb29ac3bbb4227908ba41696c82445",
+          "raw_name": "Fished New plug 1st floor 15 amp circuit (Less than 25' from Power Source)  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 460.97,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 218.99,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "floor-plug",
+    "name": "Floor plug",
+    "description": "Add convenient power where you need it most with a professionally installed floor plug. Ideal for open rooms, this service provides safe, accessible outlets for lamps, electronics, or d\u00e9cor, reducing cord clutter and improving room functionality.",
+    "category": "Fished Plug",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_436ecd7e7fc34fa59b761394b55d7748",
+          "raw_name": "Floor plug  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 525.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "garage-plug-exterior-with-gfci-s-and-bubble-cover",
+    "name": "Garage plug exterior with GFCI\u2019s and bubble cover",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_7e7814dec5004d3889c7567503b128e6",
+          "raw_name": "Garage plug exterior with GFCI\u2019s and bubble cover",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 325.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "garage-plug-interior-with-gfci",
+    "name": "Garage plug interior with GFCI",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_27f4cc7ec8dc451ba61391ec5e1798c3",
+          "raw_name": "Garage plug interior with GFCI",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 275.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "gas-line-with-permit",
+    "name": "Gas Line with permit",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_ace012270d894601b80b2a848722756b",
+          "raw_name": "Gas Line with permit",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 1850.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "gfci",
+    "name": "GFCI",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_297a8b5278fc4b7899ec4513fafb19a5",
+          "raw_name": "GFCI (preferred builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 75.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "gfci-switch",
+    "name": "GFCI/switch",
+    "description": "Upgrade your safety with a GFCI switch installation! GFCI switches protect your home by instantly shutting off power when a ground fault is detected, reducing the risk of shocks and electrical fires\u2014especially in kitchens, bathrooms, and outdoor areas.",
+    "category": "R&R",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_6cc66cecb3874a0aa2a20afefd09311b",
+          "raw_name": "GFCI/switch  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 85.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "ground-existing-box",
+    "name": "Ground existing box",
+    "description": "Grounding an existing electrical box is essential for your safety, protecting your home from electrical shock and fire hazards. Our expert service ensures your box is properly grounded, bringing your system up to code and giving you peace of mind.",
+    "category": "Ground System",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_e7d8c64d0a2a4e81abe756cd60f94c5a",
+          "raw_name": "Ground existing box  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 45.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "ground-system-100",
+    "name": "Ground system 100'",
+    "description": "Ensure your home\u2019s safety with a professionally installed 100-foot ground system. Proper grounding protects against electrical shocks, lightning, and power surges, keeping your family and electronics safe while ensuring your electrical system meets code requirements.",
+    "category": "Ground System",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_5196c6d3bb4d48e8b641863cff6eb657",
+          "raw_name": "Ground system 100'  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 1160.32,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 730.52,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "ground-system-50",
+    "name": "Ground system 50'",
+    "description": "Ensure your home's electrical safety with a professional ground system installation for up to 50 feet. Proper grounding protects against electrical shocks, power surges, and equipment damage, giving you peace of mind and meeting code requirements.",
+    "category": "Ground System",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_35e020af7b1e4b99bc6b5d8091971f17",
+          "raw_name": "Ground system 50'  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 1076.82,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 700.02,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "hang-standard-chandelier-foyer",
+    "name": "Hang Standard Chandelier Foyer",
+    "description": "Enhance your entryway with a professionally installed standard chandelier. Our expert electricians ensure safe, secure mounting and optimal placement, adding elegance and brightening your foyer. Trust us for a flawless finish and lasting beauty in your home.",
+    "category": "Fixture",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_6b7ac2c9463845aaa15cc1dd12fecae1",
+          "raw_name": "Hang Standard Chandelier Foyer  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 469.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "hang-tv-32-55",
+    "name": "Hang TV 32'-55\"",
+    "description": "Professional in-home mounting of your 32\"-55\" TV ensures safe, secure installation and optimal viewing height. Protects your walls and electronics, hides unsightly cables, and gives your space a clean, modern look. Enjoy your TV worry-free and perfectly aligned!",
+    "category": "TV",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_990bf2c4b6b74c51b8ce95ae31c86676",
+          "raw_name": "Hang TV  32'-55\" (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 425.51,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "hang-tv-55-80",
+    "name": "Hang TV 55\"-80\"",
+    "description": "Professionally mount your 55\"-80\" TV securely on your wall for a clean, modern look. Our experts ensure safe installation, optimal viewing height, and cable management, enhancing your home entertainment experience while protecting your investment.",
+    "category": "TV",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_731fcfadca2745f88bf4e5c8e9cc3263",
+          "raw_name": "Hang TV  55\"-80\" (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 788.81,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "hardwired-interconnected-smoke-alarm",
+    "name": "Hardwired interconnected Smoke Alarm",
+    "description": "Ensure your family\u2019s safety with a hardwired interconnected smoke alarm system. When one alarm detects smoke, all alarms sound, providing early warning throughout your home. Professionally installed for reliable protection and peace of mind.",
+    "category": "Smoke Alarm",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_1d3b50631ce64104ac96b3b563612cad",
+          "raw_name": "Hardwired interconnected Smoke Alarm  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 125.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "hardwired-interconnected-smoke-alarm-carbon-monoxide-detecor",
+    "name": "Hardwired interconnected Smoke Alarm/Carbon Monoxide Detecor",
+    "description": "Protect your home and loved ones with a hardwired, interconnected smoke and carbon monoxide detector. These alarms offer reliable, whole-home coverage\u2014when one sounds, they all alert\u2014providing critical, early warning to keep your family safe from fire and CO risks.",
+    "category": "Smoke Alarm",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_a694115c32434021a716bc710a5d0b24",
+          "raw_name": "Hardwired interconnected Smoke Alarm/Carbon Monoxide Detecor  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 175.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "heat-fan-panasonic",
+    "name": "Heat/ fan Panasonic",
+    "description": "Experience year-round comfort with expert installation or repair of your Panasonic heat/fan unit. Enjoy quiet, efficient airflow and reliable temperature control\u2014essential for healthy indoor air and energy savings. Keep your home cozy and comfortable, every season!",
+    "category": "Exhaust Fan",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_a3e339f4a146464aa8a2817654bcb04e",
+          "raw_name": "Heat/ fan Panasonic   (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 725.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "install-240v-30a-dryer-plug",
+    "name": "Install 240v 30A Dryer plug",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_0e0b0c42fd5d45eb8e3b1801d811e8ed",
+          "raw_name": "Install 240v 30A Dryer plug",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 267.83,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "install-chandelier-foyer-large-and-reinforce-in-attic",
+    "name": "Install Chandelier Foyer (Large and reinforce in attic)",
+    "description": "Enhance your foyer\u2019s elegance with a professionally installed large chandelier. We reinforce attic supports for safety and durability, ensuring secure mounting and reliable performance. Enjoy peace of mind and stunning lighting in your home\u2019s entryway.",
+    "category": "Fixture",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_b9d378055f0c4ae497ec5bf17e3778b7",
+          "raw_name": "Install Chandelier Foyer (Large and reinforce in attic)  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 1669.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "install-crystal-per-hour",
+    "name": "Install crystal per hour",
+    "description": "Our expert electricians will professionally install your crystal lighting fixture in your home, ensuring safety, precision, and stunning results. Enjoy enhanced ambiance and peace of mind with our reliable, efficient installation service\u2014charged per hour.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_6298f2fb6f144bccbca8684bc383e497",
+          "raw_name": "Install crystal per hour  (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 120.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "install-crystals-per-man-hour",
+    "name": "Install crystals per man hour",
+    "description": "Our skilled electricians install crystals safely and efficiently, ensuring proper placement and secure connections. Benefit from enhanced lighting and ambiance in your home, with professional installation completed per man hour for quality and peace of mind.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_796a046f0463447f8e5156db3e99afce",
+          "raw_name": "Install crystals per man hour  (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 120.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "install-difficult-fixture-standard-height-ceiling-in-home-30-minutes-or-less",
+    "name": "Install Difficult fixture standard height ceiling (In Home) (30 minutes or less)",
+    "description": "Our expert electricians safely install challenging light fixtures on standard-height ceilings, ensuring secure mounting and proper wiring. Trust us for a flawless finish that enhances your space\u2019s look, safety, and functionality. Enjoy peace of mind and lasting results!",
+    "category": "Fixture",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_7391436f87da449db3565db38dd35814",
+          "raw_name": "Install Difficult fixture standard height ceiling (In Home) (30 minutes or less)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 245.1,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 190.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "install-dimmer",
+    "name": "Install Dimmer",
+    "description": "Upgrade your lighting with a professionally installed dimmer switch! Dimmers enhance comfort, save energy, and extend bulb life by letting you easily control light levels. Enjoy the perfect ambiance and improved efficiency in any room of your home.",
+    "category": "Switches",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_e1421990cb3049ea985ae71a1107a776",
+          "raw_name": "Install Dimmer (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 85.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "install-easy-fixture-standard-ceiling-height",
+    "name": "Install easy fixture standard ceiling height",
+    "description": "Brighten your space with a professionally installed easy fixture for standard ceiling heights. Our expert electricians ensure safe, secure, and attractive lighting, enhancing your home\u2019s look and comfort while meeting all electrical safety standards.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_1815711264a74cd18015df5a607a1648",
+          "raw_name": "Install easy fixture standard ceiling height (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 84.15,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 47.5,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "install-standard-chandelier-18-foyer-standard-without-crystal",
+    "name": "Install standard chandelier 18' foyer (Standard without Crystal)",
+    "description": "Brighten your home with a professionally installed chandelier in your 18\u2019 foyer. Our experts ensure secure mounting and safe wiring, enhancing your entryway\u2019s beauty and value. Enjoy a stunning, well-lit space with reliable, code-compliant installation.",
+    "category": "Fixture",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_c01003eba5234691aafb9d7c0811aa5b",
+          "raw_name": "Install standard chandelier 18' foyer (Standard without Crystal) (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 488.12,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 332.5,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "install-standard-fixture-standard-height-ceiling-in-home-15-minutes-or-less",
+    "name": "Install standard fixture standard height ceiling (In Home) (15 minutes or less)",
+    "description": "Professional installation of a standard light fixture on a standard-height ceiling. Ensures safe, code-compliant wiring and secure mounting, enhancing your home\u2019s lighting and appearance. Enjoy reliable, efficient illumination and peace of mind.",
+    "category": "Fixture",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_6e7fc1b340ef4dfda48837c58f451c13",
+          "raw_name": "Install standard fixture standard height ceiling (In Home) (15 minutes or less)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 121.11,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 71.25,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "install-standard-grade-surge-suppressor",
+    "name": "Install standard grade surge suppressor",
+    "description": "Protect your valuable electronics and appliances from damaging power surges by installing a surge suppressor. This service safeguards your entire home\u2019s electrical system, offering peace of mind and helping to extend the life of your devices.",
+    "category": "Surge",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_8ac99461ab28470f82d3394c094f1757",
+          "raw_name": "Install standard grade surge suppressor  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 566.3,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 106.61,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "install-usb-outlet",
+    "name": "Install USB outlet",
+    "description": "Install and provide USB out to be replaced with existing outlet",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_dc43c592511e4a0c975ea7fa0cda093d",
+          "raw_name": "Install USB outlet",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 75.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "install-vehicle-charger-50-100-no-disconnect",
+    "name": "Install vehicle charger 50-100' (No Disconnect)",
+    "description": "Ensure safe, efficient charging for your electric vehicle with a professionally installed charger up to 100' from your panel. Our expert service includes proper wiring, safety checks, and code compliance\u2014giving you reliable, convenient charging at home.",
+    "category": "EV",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_b446fec5bfcf44d1877243accac105b1",
+          "raw_name": "Install vehicle charger 50-100' (No Disconnect)  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 2270.93,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 1732.71,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "interlock-kit-with-inlet-30-amp",
+    "name": "Interlock Kit with Inlet 30 amp",
+    "description": "An Interlock Kit with 30 amp Inlet allows safe connection of a portable generator to your home's electrical panel during power outages. This ensures vital appliances stay powered, prevents backfeeding, and offers peace of mind during emergencies.",
+    "category": "Interlock",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_715adf10c2ef42cbbcd32351e4beccfd",
+          "raw_name": "Interlock Kit with Inlet 30 amp  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 1205.15,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "island-plug",
+    "name": "Island Plug",
+    "description": "An in-home island plug provides convenient power access to kitchen islands or peninsulas, making it easy to use appliances and charge devices. Professionally installed for safety and code compliance, it enhances functionality and keeps your kitchen clutter-free.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_be8e309248974bb89a988fd17a9311dc",
+          "raw_name": "Island Plug (In Home)",
+          "active": false
+        },
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_f384e895b18e42fc8541c67e45648a98",
+          "raw_name": "Island plug (preferred builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 530.41,
+      "preferred_builder": 175.0
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "label-panel",
+    "name": "label panel",
+    "description": "Label Panel Service\n\nEnsure safety and easy identification of circuits by professionally labeling your electrical panel. Proper labeling saves time during emergencies, helps with troubleshooting, and ensures compliance with electrical codes for your peace of mind.",
+    "category": "Label Panel",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_c1d47916ad1545b58dcb1a402d852228",
+          "raw_name": "label panel  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 120.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "led-retrofit",
+    "name": "Led retrofit",
+    "description": "Upgrade your lighting with an LED retrofit! Enjoy brighter, more energy-efficient lighting that lowers your electricity bills and reduces maintenance. LED retrofits are environmentally friendly and provide long-lasting performance for your home.",
+    "category": "Recessed Lighting",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_2d61ef85ef314919991a3cb6f7da167b",
+          "raw_name": "Led retrofit  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 55.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "low-voltage-drop",
+    "name": "Low voltage drop",
+    "description": "Ensure your home\u2019s electrical system delivers consistent power with a low voltage drop service. This reduces energy loss, protects sensitive electronics, and improves efficiency\u2014providing safer, more reliable power throughout your house.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_260857caf177443d87d9254607978daf",
+          "raw_name": "Low voltage drop  (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 195.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "new-service-entrance-cable-100-amp-cable-only",
+    "name": "New service entrance cable 100 amp (Cable only)",
+    "description": "Upgrade your home's safety and reliability with a new 100-amp service entrance cable. This essential service ensures safe, efficient power delivery, reduces fire risks, and meets modern electrical codes\u2014protecting your family and supporting today\u2019s electrical demands.",
+    "category": "Replace Service Entrance Cable",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_6ecbebe438364230bb7f3c2a139ef98e",
+          "raw_name": "New service entrance cable 100 amp (Cable only)  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 893.9,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "panasonic-fan-light-combo-does-not-include-venting",
+    "name": "Panasonic fan/light combo (Does not include Venting)",
+    "description": "Upgrade your bathroom with a Panasonic fan/light combo installation. Enjoy powerful ventilation and bright, efficient lighting in one sleek unit. This service improves air quality, reduces humidity, and helps prevent mold\u2014making your home safer and more comfortable. (Venting not included.)",
+    "category": "Exhaust Fan",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_18314f215616477498f8833710de5d16",
+          "raw_name": "Panasonic fan/light combo (Does not include Venting)  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 435.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "panel-circuit-with-gfci",
+    "name": "Panel circuit (With GFCI)",
+    "description": "Ensure your home\u2019s safety and reliability with professional panel circuit service. We inspect, repair, and upgrade your electrical panel, preventing overloads and minimizing fire risks. Enjoy peace of mind with safe, efficient power distribution throughout your home.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_1fd0377f0c4c419dbb1585280f091905",
+          "raw_name": "Panel circuit (With GFCI)  (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 311.64,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "pico-with-bracket",
+    "name": "Pico with bracket",
+    "description": "Professional installation of a Pico wireless remote with mounting bracket. Easily control your lights or shades from anywhere in the room. Enhances convenience, safety, and energy efficiency\u2014no wiring needed. Ideal for customized, flexible home lighting control.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_e86ca53f26414608b736399135e47ee7",
+          "raw_name": "Pico with bracket (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 112.36,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 53.7,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "piped-plug-up-to-50-gfci-not-included",
+    "name": "Piped plug up to 50' (GFCI Not Included)",
+    "description": "Clear blockages in your pipes up to 50 feet with our professional piping service. Prevent backups, restore proper drainage, and protect your home from water damage. Fast and effective, this service keeps your plumbing flowing smoothly and worry-free.",
+    "category": "Piped Plug",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_d7061f3f1efc4f36a6068e250b112ba9",
+          "raw_name": "Piped plug up to 50' (GFCI Not Included)  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 339.79,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 164.53,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "r-r-device",
+    "name": "R&R device",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_e28b6a2770cf418ead02bab9f7b8f68b",
+          "raw_name": "R&R device (preferred builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 45.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "recess-outdoor-plug",
+    "name": "Recess outdoor plug",
+    "description": "A recessed outdoor plug provides a safe, weather-resistant power source for your home\u2019s exterior. Ideal for patios, gardens, and holiday lighting, it keeps cords protected and out of sight while ensuring convenient, reliable access to electricity outdoors.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_2c57177b3fdf4127b031e4d796accf08",
+          "raw_name": "Recess outdoor plug  (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 120.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "relocate-phone-line",
+    "name": "Relocate phone line",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_02d705d44e5840b9b6535dbfcf8318cd",
+          "raw_name": "Relocate phone line",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 125.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "replace-2-prong-outlet",
+    "name": "Replace 2 prong outlet",
+    "description": "Upgrade your home\u2019s safety and functionality by replacing outdated 2-prong outlets with modern, grounded 3-prong outlets. This service provides better protection for your devices and family, meeting current electrical codes and reducing shock risk.",
+    "category": "R&R",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_15cda2a2c77b481fb003bf59ca3b4dc7",
+          "raw_name": "Replace 2 prong outlet  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 55.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "replace-customer-supplied-recessed-light",
+    "name": "Replace customer supplied recessed light",
+    "description": "Our expert electricians will safely remove your old recessed light and install the customer-supplied replacement. Proper installation ensures optimal lighting, safety, and energy efficiency\u2014keeping your home bright and up to code. Enjoy peace of mind with professional service!",
+    "category": "Recessed Lighting",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_9061000a8dab4ddd96084bf5dcd19903",
+          "raw_name": "Replace customer supplied recessed light  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 145.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "replace-outlet-or-switch-if-replacing-more-than-5",
+    "name": "Replace outlet or Switch (If replacing more than 5)",
+    "description": "Ensure safety and reliability in your home by replacing damaged or outdated outlets or switches. This service restores proper function, prevents electrical hazards, and keeps your electrical system up to code for peace of mind and everyday convenience.",
+    "category": "R&R",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_925826037a864fbcaccf3af0eff60d38",
+          "raw_name": "Replace outlet or Switch (If replacing more than 5)  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 55.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "replace-spa-disconnect",
+    "name": "Replace Spa Disconnect",
+    "description": "Ensure your spa\u2019s safety and compliance by replacing the spa disconnect. This service updates outdated or faulty disconnects, providing reliable power shut-off and enhanced protection against electrical hazards for worry-free relaxation and peace of mind.",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_0fa86734c0534fad9740daa611565974",
+          "raw_name": "Replace Spa Disconnect  (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 654.3,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "rough-opening",
+    "name": "Rough opening",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_b6c8a855ba924fc78e09d613f2816100",
+          "raw_name": "Rough opening  (Preferred Builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 65.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "rough-opening-metal-boxes",
+    "name": "Rough opening metal boxes",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_47e540312bab4ffa8439170d350af5e2",
+          "raw_name": "Rough opening metal boxes",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 85.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "run-wiring-and-install-pendant-light",
+    "name": "Run wiring and install pendant light",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_c169bbae99e149ce80cfbd7173117fe9",
+          "raw_name": "Run wiring and install pendant light (preferred builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 175.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "run-wiring-and-install-puck-light",
+    "name": "Run wiring and install puck light",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_343e192c60fc478e98c51140dd880858",
+          "raw_name": "Run wiring and install puck light (preferred builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 175.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "run-wiring-and-install-under-cabinet-light",
+    "name": "Run wiring and install under cabinet light",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_975390a765b34b37a72b82c30f887674",
+          "raw_name": "Run wiring and install under cabinet light (preferred builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 175.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "secure-electrical-permit",
+    "name": "secure electrical permit",
+    "description": "Securing an electrical permit ensures your project meets local codes and safety standards. This service protects your home, guarantees work is inspected, and is often required by law. Enjoy peace of mind knowing your electrical upgrades are done right!",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_89a41f9a6f0940459e13f5a935fe1aa6",
+          "raw_name": "secure electrical permit",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 350.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "small-crystal-chandelier-low-ceiling",
+    "name": "Small crystal chandelier low ceiling",
+    "description": "Brighten your space with a small crystal chandelier designed for low ceilings. This elegant fixture adds style and sparkle while maintaining proper headroom, making any room feel more luxurious and inviting without compromising safety or comfort.",
+    "category": "Fixture",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_02e030e578244963bdb32c0eefffe3d4",
+          "raw_name": "Small crystal chandelier low ceiling  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 180.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 142.5,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "standard-dimmer",
+    "name": "Standard dimmer",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_16a498aed5b6411d9192425892a5d54a",
+          "raw_name": "Standard dimmer (preferred builder)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 75.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "surge-protector",
+    "name": "Surge Protector",
+    "description": "*",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_29ee09f4fee34ed6a666db0f860b8337",
+          "raw_name": "Surge Protector",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 425.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 106.61
+    }
+  },
+  {
+    "id": "under-cabinet-plug",
+    "name": "Under cabinet plug",
+    "description": "",
+    "category": "Uncategorized",
+    "unit": null,
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "preferred_builder": {
+          "book_name": "Preferred Builder Only",
+          "line_item_id": "olit_91a435aba91f4049aea3a934c0b9fbfd",
+          "raw_name": "Under cabinet plug",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": null,
+      "preferred_builder": 175.0
+    },
+    "cost": {
+      "in_home": null,
+      "preferred_builder": 0.0
+    }
+  },
+  {
+    "id": "under-cabinet-tape-lighting-system-with-switch-max-2-rolls",
+    "name": "Under cabinet tape lighting system with switch (Max 2 rolls)",
+    "description": "Brighten your kitchen or workspace with an under cabinet tape lighting system, complete with a convenient switch. Enjoy improved visibility, enhanced ambiance, and energy-efficient lighting\u2014perfect for tasks and showcasing your space\u2019s style.",
+    "category": "Under Cabinet Lighting",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_e200e3fecb994c6187a51a4b8a21bc7f",
+          "raw_name": "Under cabinet tape lighting system with switch (Max 2 rolls)  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 1478.1,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "wire-50-amp-car-charger-less-than-50-no-disconnect",
+    "name": "Wire 50 amp car charger less than 50' (No Disconnect)",
+    "description": "Ensure your electric vehicle charges safely and efficiently with professional installation of a 50-amp car charger circuit (under 50 feet). This service delivers reliable power for fast charging, meeting all code and safety requirements for your peace of mind.",
+    "category": "EV",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_979058c9280f495fbf50239c124342c5",
+          "raw_name": "Wire 50 amp car charger less than 50' (No Disconnect)  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 1513.22,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 1157.86,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "wire-clean-up-1-hour",
+    "name": "Wire Clean up 1 hour",
+    "description": "Tidy up messy or tangled wires in your home with our professional wire clean-up service. In just one hour, we\u2019ll organize and secure loose cables, improving safety and appearance. Enjoy a safer, neater living space and peace of mind!",
+    "category": "Uncategorized",
+    "unit": "329.22",
+    "taxable": false,
+    "active": false,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_e8c0c41c37164ef1906fabcdaa702798",
+          "raw_name": "Wire Clean up  1 hour (In Home)",
+          "active": false
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 120.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 95.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "wire-furnace-doesn-t-include-circuit",
+    "name": "Wire furnace (Doesn't Include Circuit)",
+    "description": "Professional furnace wiring ensures your heating system runs safely and efficiently. Proper wiring prevents electrical hazards, maximizes furnace performance, and meets code requirements\u2014giving you peace of mind and reliable warmth all season long.",
+    "category": "Circuit",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_cc29aac052cd4272a0650e2cbe4651ba",
+          "raw_name": "Wire furnace (Doesn't Include Circuit)  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 575.94,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "wire-hot-tub-less-than-50",
+    "name": "Wire hot tub less than 50'",
+    "description": "Ensure your hot tub is wired safely and up to code with professional installation for distances under 50 feet. Proper wiring protects your investment, prevents electrical hazards, and guarantees reliable operation, so you can enjoy your hot tub worry-free.",
+    "category": "Hot Tub",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_a8920248bd804e16ba308cdcbf41700f",
+          "raw_name": "Wire hot tub less than 50'  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 1711.04,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  },
+  {
+    "id": "wireless-combo-smoke-alarm",
+    "name": "Wireless combo smoke alarm",
+    "description": "Protect your home and loved ones with a wireless combo smoke alarm. This advanced device detects both smoke and carbon monoxide, providing early warning for fire and harmful gases. Reliable, easy to install, and essential for whole-home safety.",
+    "category": "Smoke Alarm",
+    "unit": null,
+    "taxable": false,
+    "active": true,
+    "source": {
+      "industry_id": "ind_600204be061340dabf33d97e8db5c0b9",
+      "department": "Electrical",
+      "line_items": {
+        "in_home": {
+          "book_name": "In Home Price Book",
+          "line_item_id": "olit_466e2417176d4b71bc7edb84acb3757e",
+          "raw_name": "Wireless combo smoke alarm  (In Home)",
+          "active": true
+        }
+      }
+    },
+    "pricing": {
+      "in_home": 175.0,
+      "preferred_builder": null
+    },
+    "cost": {
+      "in_home": 0.0,
+      "preferred_builder": null
+    }
+  }
+]
