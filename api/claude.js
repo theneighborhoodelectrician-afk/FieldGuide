@@ -207,3 +207,29 @@ module.exports = async function handler(req, res) {
     res.status(500).json({ error: e.message });
   }
 };
+  // ── HCP GET tester ─────────────────────────────────────────────
+  if (req.method === "GET" && req.query.action === "hcp_test") {
+    const endpoint = req.query.endpoint;
+    if (!endpoint) {
+      res.status(400).json({ error: "Missing endpoint" });
+      return;
+    }
+
+    try {
+      const r = await makeRequest(
+        `https://api.housecallpro.com${endpoint}`,
+        {
+          method: "GET",
+          headers: {
+            "Authorization": `Token ${hcpKey}`,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      res.status(r.status).json(r.body);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+    return;
+  }
+
