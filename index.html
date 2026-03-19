@@ -1649,14 +1649,12 @@ Return ONLY valid JSON:
             if (photo && optionId) {
              const attachResult = await attachPhoto(photo.url, optionId, photo.label);
              if (!attachResult || attachResult.error) {
-               const detail =
+              const detail =
               attachResult?.hcp?.error ||
-              attachResult?.hcp?.message ||
-               attachResult?.error ||
-                 "Unknown attachment error";
-               warnings.push(`"${option.name}" was created, but the photo did not attach in HCP. ${detail}`);
-            }
-
+             attachResult?.hcp?.message ||
+             attachResult?.error ||
+             "Unknown attachment error";
+              warnings.push(`"${option.name}" was created, but the photo did not attach in HCP. ${detail}`);}
             }
           }
 
