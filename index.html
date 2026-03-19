@@ -190,12 +190,9 @@
     };
 
     const TIER_LABELS = {
-      essential: "Just What They Asked",
-      safety: "Safety First",
-      comfort: "Added Comfort",
-      recommended: "Recommended",
-      enhanced: "Enhanced Home",
-      complete: "Complete Picture"
+      economy: "Economy",
+      midrange: "Midrange",
+      premium: "Premium"
     };
 
     const OPTION_COLORS = ["#3b82f6", "#0d9488", "#7c3aed", "#f59e0b", "#00c97a", "#4f46e5"];
@@ -329,16 +326,40 @@ Pricing mode: ${pricingMode === "in_home" ? "In Home" : "Preferred Builder"}
 Available catalog items for this pricing mode:
 ${JSON.stringify(pricebookItems)}
 
-Create exactly 6 estimate options.
+You are building options around this presentation framework:
+- What did they call you for?
+- What is directly connected to that?
+- What's good?
+- What's more?
+
+Create exactly 6 estimate options in this exact structure:
+- 2 economy options
+- 2 midrange options
+- 2 premium options
+
+Required logic:
+- Every option must include the original customer ask.
+- Economy options should focus on the immediate need and the bare minimum directly connected work.
+- Midrange options should include the immediate need, directly connected work, and a stronger reliability or safety package.
+- Premium options should feel turnkey, future-minded, and built to put the problem to rest for life.
+- "What's directly connected" should be handled before "what's more".
+- Do not randomly mix items across tiers.
 - Be practical and honest.
 - Never invent pricing.
-- Group work logically.
-- Include permit flag where appropriate.
 - Use only items from the provided catalog.
 - Return 1 or more matched catalog items in pricebook_items for each option.
+- Include a short focus_statement that explains the buyer intent of the option.
+- Include permit flag where appropriate.
 
 Return ONLY valid JSON:
-{"options":[{"number":1,"name":"Option name","tier":"essential|safety|comfort|recommended|enhanced|complete","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]}]}`;
+{"options":[
+  {"number":1,"name":"Option name","tier":"economy","focus_statement":"Immediate need only","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]},
+  {"number":2,"name":"Option name","tier":"economy","focus_statement":"Immediate need plus essential connected work","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]},
+  {"number":3,"name":"Option name","tier":"midrange","focus_statement":"Balanced repair with connected improvements","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]},
+  {"number":4,"name":"Option name","tier":"midrange","focus_statement":"Stronger reliability and safety package","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]},
+  {"number":5,"name":"Option name","tier":"premium","focus_statement":"Turnkey solution with convenience and longevity","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]},
+  {"number":6,"name":"Option name","tier":"premium","focus_statement":"Best long-term put-it-to-rest solution","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]}
+]}`;
     }
 
     function buildPromptPricebookItems(items, pricingMode) {
@@ -1830,6 +1851,15 @@ Return ONLY valid JSON:
                 }
               }, [
                 h("div", { key: "name", style: { fontWeight: 800, fontSize: 17, lineHeight: 1.2 } }, option.name),
+                option.focus_statement ? h("div", {
+                  key: "focus",
+                  style: {
+                    marginTop: 4,
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: "rgba(255,255,255,0.82)"
+                  }
+                }, option.focus_statement) : null,
                 h("div", { key: "badges", style: { marginTop: 7, display: "flex", gap: 8, flexWrap: "wrap" } }, [
                   h("span", {
                     key: "tier",
@@ -1873,6 +1903,15 @@ Return ONLY valid JSON:
                   marginBottom: 12
                 }
               }, `"${option.value_statement}"`),
+              option.focus_statement ? h("div", {
+                key: "focus-detail",
+                style: {
+                  marginBottom: 12,
+                  color: "var(--text)",
+                  fontSize: 13,
+                  fontWeight: 700
+                }
+              }, `Focus: ${option.focus_statement}`) : null,
               h("div", {
                 key: "price-total",
                 style: {
