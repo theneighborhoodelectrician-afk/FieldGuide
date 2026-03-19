@@ -319,21 +319,50 @@ For safety use: {"safety_scopes":["scope"],"job_facts":{"panel_condition":"","sa
 For enhancements use: {"enhancement_scopes":["scope"],"future_opportunities":[]}`;
     }
 
-    function buildOptionsPrompt(scopes, rules) {
+    function buildOptionsPrompt(scopes, rules, pricebookItems, pricingMode) {
       return `You are a seasoned electrical estimator helping a field tech build homeowner-friendly estimate options.
 Customer requested: ${JSON.stringify(scopes.requested)}
 Safety items: ${JSON.stringify(scopes.safety)}
 Enhancements: ${JSON.stringify(scopes.enhancements)}
 Key rules: ${rules.slice(0, 10).map((r) => `${r.trigger} -> ${r.result}`).join("; ")}
+Pricing mode: ${pricingMode === "in_home" ? "In Home" : "Preferred Builder"}
+Available catalog items for this pricing mode:
+${JSON.stringify(pricebookItems)}
 
 Create exactly 6 estimate options.
 - Be practical and honest.
 - Never invent pricing.
 - Group work logically.
 - Include permit flag where appropriate.
+- Use only items from the provided catalog.
+- Return 1 or more matched catalog items in pricebook_items for each option.
 
 Return ONLY valid JSON:
-{"options":[{"number":1,"name":"Option name","tier":"essential|safety|comfort|recommended|enhanced|complete","includes":["item 1"],"permits_required":false,"value_statement":"What this means for the home"}]}`;
+{"options":[{"number":1,"name":"Option name","tier":"essential|safety|comfort|recommended|enhanced|complete","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]}]}`;
+    }
+
+    function buildPromptPricebookItems(items, pricingMode) {
+      return items
+        .filter((item) => item?.pricing?.[pricingMode] != null)
+        .map((item) => ({
+          id: item.id,
+          name: item.name,
+          category: item.category,
+          description: item.description,
+          price: item.pricing[pricingMode]
+        }));
+    }
+
+    function getOptionId(response) {
+      if (!response || typeof response !== "object") return null;
+      if (typeof response.estimate_option_id === "string") return response.estimate_option_id;
+      if (typeof response.id === "string") return response.id;
+      for (const value of Object.values(response)) {
+        if (Array.isArray(value)) continue;
+        const nested = getOptionId(value);
+        if (nested) return nested;
+      }
+      return null;
     }
 
     function getSuggestedPhotos(optionName, includes) {
@@ -1501,15 +1530,36 @@ Return ONLY valid JSON:
           if (!live) return;
           setPricebook(pricebookItems);
 
-          const result = await callClaude(null, buildOptionsPrompt(scopes, rules));
+          const promptItems = buildPromptPricebookItems(pricebookItems, pricingMode);
+          const result = await callClaude(null, buildOptionsPrompt(scopes, rules, promptItems, pricingMode));
           if (!live) return;
 
-          const built = Array.isArray(result?.options) ? result.options.filter((option) =>
-            option &&
-            option.number &&
-            option.name &&
-            Array.isArray(option.includes)
-          ) : [];
+          const pricebookById = Object.fromEntries(pricebookItems.map((item) => [item.id, item]));
+          const built = Array.isArray(result?.options) ? result.options.map((option) => {
+            const matchedItems = Array.isArray(option?.pricebook_items)
+              ? option.pricebook_items
+                  .map((match) => {
+                    const item = pricebookById[match?.id];
+                    if (!item || item?.pricing?.[pricingMode] == null) return null;
+                    return {
+                      id: item.id,
+                      name: item.name,
+                      description: item.description || "",
+                      price: item.pricing[pricingMode],
+                      quantity: Math.max(1, Number(match?.quantity) || 1)
+                    };
+                  })
+                  .filter(Boolean)
+              : [];
+
+            if (!option || !option.number || !option.name || !matchedItems.length) return null;
+
+            return {
+              ...option,
+              pricebook_items: matchedItems,
+              includes: matchedItems.map((item) => `${item.quantity > 1 ? `${item.quantity}x ` : ""}${item.name}`)
+            };
+          }).filter(Boolean) : [];
 
           if (built.length) {
             setOptions(built);
@@ -1527,7 +1577,7 @@ Return ONLY valid JSON:
         return () => {
           live = false;
         };
-      }, [scopes, rules]);
+      }, [scopes, rules, pricingMode]);
 
       const selectedOptions = options.filter((option) => selected[option.number]);
       const availablePricebookItems = pricebook.filter((item) => item?.pricing?.[pricingMode] != null);
@@ -1556,15 +1606,15 @@ Return ONLY valid JSON:
           for (const option of selectedOptions) {
             const response = await callHCP(`/estimates/${estimate.id}/options`, "POST", {
               name: option.name,
-              line_items: option.includes.map((item) => ({
-                name: item,
-                description: option.permits_required ? "Permits may be required." : "",
-                unit_price: 0,
-                quantity: 1
+              line_items: option.pricebook_items.map((item) => ({
+                name: item.name,
+                description: item.description || (option.permits_required ? "Permits may be required." : ""),
+                unit_price: item.price,
+                quantity: item.quantity
               }))
             });
 
-            const optionId = response?.id || response?.estimate_option_id;
+            const optionId = getOptionId(response);
             const photo = photos[option.number];
             if (photo && optionId) {
               await attachPhoto(photo.url, optionId, photo.label);
@@ -1819,8 +1869,22 @@ Return ONLY valid JSON:
                   marginBottom: 12
                 }
               }, `"${option.value_statement}"`),
+              h("div", {
+                key: "price-total",
+                style: {
+                  marginBottom: 12,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "6px 10px",
+                  borderRadius: "999px",
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid var(--border)",
+                  color: "var(--text)"
+                }
+              }, `Estimated total: $${option.pricebook_items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}`),
               h("div", { key: "inclabel", style: { color: "var(--text-dim)", fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 10 } }, "What's Included"),
-              ...option.includes.map((item, itemIndex) => h("div", {
+              ...option.pricebook_items.map((item, itemIndex) => h("div", {
                 key: `${option.number}-${itemIndex}`,
                 style: {
                   display: "flex",
@@ -1843,7 +1907,8 @@ Return ONLY valid JSON:
                     flexShrink: 0
                   }
                 }),
-                h("div", { key: "text", style: { fontWeight: 600, lineHeight: 1.5 } }, item)
+                h("div", { key: "text", style: { flex: 1, fontWeight: 600, lineHeight: 1.5 } }, `${item.quantity > 1 ? `${item.quantity}x ` : ""}${item.name}`),
+                h("div", { key: "price", style: { fontWeight: 700, color: "var(--text-muted)" } }, `$${(item.price * item.quantity).toFixed(2)}`)
               ])),
               h("div", {
                 key: "photoBlock",
