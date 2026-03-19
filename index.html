@@ -365,6 +365,10 @@ Return ONLY valid JSON:
       return null;
     }
 
+    function dollarsToCents(amount) {
+      return Math.round((Number(amount) || 0) * 100);
+    }
+
     function getSuggestedPhotos(optionName, includes) {
       const haystack = `${optionName} ${(includes || []).join(" ")}`.toLowerCase();
       const scored = PHOTO_LIBRARY
@@ -1609,7 +1613,7 @@ Return ONLY valid JSON:
               line_items: option.pricebook_items.map((item) => ({
                 name: item.name,
                 description: item.description || (option.permits_required ? "Permits may be required." : ""),
-                unit_price: item.price,
+                unit_price: dollarsToCents(item.price),
                 quantity: item.quantity
               }))
             });
