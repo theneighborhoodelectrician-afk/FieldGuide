@@ -634,7 +634,7 @@ Return ONLY valid JSON:
       ]));
     }
 
-    function Header({ techName, jobName, step, onReset, onOpenRules }) {
+    function Header({ techName, jobName, step, onReset, onRestart, onOpenRules }) {
       const labels = [
         { key: "request", title: "Request" },
         { key: "safety", title: "Field" },
@@ -708,6 +708,7 @@ Return ONLY valid JSON:
           }
         }, [
           h(Badge, { key: "tech", tone: "green" }, techName),
+          h(SoftButton, { key: "restart", onClick: onRestart, style: { color: "var(--red)" } }, "Restart"),
           visible ? h("div", {
             key: "steps",
             style: {
@@ -1626,6 +1627,7 @@ Return ONLY valid JSON:
         if (!estimate?.id || !selectedOptions.length) return;
         setSending(true);
         setSendError("");
+        const warnings = [];
 
         try {
           for (const option of selectedOptions) {
@@ -1641,11 +1643,20 @@ Return ONLY valid JSON:
 
             const optionId = getOptionId(response);
             const photo = photos[option.number];
+            if (photo && !optionId) {
+              warnings.push(`"${option.name}" was created, but FieldGuide could not find the new HCP option ID to attach the photo.`);
+            }
             if (photo && optionId) {
-              await attachPhoto(photo.url, optionId, photo.label);
+              const attachResult = await attachPhoto(photo.url, optionId, photo.label);
+              if (!attachResult || attachResult.error) {
+                warnings.push(`"${option.name}" was created, but the photo did not attach in HCP.`);
+              }
             }
           }
 
+          if (warnings.length) {
+            setSendError(warnings.join(" "));
+          }
           setSent(true);
         } catch {
           setSendError("Sending failed. Please try again.");
@@ -2178,6 +2189,13 @@ Return ONLY valid JSON:
         setScopes(null);
       }
 
+      function restartApp() {
+        setTech(null);
+        setShowRules(false);
+        setRules(loadRules());
+        resetFlow();
+      }
+
       function saveStep(key, result) {
         setData((current) => ({ ...current, [key]: result }));
         if (key === "request") setStep("safety");
@@ -2198,13 +2216,14 @@ Return ONLY valid JSON:
       if (showRules) {
         return h(React.Fragment, null, [
           h(Header, {
-            key: "header",
-            techName: tech,
-            jobName: jobName(),
-            step,
-            onReset: resetFlow,
-            onOpenRules: () => setShowRules(false)
-          }),
+          key: "header",
+          techName: tech,
+          jobName: jobName(),
+          step,
+          onReset: resetFlow,
+          onRestart: restartApp,
+          onOpenRules: () => setShowRules(false)
+        }),
           h(IntelligenceScreen, {
             key: "rules",
             rules,
@@ -2224,6 +2243,7 @@ Return ONLY valid JSON:
           jobName: jobName(),
           step,
           onReset: resetFlow,
+          onRestart: restartApp,
           onOpenRules: () => setShowRules(true)
         }),
         step === "job" ? h(JobPicker, {
