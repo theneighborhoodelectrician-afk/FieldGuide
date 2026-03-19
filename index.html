@@ -619,7 +619,7 @@
             h("div", { key: "body", style: { display: "flex", gap: 14, alignItems: "center", padding: "16px" } }, [
               h("div", { key: "icon", style: { width: 48, height: 48, borderRadius: 16, display: "grid", placeItems: "center", background: "rgba(49,212,255,0.12)", border: "1px solid rgba(49,212,255,0.18)", flexShrink: 0, fontSize: 23 } }, "🏠"),
               h("div", { key: "meta", style: { flex: 1, minWidth: 0 } }, [
-                h("div", { key: "customer", style: { fontWeight: 800, fontSize: 17 } }, customer),
+                h("div", { key: "customer", style: { fontWeight: 800, fontSize: 17, color: "var(--text)" } }, customer),
                 address ? h("div", { key: "address", style: { marginTop: 4, color: "var(--muted)", fontSize: 13 } }, address) : null,
                 h("div", { key: "num", style: { marginTop: 10 } }, h(Badge, { tone: "cyan" }, "Est #" + estimateNumber))
               ]),
