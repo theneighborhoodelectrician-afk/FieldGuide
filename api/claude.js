@@ -204,21 +204,31 @@ module.exports = async function handler(req, res) {
         }
 
         const hcpRes = await makeRequest(
-          `https://api.housecallpro.com/estimate_options/${estimateOptionId}/attachments`,
-          {
-            method: "POST",
-            headers: {
-              "Authorization": `Token ${hcpKey}`,
-              "Content-Type": "application/json"
-            }
-          },
-          { url: uploadRes.secure_url, description: caption || "" }
-        );
+  `https://api.housecallpro.com/estimate_options/${estimateOptionId}/attachments`,
+  {
+    method: "POST",
+    headers: {
+      "Authorization": `Token ${hcpKey}`,
+      "Content-Type": "application/json"
+    }
+  },
+  { url: uploadRes.secure_url, description: caption || "" }
+);
 
-        res.status(200).json({ cloudinaryUrl: uploadRes.secure_url, hcp: hcpRes.body });
-      } catch (e) {
-        res.status(500).json({ error: e.message });
-      }
+if (hcpRes.status < 200 || hcpRes.status >= 300) {
+  res.status(hcpRes.status).json({
+    error: "HCP attachment failed",
+    cloudinaryUrl: uploadRes.secure_url,
+    hcp: hcpRes.body
+  });
+  return;
+}
+
+res.status(200).json({
+  cloudinaryUrl: uploadRes.secure_url,
+  hcp: hcpRes.body
+});
+
       return;
     }
 
