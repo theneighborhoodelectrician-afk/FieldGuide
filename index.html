@@ -288,6 +288,15 @@
       }
     }
 
+    async function fetchPricebook() {
+      try {
+        const data = await requestJson("/pricebook.json");
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
     function buildSystemPrompt(rules, section) {
       const rulesText = rules.map((rule) => `- IF: "${rule.trigger}" THEN: "${rule.result}"`).join("\n");
       const sectionPrompts = {
@@ -1474,6 +1483,8 @@ Return ONLY valid JSON:
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState("");
       const [options, setOptions] = useState([]);
+      const [pricebook, setPricebook] = useState([]);
+      const [pricingMode, setPricingMode] = useState("in_home");
       const [selected, setSelected] = useState({});
       const [expanded, setExpanded] = useState(null);
       const [photos, setPhotos] = useState({});
@@ -1486,6 +1497,10 @@ Return ONLY valid JSON:
         let live = true;
 
         (async () => {
+          const pricebookItems = await fetchPricebook();
+          if (!live) return;
+          setPricebook(pricebookItems);
+
           const result = await callClaude(null, buildOptionsPrompt(scopes, rules));
           if (!live) return;
 
@@ -1515,6 +1530,9 @@ Return ONLY valid JSON:
       }, [scopes, rules]);
 
       const selectedOptions = options.filter((option) => selected[option.number]);
+      const availablePricebookItems = pricebook.filter((item) => item?.pricing?.[pricingMode] != null);
+      const inHomeCount = pricebook.filter((item) => item?.pricing?.in_home != null).length;
+      const preferredBuilderCount = pricebook.filter((item) => item?.pricing?.preferred_builder != null).length;
 
       function toggleSelected(number) {
         setSelected((current) => ({ ...current, [number]: !current[number] }));
@@ -1639,6 +1657,64 @@ Return ONLY valid JSON:
           estimate.address ? h("div", { key: "address", style: { marginTop: 4, color: "var(--text-muted)", fontSize: 13 } },
             [estimate.address.street, estimate.address.city].filter(Boolean).join(", ")) : null,
           h("div", { key: "num", style: { marginTop: 8 } }, h(Badge, { tone: "cyan" }, `Est #${estimate.estimate_number || "Pending"}`))
+        ]),
+        h("div", {
+          key: "pricing-mode",
+          style: {
+            ...shellCardStyle(),
+            marginBottom: 14,
+            padding: "14px 16px"
+          }
+        }, [
+          h("div", { key: "label", style: { color: "var(--green)", fontWeight: 800, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 6 } }, "Pricing Mode"),
+          h("div", { key: "sub", style: { color: "var(--text-muted)", fontSize: 13, lineHeight: 1.5, marginBottom: 12 } },
+            "Choose which price book this estimate should follow before sending it to Housecall Pro."),
+          h("div", {
+            key: "toggle",
+            style: {
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 8
+            }
+          }, [
+            h(SoftButton, {
+              key: "in-home",
+              onClick: () => setPricingMode("in_home"),
+              selected: pricingMode === "in_home",
+              style: {
+                width: "100%",
+                padding: "14px 12px",
+                textAlign: "left",
+                color: pricingMode === "in_home" ? "var(--text)" : "var(--text-muted)"
+              }
+            }, `In Home (${inHomeCount})`),
+            h(SoftButton, {
+              key: "preferred-builder",
+              onClick: () => setPricingMode("preferred_builder"),
+              selected: pricingMode === "preferred_builder",
+              style: {
+                width: "100%",
+                padding: "14px 12px",
+                textAlign: "left",
+                color: pricingMode === "preferred_builder" ? "var(--text)" : "var(--text-muted)"
+              }
+            }, `Preferred Builder (${preferredBuilderCount})`)
+          ]),
+          h("div", {
+            key: "available",
+            style: {
+              marginTop: 12,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
+              flexWrap: "wrap"
+            }
+          }, [
+            h("div", { key: "copy", style: { color: "var(--text-muted)", fontSize: 13 } },
+              `${availablePricebookItems.length} catalog item${availablePricebookItems.length === 1 ? "" : "s"} available for ${pricingMode === "in_home" ? "In Home" : "Preferred Builder"} pricing.`),
+            h(Badge, { key: "mode", tone: "green" }, pricingMode === "in_home" ? "In Home" : "Preferred Builder")
+          ])
         ]),
         ...options.map((option, index) => {
           const color = OPTION_COLORS[index % OPTION_COLORS.length];
