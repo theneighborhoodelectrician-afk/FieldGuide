@@ -1,0 +1,7 @@
+{
+  "name": "fieldguide",
+  "private": true,
+  "dependencies": {
+    "cloudinary": "^2.5.1"
+  }
+}
