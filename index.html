@@ -1647,10 +1647,16 @@ Return ONLY valid JSON:
               warnings.push(`"${option.name}" was created, but FieldGuide could not find the new HCP option ID to attach the photo.`);
             }
             if (photo && optionId) {
-              const attachResult = await attachPhoto(photo.url, optionId, photo.label);
-              if (!attachResult || attachResult.error) {
-                warnings.push(`"${option.name}" was created, but the photo did not attach in HCP.`);
-              }
+             const attachResult = await attachPhoto(photo.url, optionId, photo.label);
+             if (!attachResult || attachResult.error) {
+               const detail =
+              attachResult?.hcp?.error ||
+              attachResult?.hcp?.message ||
+               attachResult?.error ||
+                 "Unknown attachment error";
+               warnings.push(`"${option.name}" was created, but the photo did not attach in HCP. ${detail}`);
+            }
+
             }
           }
 
