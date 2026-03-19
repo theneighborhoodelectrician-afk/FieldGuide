@@ -6,9 +6,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-function buildLabel(publicId) {
-  const fileName = publicId.split("/").pop() || publicId;
-  const withoutPrefix = fileName.replace(/^\d+[-_ ]*/, "");
+function buildLabel(asset) {
+  const source = asset.filename || asset.public_id || "";
+  const withoutPrefix = source.replace(/^\d+[-_ ]*/, "");
   return withoutPrefix
     .replace(/[-_]+/g, " ")
     .replace(/\.[^.]+$/, "")
@@ -23,36 +23,43 @@ module.exports = async function handler(req, res) {
 
   const folder = "Estimate Pics";
 
-  try {
-    const result = await cloudinary.api.resources({
-      type: "upload",
-      resource_type: "image",
-      prefix: `${folder}/`,
-      max_results: 100
-    });
+  if (
+    !process.env.CLOUDINARY_CLOUD_NAME ||
+    !process.env.CLOUDINARY_API_KEY ||
+    !process.env.CLOUDINARY_API_SECRET
+  ) {
+    return res.status(500).json({ error: "Missing Cloudinary environment variables" });
+  }
 
-    const photos = (result.resources || [])
-      .slice()
-      .sort((a, b) => a.public_id.localeCompare(b.public_id, undefined, { numeric: true }))
-      .map((asset) => ({
-        id: asset.asset_id || asset.public_id,
-        public_id: asset.public_id,
-        label: buildLabel(asset.public_id),
-        url: asset.secure_url,
-        thumb: cloudinary.url(asset.public_id, {
-          secure: true,
-          resource_type: "image",
-          type: "upload",
-          transformation: [
-            { width: 800, height: 600, crop: "fill", gravity: "auto" },
-            { quality: "auto", fetch_format: "auto" }
-          ]
-        })
-      }));
+  try {
+    const result = await cloudinary.search
+      .expression(`asset_folder="${folder}" AND resource_type:image`)
+      .sort_by("filename", "asc")
+      .max_results(100)
+      .execute();
+
+    const photos = (result.resources || []).map((asset) => ({
+      id: asset.asset_id || asset.public_id,
+      public_id: asset.public_id,
+      label: buildLabel(asset),
+      url: asset.secure_url,
+      thumb: cloudinary.url(asset.public_id, {
+        secure: true,
+        resource_type: "image",
+        type: "upload",
+        transformation: [
+          { width: 800, height: 600, crop: "fill", gravity: "auto" },
+          { quality: "auto", fetch_format: "auto" }
+        ]
+      })
+    }));
 
     return res.status(200).json({ photos });
   } catch (error) {
     console.error("estimate-photos error", error);
-    return res.status(500).json({ error: "Failed to load Cloudinary photos" });
+    return res.status(500).json({
+      error: "Failed to load Cloudinary photos",
+      details: error.message
+    });
   }
 };
