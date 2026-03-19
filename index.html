@@ -38,6 +38,7 @@
       --radius-sm: 10px;
       --container: 520px;
     }
+
     * { box-sizing: border-box; }
     html, body { min-height: 100%; }
     body {
@@ -51,39 +52,48 @@
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
+
     button, input, textarea, select {
       font: inherit;
     }
+
     button {
       cursor: pointer;
       border: 0;
     }
+
     img {
       max-width: 100%;
       display: block;
     }
+
     ::selection {
       background: rgba(50, 212, 255, 0.25);
       color: white;
     }
+
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.12);
       border-radius: 999px;
     }
+
     @keyframes spin {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
+
     @keyframes floatUp {
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
     @keyframes pulseRing {
       0%, 100% { box-shadow: 0 0 0 0 rgba(255, 102, 122, 0.36); }
       50% { box-shadow: 0 0 0 18px rgba(255, 102, 122, 0); }
     }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation: none !important;
@@ -95,6 +105,7 @@
 </head>
 <body>
   <div id="root"></div>
+
   <script type="importmap">
     {
       "imports": {
@@ -103,11 +114,15 @@
       }
     }
   </script>
+
   <script type="module">
     import React, { useEffect, useMemo, useRef, useState } from "react";
     import { createRoot } from "react-dom/client";
+
     const h = React.createElement;
+
     const TECHS = ["Brandon", "Steve", "David", "Joe", "Lou", "Brayden", "Andrew", "Nate"];
+
     const DEFAULT_RULES = [
       { id: 1, trigger: "oxidation on breaker or main breaker", result: "Full panel replacement + service upgrade + outside disconnect + new ground system + permits required" },
       { id: 2, trigger: "rust inside panel or water damage in panel", result: "Full panel replacement + service upgrade + outside disconnect + new ground system + permits required" },
@@ -131,6 +146,7 @@
       { id: 20, trigger: "no smoke detectors or outdated smoke detectors", result: "Recommend: wired smoke/carbon in basement + wireless smoke in each bedroom + wireless combo on all other floors" },
       { id: 21, trigger: "any job", result: "Always offer whole-home surge protection as an enhancement" }
     ];
+
     const PHOTO_LIBRARY = [
       { id: "recessed", label: "Recessed Lighting", emoji: "💡", tags: ["recessed", "lights", "ceiling", "lighting", "can light"], url: "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=1200&q=80&auto=format&fit=crop" },
       { id: "panel", label: "Panel Upgrade", emoji: "⚡", tags: ["panel", "breaker", "service", "upgrade", "electrical panel"], url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80&auto=format&fit=crop" },
@@ -139,6 +155,7 @@
       { id: "surge", label: "Surge Protection", emoji: "🛡️", tags: ["surge", "protection", "whole home"], url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80&auto=format&fit=crop" },
       { id: "smart", label: "Smart Controls", emoji: "📱", tags: ["smart", "switch", "automation", "wifi"], url: "https://images.unsplash.com/photo-1558618047-3c8c76f2e949?w=1200&q=80&auto=format&fit=crop" }
     ];
+
     const STEP_META = {
       request: {
         num: 1,
@@ -171,6 +188,7 @@
         placeholder: "Example: dimmers, under-cabinet lighting, surge protection, smart switches..."
       }
     };
+
     const TIER_LABELS = {
       essential: "Just What They Asked",
       safety: "Safety First",
@@ -179,7 +197,9 @@
       enhanced: "Enhanced Home",
       complete: "Complete Picture"
     };
+
     const OPTION_COLORS = ["#3b82f6", "#0d9488", "#7c3aed", "#f59e0b", "#00c97a", "#4f46e5"];
+
     function loadRules() {
       try {
         const saved = localStorage.getItem("fg_rules");
@@ -188,11 +208,13 @@
         return DEFAULT_RULES;
       }
     }
+
     function saveRules(rules) {
       try {
         localStorage.setItem("fg_rules", JSON.stringify(rules));
       } catch {}
     }
+
     function safeJsonParse(value, fallback = null) {
       try {
         return JSON.parse(value);
@@ -200,6 +222,7 @@
         return fallback;
       }
     }
+
     async function requestJson(url, options = {}) {
       const response = await fetch(url, options);
       const text = await response.text();
@@ -209,6 +232,7 @@
       }
       return data;
     }
+
     async function callClaude(system, userText) {
       const body = {
         model: "claude-sonnet-4-20250514",
@@ -216,6 +240,7 @@
         messages: [{ role: "user", content: userText }]
       };
       if (system) body.system = system;
+
       try {
         const data = await requestJson("/api/claude", {
           method: "POST",
@@ -229,6 +254,7 @@
         return null;
       }
     }
+
     async function callHCP(endpoint, method = "GET", body = null) {
       try {
         return await requestJson("/api/claude?action=hcp", {
@@ -240,6 +266,7 @@
         return null;
       }
     }
+
     async function attachPhoto(imageUrl, estimateOptionId, caption) {
       try {
         return await requestJson("/api/claude?action=attach_photo", {
@@ -251,6 +278,16 @@
         return null;
       }
     }
+
+    async function fetchCloudinaryEstimatePhotos() {
+      try {
+        const data = await requestJson("/api/estimate-photos");
+        return Array.isArray(data?.photos) ? data.photos : Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
     function buildSystemPrompt(rules, section) {
       const rulesText = rules.map((rule) => `- IF: "${rule.trigger}" THEN: "${rule.result}"`).join("\n");
       const sectionPrompts = {
@@ -258,30 +295,38 @@
         safety: "Analyze safety observations. Apply ALL Field Intelligence rules. Return safety_scopes with full expanded scopes.",
         enhancements: "Extract honest upgrade opportunities. Always include whole-home surge protection. Return enhancement_scopes array."
       };
+
       return `You are a master electrician with 30 years of estimating and service experience.
+
 FIELD INTELLIGENCE RULES:
 ${rulesText}
+
 YOUR JOB:
 ${sectionPrompts[section]}
+
 Return ONLY valid JSON with no markdown.
 For request use: {"requested_scopes":["scope"],"job_facts":{"location":"","quantity":"","panel_condition":"","structural_conditions":[],"home_age":""}}
 For safety use: {"safety_scopes":["scope"],"job_facts":{"panel_condition":"","safety_risks":[],"urgency":"","triggers_panel_upgrade":false,"triggers_service_upgrade":false,"requires_permits":false}}
 For enhancements use: {"enhancement_scopes":["scope"],"future_opportunities":[]}`;
     }
+
     function buildOptionsPrompt(scopes, rules) {
       return `You are a seasoned electrical estimator helping a field tech build homeowner-friendly estimate options.
 Customer requested: ${JSON.stringify(scopes.requested)}
 Safety items: ${JSON.stringify(scopes.safety)}
 Enhancements: ${JSON.stringify(scopes.enhancements)}
 Key rules: ${rules.slice(0, 10).map((r) => `${r.trigger} -> ${r.result}`).join("; ")}
+
 Create exactly 6 estimate options.
 - Be practical and honest.
 - Never invent pricing.
 - Group work logically.
 - Include permit flag where appropriate.
+
 Return ONLY valid JSON:
 {"options":[{"number":1,"name":"Option name","tier":"essential|safety|comfort|recommended|enhanced|complete","includes":["item 1"],"permits_required":false,"value_statement":"What this means for the home"}]}`;
     }
+
     function getSuggestedPhotos(optionName, includes) {
       const haystack = `${optionName} ${(includes || []).join(" ")}`.toLowerCase();
       const scored = PHOTO_LIBRARY
@@ -292,6 +337,7 @@ Return ONLY valid JSON:
         .sort((a, b) => b.score - a.score);
       return scored.some((item) => item.score > 0) ? scored.filter((item) => item.score > 0) : PHOTO_LIBRARY;
     }
+
     function shellCardStyle(extra = {}) {
       return {
         background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03))",
@@ -301,6 +347,7 @@ Return ONLY valid JSON:
         ...extra
       };
     }
+
     function pageWrap(children) {
       return h("div", {
         style: {
@@ -311,6 +358,7 @@ Return ONLY valid JSON:
         }
       }, children);
     }
+
     function PrimaryButton({ children, onClick, disabled = false, color = "var(--cyan)", style = {}, type = "button" }) {
       return h("button", {
         type,
@@ -330,6 +378,7 @@ Return ONLY valid JSON:
         }
       }, children);
     }
+
     function SoftButton({ children, onClick, style = {}, selected = false }) {
       return h("button", {
         type: "button",
@@ -345,6 +394,7 @@ Return ONLY valid JSON:
         }
       }, children);
     }
+
     function Badge({ children, tone = "default" }) {
       const toneMap = {
         default: { bg: "rgba(255,255,255,0.06)", color: "var(--text-muted)", border: "var(--border)" },
@@ -370,6 +420,7 @@ Return ONLY valid JSON:
         }
       }, children);
     }
+
     function EmptyState({ title, body, emoji = "📋" }) {
       return h("div", {
         style: {
@@ -383,6 +434,7 @@ Return ONLY valid JSON:
         h("div", { key: "body", style: { fontSize: 14, color: "var(--text-muted)", lineHeight: 1.6 } }, body)
       ]);
     }
+
     function LoadingState({ title, body }) {
       return h("div", {
         style: {
@@ -408,6 +460,7 @@ Return ONLY valid JSON:
         h("div", { key: "body", style: { fontSize: 14, color: "var(--text-muted)" } }, body)
       ]);
     }
+
     function ScopeChip({ text, color, onRemove }) {
       return h("div", {
         style: {
@@ -453,6 +506,7 @@ Return ONLY valid JSON:
         }, "×") : null
       ]);
     }
+
     function TechSelector({ onSelect }) {
       return h("div", {
         style: {
@@ -516,6 +570,7 @@ Return ONLY valid JSON:
         }, tech)))
       ]));
     }
+
     function Header({ techName, jobName, step, onReset, onOpenRules }) {
       const labels = [
         { key: "request", title: "Request" },
@@ -524,8 +579,10 @@ Return ONLY valid JSON:
         { key: "review", title: "Review" },
         { key: "options", title: "Options" }
       ];
+
       const stepIndex = labels.findIndex((item) => item.key === step);
       const visible = step !== "job";
+
       return h("header", {
         style: {
           position: "sticky",
@@ -641,19 +698,24 @@ Return ONLY valid JSON:
         ])
       ]));
     }
+
     function JobPicker({ techName, onSelect }) {
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState("");
       const [estimates, setEstimates] = useState([]);
+
       useEffect(() => {
         let live = true;
+
         (async () => {
           setLoading(true);
           setError("");
+
           const employeeData = await callHCP("/employees?page_size=100", "GET");
           const employee = employeeData?.employees?.find((item) =>
             (item.first_name || "").trim().toLowerCase() === techName.toLowerCase()
           );
+
           if (!employee?.id) {
             if (live) {
               setEstimates([]);
@@ -662,6 +724,7 @@ Return ONLY valid JSON:
             }
             return;
           }
+
           const now = new Date();
           const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).toISOString();
           const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
@@ -670,9 +733,11 @@ Return ONLY valid JSON:
           const assigned = rawEstimates.filter((estimate) =>
             estimate.assigned_employees?.some((person) => person.id === employee.id)
           );
+
           const detailed = await Promise.all(
             assigned.slice(0, 20).map(async (estimate) => (await callHCP(`/estimates/${estimate.id}`, "GET")) || estimate)
           );
+
           if (live) {
             setEstimates(detailed.filter(Boolean));
             setLoading(false);
@@ -683,16 +748,19 @@ Return ONLY valid JSON:
             setLoading(false);
           }
         });
+
         return () => {
           live = false;
         };
       }, [techName]);
+
       if (loading) {
         return h(LoadingState, {
           title: "Loading estimates...",
           body: `Pulling ${techName}'s schedule from Housecall Pro`
         });
       }
+
       return pageWrap([
         h("div", { key: "intro", style: { marginBottom: 16 } }, [
           h("div", {
@@ -725,6 +793,7 @@ Return ONLY valid JSON:
           const address = [street, city].filter(Boolean).join(", ");
           const optionCount = estimate.options?.length || 0;
           const estimateNumber = estimate.estimate_number || estimate.id?.slice(-6) || "Pending";
+
           return h("button", {
             key: estimate.id,
             type: "button",
@@ -785,6 +854,7 @@ Return ONLY valid JSON:
         })
       ]);
     }
+
     function InputStep({ meta, saved, rules, onDone }) {
       const [mode, setMode] = useState(saved?.mode || "type");
       const [text, setText] = useState(saved?.text || "");
@@ -793,26 +863,32 @@ Return ONLY valid JSON:
       const [error, setError] = useState("");
       const [extracted, setExtracted] = useState(saved?.extracted || null);
       const recognitionRef = useRef(null);
+
       useEffect(() => {
         return () => {
           recognitionRef.current?.stop?.();
         };
       }, []);
+
       const sectionKey = meta.num === 1 ? "request" : meta.num === 2 ? "safety" : "enhancements";
       const scopeKey = extracted ? Object.keys(extracted).find((key) => key.includes("scopes")) : null;
       const scopes = scopeKey ? extracted?.[scopeKey] || [] : [];
+
       function startVoice() {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) {
           setError("Voice input is not available in this browser.");
           return;
         }
+
         setError("");
         const recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.interimResults = true;
         recognition.lang = "en-US";
+
         let committed = text;
+
         recognition.onresult = (event) => {
           let interim = "";
           for (let i = event.resultIndex; i < event.results.length; i += 1) {
@@ -822,20 +898,24 @@ Return ONLY valid JSON:
           }
           setText(`${committed}${interim}`.trimStart());
         };
+
         recognition.onerror = () => {
           setRecording(false);
         };
         recognition.onend = () => {
           setRecording(false);
         };
+
         recognition.start();
         recognitionRef.current = recognition;
         setRecording(true);
       }
+
       function stopVoice() {
         recognitionRef.current?.stop?.();
         setRecording(false);
       }
+
       async function analyze() {
         if (!text.trim()) return;
         setAnalyzing(true);
@@ -848,6 +928,7 @@ Return ONLY valid JSON:
         }
         setAnalyzing(false);
       }
+
       function removeScope(index) {
         if (!scopeKey) return;
         setExtracted({
@@ -855,12 +936,14 @@ Return ONLY valid JSON:
           [scopeKey]: scopes.filter((_, i) => i !== index)
         });
       }
+
       const factEntries = Object.entries(extracted?.job_facts || {}).filter(([, value]) => {
         if (!value) return false;
         if (Array.isArray(value)) return value.length > 0;
         if (typeof value === "boolean") return value;
         return !["unknown", "not mentioned"].includes(String(value).toLowerCase());
       });
+
       return pageWrap([
         h("section", {
           key: "card",
@@ -1059,18 +1142,22 @@ Return ONLY valid JSON:
         ]) : null
       ]);
     }
+
     function ReviewStep({ data, onConfirm }) {
       const sections = [
         { label: "Customer Request", emoji: "🏠", color: "var(--cyan)", scopes: data.request?.extracted?.requested_scopes || [] },
         { label: "Field Findings", emoji: "⚡", color: "var(--amber)", scopes: data.safety?.extracted?.safety_scopes || [] },
         { label: "Upgrade Ideas", emoji: "💡", color: "var(--green)", scopes: data.enhancements?.extracted?.enhancement_scopes || [] }
       ];
+
       const payload = {
         requested: sections[0].scopes,
         safety: sections[1].scopes,
         enhancements: sections[2].scopes
       };
+
       const total = Object.values(payload).reduce((sum, list) => sum + list.length, 0);
+
       return pageWrap([
         h("div", {
           key: "hero",
@@ -1120,15 +1207,42 @@ Return ONLY valid JSON:
         }, "Build Estimate Options")
       ]);
     }
+
     function PhotoPicker({ option, onClose, onSelect }) {
       const [tab, setTab] = useState("suggested");
       const [query, setQuery] = useState("");
       const [searching, setSearching] = useState(false);
       const [results, setResults] = useState([]);
+      const [cloudinaryLoading, setCloudinaryLoading] = useState(false);
+      const [cloudinaryLoaded, setCloudinaryLoaded] = useState(false);
+      const [cloudinaryPhotos, setCloudinaryPhotos] = useState([]);
+
       const suggested = useMemo(
         () => getSuggestedPhotos(option.name, option.includes),
         [option.name, option.includes]
       );
+
+      useEffect(() => {
+        let live = true;
+
+        async function loadCloudinary() {
+          setCloudinaryLoading(true);
+          const photos = await fetchCloudinaryEstimatePhotos();
+          if (!live) return;
+          setCloudinaryPhotos(photos);
+          setCloudinaryLoaded(true);
+          setCloudinaryLoading(false);
+        }
+
+        if (tab === "cloudinary" && !cloudinaryLoaded) {
+          loadCloudinary();
+        }
+
+        return () => {
+          live = false;
+        };
+      }, [tab, cloudinaryLoaded]);
+
       async function searchUnsplash() {
         if (!query.trim()) return;
         setSearching(true);
@@ -1140,6 +1254,7 @@ Return ONLY valid JSON:
         }
         setSearching(false);
       }
+
       return h("div", {
         style: {
           position: "fixed",
@@ -1190,6 +1305,7 @@ Return ONLY valid JSON:
         }, [
           h(SoftButton, { key: "s", onClick: () => setTab("suggested"), selected: tab === "suggested" }, "Suggested"),
           h(SoftButton, { key: "a", onClick: () => setTab("library"), selected: tab === "library" }, "Library"),
+          h(SoftButton, { key: "c", onClick: () => setTab("cloudinary"), selected: tab === "cloudinary" }, "Cloudinary"),
           h(SoftButton, { key: "q", onClick: () => setTab("search"), selected: tab === "search" }, "Search")
         ]),
         h("div", {
@@ -1259,7 +1375,57 @@ Return ONLY valid JSON:
               h("div", { key: "credit", style: { padding: "8px 10px", color: "var(--text-muted)", fontSize: 11 } }, photo.user?.name || "Unsplash")
             ])))
           ]) : null,
-          tab !== "search" ? h("div", {
+          tab === "cloudinary" ? h("div", { key: "cloudinary" }, [
+            cloudinaryLoading ? h(LoadingState, { key: "loading", title: "Loading Cloudinary photos...", body: "Pulling from the Estimate Pics folder" }) : null,
+            !cloudinaryLoading && cloudinaryLoaded && cloudinaryPhotos.length === 0 ? h(EmptyState, {
+              key: "empty",
+              title: "No Cloudinary photos found",
+              body: "Check that the backend route is returning assets from the Estimate Pics folder.",
+              emoji: "☁️"
+            }) : null,
+            h("div", {
+              key: "grid",
+              style: {
+                display: "grid",
+                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                gap: 10
+              }
+            }, cloudinaryPhotos.map((photo, index) => h("button", {
+              key: photo.id || photo.public_id || index,
+              type: "button",
+              onClick: () => onSelect(photo.url, photo.label || photo.public_id || "Estimate photo"),
+              style: {
+                padding: 0,
+                borderRadius: "16px",
+                overflow: "hidden",
+                background: "transparent",
+                border: "1px solid var(--border)"
+              }
+            }, [
+              h("div", { key: "imgWrap", style: { position: "relative", aspectRatio: "4 / 3", background: "var(--bg-panel)" } }, [
+                h("img", {
+                  key: "img",
+                  src: photo.thumb || photo.url,
+                  alt: photo.label || photo.public_id || "Estimate photo",
+                  loading: "lazy",
+                  style: { width: "100%", height: "100%", objectFit: "cover" }
+                }),
+                h("div", {
+                  key: "overlay",
+                  style: {
+                    position: "absolute",
+                    inset: "auto 0 0 0",
+                    padding: "18px 10px 10px",
+                    background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.82))",
+                    textAlign: "left"
+                  }
+                }, [
+                  h("div", { key: "title", style: { fontWeight: 800, fontSize: 12, color: "white" } }, photo.label || photo.public_id || "Estimate photo")
+                ])
+              ])
+            ])))
+          ]) : null,
+          (tab === "suggested" || tab === "library") ? h("div", {
             key: "grid",
             style: {
               display: "grid",
@@ -1303,6 +1469,7 @@ Return ONLY valid JSON:
         ])
       ]));
     }
+
     function OptionsStep({ scopes, rules, estimate }) {
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState("");
@@ -1314,17 +1481,21 @@ Return ONLY valid JSON:
       const [sending, setSending] = useState(false);
       const [sent, setSent] = useState(false);
       const [sendError, setSendError] = useState("");
+
       useEffect(() => {
         let live = true;
+
         (async () => {
           const result = await callClaude(null, buildOptionsPrompt(scopes, rules));
           if (!live) return;
+
           const built = Array.isArray(result?.options) ? result.options.filter((option) =>
             option &&
             option.number &&
             option.name &&
             Array.isArray(option.includes)
           ) : [];
+
           if (built.length) {
             setOptions(built);
           } else {
@@ -1337,14 +1508,18 @@ Return ONLY valid JSON:
             setLoading(false);
           }
         });
+
         return () => {
           live = false;
         };
       }, [scopes, rules]);
+
       const selectedOptions = options.filter((option) => selected[option.number]);
+
       function toggleSelected(number) {
         setSelected((current) => ({ ...current, [number]: !current[number] }));
       }
+
       function handlePhotoSelect(url, label) {
         if (!pickerFor || !url) return;
         setPhotos((current) => ({
@@ -1353,10 +1528,12 @@ Return ONLY valid JSON:
         }));
         setPickerFor(null);
       }
+
       async function sendToHCP() {
         if (!estimate?.id || !selectedOptions.length) return;
         setSending(true);
         setSendError("");
+
         try {
           for (const option of selectedOptions) {
             const response = await callHCP(`/estimates/${estimate.id}/options`, "POST", {
@@ -1368,24 +1545,29 @@ Return ONLY valid JSON:
                 quantity: 1
               }))
             });
+
             const optionId = response?.id || response?.estimate_option_id;
             const photo = photos[option.number];
             if (photo && optionId) {
               await attachPhoto(photo.url, optionId, photo.label);
             }
           }
+
           setSent(true);
         } catch {
           setSendError("Sending failed. Please try again.");
         }
+
         setSending(false);
       }
+
       if (loading) {
         return pageWrap(h(LoadingState, {
           title: "Building options...",
           body: "Grouping scopes into homeowner-friendly estimate choices"
         }));
       }
+
       if (error) {
         return pageWrap(h(EmptyState, {
           title: "Options couldn't be built",
@@ -1393,6 +1575,7 @@ Return ONLY valid JSON:
           emoji: "⚠️"
         }));
       }
+
       if (sent) {
         return pageWrap(h("div", {
           style: {
@@ -1427,6 +1610,7 @@ Return ONLY valid JSON:
           }, `${selectedOptions.length} option${selectedOptions.length > 1 ? "s were" : " was"} added to Estimate #${estimate.estimate_number || ""}.`)
         ]));
       }
+
       return pageWrap([
         pickerFor ? h(PhotoPicker, {
           key: "picker",
@@ -1461,6 +1645,7 @@ Return ONLY valid JSON:
           const isSelected = !!selected[option.number];
           const isExpanded = expanded === option.number;
           const photo = photos[option.number];
+
           return h("section", {
             key: option.number,
             style: {
@@ -1669,11 +1854,13 @@ Return ONLY valid JSON:
         }, sending ? "Sending to Housecall Pro..." : `Add ${selectedOptions.length} Option${selectedOptions.length > 1 ? "s" : ""} to Housecall Pro`) : null
       ]);
     }
+
     function IntelligenceScreen({ rules, onBack, onSave }) {
       const [localRules, setLocalRules] = useState(rules);
       const [showAdd, setShowAdd] = useState(false);
       const [trigger, setTrigger] = useState("");
       const [result, setResult] = useState("");
+
       function addRule() {
         if (!trigger.trim() || !result.trim()) return;
         const updated = [...localRules, { id: Date.now(), trigger: trigger.trim(), result: result.trim() }];
@@ -1683,11 +1870,13 @@ Return ONLY valid JSON:
         setResult("");
         setShowAdd(false);
       }
+
       function removeRule(id) {
         const updated = localRules.filter((rule) => rule.id !== id);
         setLocalRules(updated);
         onSave(updated);
       }
+
       return h("div", null, [
         h("div", { key: "top", style: { paddingTop: 10 } }, pageWrap([
           h("div", { key: "back", style: { marginBottom: 12 } }, h(SoftButton, { onClick: onBack }, "Back")),
@@ -1788,6 +1977,7 @@ Return ONLY valid JSON:
         ]))
       ]);
     }
+
     function FieldGuide() {
       const [tech, setTech] = useState(null);
       const [step, setStep] = useState("job");
@@ -1796,26 +1986,31 @@ Return ONLY valid JSON:
       const [scopes, setScopes] = useState(null);
       const [rules, setRules] = useState(loadRules);
       const [showRules, setShowRules] = useState(false);
+
       function resetFlow() {
         setStep("job");
         setEstimate(null);
         setData({});
         setScopes(null);
       }
+
       function saveStep(key, result) {
         setData((current) => ({ ...current, [key]: result }));
         if (key === "request") setStep("safety");
         if (key === "safety") setStep("enhancements");
         if (key === "enhancements") setStep("review");
       }
+
       function jobName() {
         if (!estimate) return "";
         const customer = `${estimate.customer?.first_name || ""} ${estimate.customer?.last_name || ""}`.trim();
         return customer ? `${customer} - Est #${estimate.estimate_number || "Pending"}` : `Est #${estimate.estimate_number || "Pending"}`;
       }
+
       if (!tech) {
         return h(TechSelector, { onSelect: setTech });
       }
+
       if (showRules) {
         return h(React.Fragment, null, [
           h(Header, {
@@ -1837,6 +2032,7 @@ Return ONLY valid JSON:
           })
         ]);
       }
+
       return h("div", null, [
         h(Header, {
           key: "header",
@@ -1891,6 +2087,7 @@ Return ONLY valid JSON:
         }) : null
       ]);
     }
+
     createRoot(document.getElementById("root")).render(h(FieldGuide));
   </script>
 </body>
