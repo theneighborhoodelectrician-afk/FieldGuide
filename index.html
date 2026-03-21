@@ -262,6 +262,24 @@ Mindset:
       }
     }
 
+    function extractJsonObject(text) {
+      const raw = String(text || "").trim();
+      if (!raw) return null;
+      const direct = safeJsonParse(raw, null);
+      if (direct) return direct;
+
+      const cleaned = raw.replace(/```json|```/g, "").trim();
+      const secondPass = safeJsonParse(cleaned, null);
+      if (secondPass) return secondPass;
+
+      const firstBrace = cleaned.indexOf("{");
+      const lastBrace = cleaned.lastIndexOf("}");
+      if (firstBrace >= 0 && lastBrace > firstBrace) {
+        return safeJsonParse(cleaned.slice(firstBrace, lastBrace + 1), null);
+      }
+      return null;
+    }
+
     async function requestJson(url, options = {}) {
       const response = await fetch(url, options);
       const text = await response.text();
@@ -287,8 +305,7 @@ Mindset:
           body: JSON.stringify(body)
         });
         const rawText = data?.content?.[0]?.text || "";
-        const cleaned = rawText.replace(/```json|```/g, "").trim();
-        return safeJsonParse(cleaned, null);
+        return extractJsonObject(rawText);
       } catch {
         return null;
       }
@@ -379,38 +396,15 @@ Mindset:
     function buildSystemPrompt(rules, section) {
       const rulesText = rules.map((rule) => `- IF: "${rule.trigger}" THEN: "${rule.result}"`).join("\n");
       const sectionPrompts = {
-        request: `Extract every single thing the customer directly asked for.
-This is only "What did they call you for?"
-Do not summarize multiple requests into one vague sentence.
-Do not drop quantities, rooms, fixture counts, or device types.
-If the customer asked for 3 different things, return 3 separate requested_scopes.
-Only include the customer's ask here, not safety findings or upgrades.
-
-Good examples:
-- "replace living room ceiling fan"
-- "add 6 recessed lights in kitchen"
-- "install EV charger in garage"
-- "troubleshoot dead garage outlets"`,
-        safety: `Analyze safety observations using the Four What's framework.
-Focus on "What is directly connected to what they called you for?"
-Apply ALL Field Intelligence rules.
-Return safety_scopes with full expanded scopes that are directly connected, not random add-ons.`,
-        enhancements: `Extract honest upgrade opportunities using the Four What's framework.
-Capture both "What's good?" and "What's more?"
-Always include whole-home surge protection as an enhancement.
-Return enhancement_scopes array with balanced, homeowner-friendly ideas.`
+        request: "Extract what the customer specifically asked for. Return requested_scopes array. Preserve distinct asks, quantities, and rooms when mentioned.",
+        safety: "Analyze safety observations. Apply ALL Field Intelligence rules. Return safety_scopes with full expanded scopes.",
+        enhancements: "Extract honest upgrade opportunities and positive conditions. Always include whole-home surge protection. Return enhancement_scopes array."
       };
 
       return `You are a master electrician with 30 years of estimating and service experience.
 
 FIELD INTELLIGENCE RULES:
 ${rulesText}
-
-FOUR WHAT'S FRAMEWORK:
-1. What did they call you for?
-2. What is directly connected to what they called you for?
-3. What's good?
-4. What's more?
 
 YOUR JOB:
 ${sectionPrompts[section]}
