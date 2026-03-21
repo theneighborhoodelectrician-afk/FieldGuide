@@ -379,9 +379,18 @@ Mindset:
     function buildSystemPrompt(rules, section) {
       const rulesText = rules.map((rule) => `- IF: "${rule.trigger}" THEN: "${rule.result}"`).join("\n");
       const sectionPrompts = {
-        request: `Extract what the customer specifically asked for.
-Start with "What did they call you for?"
-Return requested_scopes array with direct customer ask only.`,
+        request: `Extract every single thing the customer directly asked for.
+This is only "What did they call you for?"
+Do not summarize multiple requests into one vague sentence.
+Do not drop quantities, rooms, fixture counts, or device types.
+If the customer asked for 3 different things, return 3 separate requested_scopes.
+Only include the customer's ask here, not safety findings or upgrades.
+
+Good examples:
+- "replace living room ceiling fan"
+- "add 6 recessed lights in kitchen"
+- "install EV charger in garage"
+- "troubleshoot dead garage outlets"`,
         safety: `Analyze safety observations using the Four What's framework.
 Focus on "What is directly connected to what they called you for?"
 Apply ALL Field Intelligence rules.
@@ -407,7 +416,7 @@ YOUR JOB:
 ${sectionPrompts[section]}
 
 Return ONLY valid JSON with no markdown.
-For request use: {"requested_scopes":["scope"],"job_facts":{"location":"","quantity":"","panel_condition":"","structural_conditions":[],"home_age":""}}
+For request use: {"requested_scopes":["replace living room ceiling fan","add 6 recessed lights in kitchen"],"job_facts":{"location":"","quantity":"","panel_condition":"","structural_conditions":[],"home_age":""}}
 For safety use: {"safety_scopes":["scope"],"job_facts":{"panel_condition":"","safety_risks":[],"urgency":"","triggers_panel_upgrade":false,"triggers_service_upgrade":false,"requires_permits":false}}
 For enhancements use: {"enhancement_scopes":["scope"],"future_opportunities":[]}`;
     }
