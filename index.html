@@ -4,32 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#11151c" />
-  <title>FieldGuide</title>
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>FieldGuide - Electrical Estimating</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #10141b;
-      --panel: #191f2a;
-      --panel-soft: rgba(255, 255, 255, 0.04);
-      --border: rgba(255, 255, 255, 0.1);
+      --bg: #11151c;
+      --bg-elevated: #181d27;
+      --bg-panel: #1f2531;
+      --bg-soft: rgba(255, 255, 255, 0.04);
+      --border: rgba(255, 255, 255, 0.09);
+      --border-strong: rgba(255, 255, 255, 0.18);
       --text: #edf2f7;
-      --muted: #95a2b8;
-      --dim: #68748b;
-      --cyan: #31d4ff;
-      --cyan-soft: rgba(49, 212, 255, 0.14);
-      --amber: #ffb11f;
-      --amber-soft: rgba(255, 177, 31, 0.14);
-      --green: #34d58b;
-      --green-soft: rgba(52, 213, 139, 0.14);
-      --red: #ff6a7f;
-      --red-soft: rgba(255, 106, 127, 0.14);
-      --container: 560px;
-      --shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+      --text-muted: #93a0b7;
+      --text-dim: #647289;
+      --cyan: #32d4ff;
+      --cyan-deep: rgba(50, 212, 255, 0.15);
+      --amber: #ffb020;
+      --amber-deep: rgba(255, 176, 32, 0.14);
+      --green: #31d78c;
+      --green-deep: rgba(49, 215, 140, 0.14);
+      --red: #ff667a;
+      --red-deep: rgba(255, 102, 122, 0.14);
+      --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.35);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.28);
       --radius-xl: 24px;
       --radius-lg: 18px;
       --radius-md: 14px;
+      --radius-sm: 10px;
+      --container: 520px;
     }
 
     * { box-sizing: border-box; }
@@ -39,1171 +46,1939 @@
       color: var(--text);
       font-family: "Barlow", system-ui, sans-serif;
       background:
-        radial-gradient(circle at top left, rgba(49, 212, 255, 0.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(255, 177, 31, 0.08), transparent 22%),
+        radial-gradient(circle at top left, rgba(50, 212, 255, 0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(255, 176, 32, 0.08), transparent 22%),
         linear-gradient(180deg, #11151c 0%, #0d1015 100%);
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
-    button, input, textarea { font: inherit; }
-    button { border: 0; cursor: pointer; }
-    img { display: block; max-width: 100%; }
+    button, input, textarea, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    ::selection {
+      background: rgba(50, 212, 255, 0.25);
+      color: white;
+    }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+    }
 
     @keyframes spin {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
+    @keyframes floatUp {
+      from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulseRing {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 102, 122, 0.36); }
+      50% { box-shadow: 0 0 0 18px rgba(255, 102, 122, 0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
     }
   </style>
 </head>
 <body>
   <div id="root"></div>
 
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script>
-    (function () {
-      var h = React.createElement;
-      var useEffect = React.useEffect;
-      var useMemo = React.useMemo;
-      var useRef = React.useRef;
-      var useState = React.useState;
-      var createRoot = ReactDOM.createRoot;
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client"
+      }
+    }
+  </script>
 
-      var TECHS = [
-        { label: "Brandon", hcpName: "Brandon" },
-        { label: "Steve", hcpName: "Steve" },
-        { label: "David", hcpName: "David" },
-        { label: "Joe", hcpName: "Joe" },
-        { label: "Lou", hcpName: "Lou" },
-        { label: "Brayden", hcpName: "Brayden" },
-        { label: "Andrew", hcpName: "Andrew" },
-        { label: "Nate", hcpName: "Nate" }
-      ];
+  <script type="module">
+    import React, { useEffect, useMemo, useRef, useState } from "react";
+    import { createRoot } from "react-dom/client";
 
-      var DEFAULT_RULES = [
-        { id: 1, trigger: "oxidation on breaker or main breaker", result: "Full panel replacement + service upgrade + outside disconnect + new ground system + permits required" },
-        { id: 2, trigger: "rust inside panel or water damage in panel", result: "Full panel replacement + service upgrade + outside disconnect + new ground system + permits required" },
-        { id: 3, trigger: "unsafe panel brand or fuse panel", result: "Known unsafe panel - full replacement required + service upgrade + new ground system" },
-        { id: 4, trigger: "double tapped breakers and panel is under 150 amps", result: "Full new service upgrade required + outside disconnect + new ground system + permits" },
-        { id: 5, trigger: "double tapped breakers and panel is 150 amps or above", result: "Offer sub-panel installation OR full new service upgrade" },
-        { id: 6, trigger: "aluminum wiring on branch circuits", result: "Must replace wiring OR install CO/ALR rated devices at every location" },
-        { id: 7, trigger: "ungrounded outlets or two-prong outlets", result: "Offer GFCI protection at each location OR GFCI breaker in panel" },
-        { id: 8, trigger: "knob and tube wiring", result: "Only two options: leave it alone OR full rewire" },
-        { id: 9, trigger: "EV charger request", result: "Perform load calculation first - only recommend panel upgrade if load calc requires it" },
-        { id: 10, trigger: "any job", result: "Always offer whole-home surge protection as an enhancement" }
-      ];
+    const h = React.createElement;
 
-      var PHOTO_LIBRARY = [
-        { id: "recessed", label: "Recessed Lighting", emoji: "💡", tags: ["recessed", "lighting", "can"], url: "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=1200&q=80&auto=format&fit=crop" },
-        { id: "panel", label: "Panel Upgrade", emoji: "⚡", tags: ["panel", "service", "breaker"], url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80&auto=format&fit=crop" },
-        { id: "ev", label: "EV Charger", emoji: "🔌", tags: ["ev", "charger"], url: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1200&q=80&auto=format&fit=crop" },
-        { id: "gfci", label: "GFCI", emoji: "🔧", tags: ["gfci", "outlet"], url: "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=1200&q=80&auto=format&fit=crop" },
-        { id: "surge", label: "Surge Protection", emoji: "🛡️", tags: ["surge", "protection"], url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80&auto=format&fit=crop" }
-      ];
+    const TECHS = ["Brandon", "Steve", "David", "Joe", "Lou", "Brayden", "Andrew", "Nate"];
 
-      var STEP_META = {
-        request: { title: "What They Called For", subtitle: "Start with the homeowner's exact ask.", color: "var(--cyan)", soft: "var(--cyan-soft)", placeholder: "Example: add 6 recessed lights in the kitchen, replace a fan, quote an EV charger..." },
-        safety: { title: "What's Directly Connected", subtitle: "Describe findings and anything logically tied to the ask.", color: "var(--amber)", soft: "var(--amber-soft)", placeholder: "Example: no brace box, no room in panel, no GFCI, aluminum wiring..." },
-        enhancements: { title: "What's Good / What's More", subtitle: "Note positives and worthwhile long-term improvements.", color: "var(--green)", soft: "var(--green-soft)", placeholder: "Example: open attic above, wiring looks good, add dimmers, surge, smart controls..." }
+    const DEFAULT_RULES = [
+      { id: 1, trigger: "oxidation on breaker or main breaker", result: "Full panel replacement + service upgrade + outside disconnect + new ground system + permits required" },
+      { id: 2, trigger: "rust inside panel or water damage in panel", result: "Full panel replacement + service upgrade + outside disconnect + new ground system + permits required" },
+      { id: 3, trigger: "Federal Pacific, Stab-Lok, FPE, Zinsco, Pushmatic, or GE panel", result: "Known unsafe panel - full replacement required + outside service upgrade + new ground system" },
+      { id: 4, trigger: "fuse box or fuse panel", result: "Unsafe - full panel upgrade required + outside service + new ground system + permits" },
+      { id: 5, trigger: "double tapped breakers and panel is under 150 amps", result: "Full new service upgrade required + outside disconnect + new ground system + permits" },
+      { id: 6, trigger: "double tapped breakers and panel is 150 amps or above", result: "Offer sub-panel installation OR full new service upgrade + outside disconnect + new ground system + permits" },
+      { id: 7, trigger: "panel is full, no open breakers, does not accept tandem breakers, under 150 amps", result: "Full new service upgrade required + outside disconnect + new ground system + permits" },
+      { id: 8, trigger: "panel is full, no open breakers, does not accept tandem breakers, 150 amps or above", result: "Offer sub-panel installation OR full new service upgrade" },
+      { id: 9, trigger: "panel is full but accepts tandem breakers", result: "Offer tandem breaker installation as a solution" },
+      { id: 10, trigger: "any panel upgrade", result: "Always includes: new ground system + outside service upgrade + permits required" },
+      { id: 11, trigger: "permit pulled for panel upgrade", result: "Outside disconnect is required by code" },
+      { id: 12, trigger: "aluminum wiring on branch circuits (not ranges, dryers, or AC)", result: "Must replace wiring OR install CO/ALR rated devices at every location" },
+      { id: 13, trigger: "ungrounded outlets or two-prong outlets", result: "Offer GFCI protection at each location OR GFCI breaker in panel" },
+      { id: 14, trigger: "no GFCI protection in bathroom, kitchen, garage, or exterior", result: "Separate line item: GFCI protection required at all wet and exterior locations" },
+      { id: 15, trigger: "knob and tube wiring", result: "Only two options: leave it completely alone OR full house rewire" },
+      { id: 16, trigger: "home built before 1980", result: "Flag for: bad panel brands, grounding system tied to water pipe/PEX, aluminum grounds oxidizing, outdated smoke detectors, outlet/GFCI condition" },
+      { id: 17, trigger: "grounding system tied to water pipe or PEX plumbing", result: "Ground system has lost continuity - new ground system required" },
+      { id: 18, trigger: "aluminum grounds to water pipe", result: "Oxidation risk - recommend replacing ground connections" },
+      { id: 19, trigger: "EV charger request", result: "Perform load calculation first - only recommend panel upgrade if load calc shows it cannot handle it" },
+      { id: 20, trigger: "no smoke detectors or outdated smoke detectors", result: "Recommend: wired smoke/carbon in basement + wireless smoke in each bedroom + wireless combo on all other floors" },
+      { id: 21, trigger: "any job", result: "Always offer whole-home surge protection as an enhancement" }
+    ];
+
+    const PHOTO_LIBRARY = [
+      { id: "recessed", label: "Recessed Lighting", emoji: "💡", tags: ["recessed", "lights", "ceiling", "lighting", "can light"], url: "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=1200&q=80&auto=format&fit=crop" },
+      { id: "panel", label: "Panel Upgrade", emoji: "⚡", tags: ["panel", "breaker", "service", "upgrade", "electrical panel"], url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80&auto=format&fit=crop" },
+      { id: "ev", label: "EV Charger", emoji: "🔌", tags: ["ev", "charger", "electric vehicle", "car charger"], url: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1200&q=80&auto=format&fit=crop" },
+      { id: "gfci", label: "GFCI Outlets", emoji: "🔧", tags: ["gfci", "outlet", "bathroom", "kitchen", "safety"], url: "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=1200&q=80&auto=format&fit=crop" },
+      { id: "surge", label: "Surge Protection", emoji: "🛡️", tags: ["surge", "protection", "whole home"], url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80&auto=format&fit=crop" },
+      { id: "smart", label: "Smart Controls", emoji: "📱", tags: ["smart", "switch", "automation", "wifi"], url: "https://images.unsplash.com/photo-1558618047-3c8c76f2e949?w=1200&q=80&auto=format&fit=crop" }
+    ];
+
+    const STEP_META = {
+      request: {
+        num: 1,
+        label: "Their Request",
+        emoji: "🏠",
+        accent: "var(--cyan)",
+        accentSoft: "var(--cyan-deep)",
+        question: "What did the customer ask for?",
+        sub: "Capture the homeowner's ask in plain language.",
+        placeholder: "Example: add 6 recessed lights in the living room, troubleshoot dead garage outlets, quote EV charger install..."
+      },
+      safety: {
+        num: 2,
+        label: "What You Found",
+        emoji: "⚡",
+        accent: "var(--amber)",
+        accentSoft: "var(--amber-deep)",
+        question: "What did you find on site?",
+        sub: "Describe panel conditions, hazards, age clues, and anything code-related.",
+        placeholder: "Example: panel has oxidation on main breaker, no GFCIs in kitchen, aluminum branch wiring, original 1970s service..."
+      },
+      enhancements: {
+        num: 3,
+        label: "Good Ideas",
+        emoji: "💡",
+        accent: "var(--green)",
+        accentSoft: "var(--green-deep)",
+        question: "What else would genuinely improve the home?",
+        sub: "Keep it helpful, not salesy.",
+        placeholder: "Example: dimmers, under-cabinet lighting, surge protection, smart switches..."
+      }
+    };
+
+    const TIER_LABELS = {
+      economy: "Economy",
+      midrange: "Midrange",
+      premium: "Premium"
+    };
+
+    const OPTION_COLORS = ["#3b82f6", "#0d9488", "#7c3aed", "#f59e0b", "#00c97a", "#4f46e5"];
+
+    const OPTIONS_PLAYBOOK = `Why do we want to offer options?
+For far too long the electrical industry has been misguided in how to present our solutions to our clients. Never assume they only want the cheapest path. The best way to learn what kind of buyer they are is to present a full range of honest solutions.
+
+Buyer archetypes:
+- Premium buyer
+- Midrange buyer
+- Economy buyer
+
+Required option structure:
+- Create exactly 6 options
+- 2 premium options
+- 2 midrange options
+- 2 economy options
+- Two options per buyer level create a micro-range so it feels like "this premium or that premium" instead of "take it or leave it"
+
+The Four What's framework:
+1. What did they call you for?
+2. What is directly connected to what they called you for?
+3. What's good?
+4. What's more?
+
+Ordering rules:
+- Start with what they called you for so it is clear you listened
+- Then include what is directly connected to the call
+- Use what's good to show balance and build trust
+- Save what's more for the larger, broader, or longer-term recommendations
+
+Mindset:
+- Do not pre-judge what level of solution the homeowner will choose
+- Premium options should feel turnkey and built to put the problem to rest for life
+- Economy options should still be honest and functional, not random bandaids
+- Midrange options should feel balanced and practical`;
+
+    const CATALOG_FAMILIES = [
+      { name: "panel", keywords: ["panel", "service", "disconnect", "breaker", "sub panel", "sub-panel", "ground system"] },
+      { name: "fan", keywords: ["fan", "ceiling fan", "exhaust fan", "bath fan", "fan box", "brace box"] },
+      { name: "ev", keywords: ["ev", "charger", "vehicle charger", "car charger"] },
+      { name: "lighting", keywords: ["recessed", "light", "lighting", "fixture", "dimmer", "switch", "under cabinet", "sconce", "pendant"] },
+      { name: "outlet", keywords: ["outlet", "plug", "gfci", "usb outlet", "two prong", "2 prong"] },
+      { name: "safety", keywords: ["surge", "smoke", "alarm", "detector", "carbon", "grounding"] }
+    ];
+
+    function loadRules() {
+      try {
+        const saved = localStorage.getItem("fg_rules");
+        return saved ? JSON.parse(saved) : DEFAULT_RULES;
+      } catch {
+        return DEFAULT_RULES;
+      }
+    }
+
+    function saveRules(rules) {
+      try {
+        localStorage.setItem("fg_rules", JSON.stringify(rules));
+      } catch {}
+    }
+
+    function safeJsonParse(value, fallback = null) {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return fallback;
+      }
+    }
+
+    async function requestJson(url, options = {}) {
+      const response = await fetch(url, options);
+      const text = await response.text();
+      const data = safeJsonParse(text, null);
+      if (!response.ok) {
+        throw new Error(data?.error || response.statusText || "Request failed");
+      }
+      return data;
+    }
+
+    async function callClaude(system, userText) {
+      const body = {
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1500,
+        messages: [{ role: "user", content: userText }]
       };
+      if (system) body.system = system;
 
-      var TIER_LABELS = { economy: "Economy", midrange: "Midrange", premium: "Premium" };
-      var OPTION_COLORS = ["#2f7ef7", "#0f9b8e", "#6d41ea", "#f5a51f", "#22c86a", "#db4d88"];
-      var OPTIONS_STRATEGY = [
-        "Why we offer options:",
-        "- Never assume the homeowner only wants the cheapest solution.",
-        "- Present a full range so the customer can reveal whether they are an economy, midrange, or premium buyer.",
-        "- Build 6 options total: 2 economy, 2 midrange, and 2 premium.",
-        "- Each buyer tier should have a micro-range so the decision feels like this-or-that, not take-it-or-leave-it.",
-        "",
-        "The Four What's:",
-        "1. What did they call you for?",
-        "2. What is directly connected to what they called you for?",
-        "3. What's good?",
-        "4. What's more?",
-        "",
-        "Ordering rules:",
-        "- Start with the original ask.",
-        "- Then handle what is directly connected.",
-        "- Use what's good to reinforce trust and show balance.",
-        "- Save what's more for the later, broader, or more turnkey solutions."
-      ].join("\n");
-      var CATALOG_FAMILIES = [
-        { name: "panel", keywords: ["panel", "service", "disconnect", "sub panel", "sub-panel", "breaker", "ground system"] },
-        { name: "fan", keywords: ["fan", "ceiling fan", "bath fan", "exhaust fan", "fan box", "brace box"] },
-        { name: "ev", keywords: ["ev", "vehicle charger", "car charger", "charger"] },
-        { name: "lighting", keywords: ["recessed", "light", "lighting", "fixture", "dimmer", "switch", "under cabinet", "pendant"] },
-        { name: "outlet", keywords: ["outlet", "plug", "gfci", "2 prong", "two prong", "usb outlet"] },
-        { name: "safety", keywords: ["surge", "smoke", "carbon", "detector", "alarm", "grounding"] }
-      ];
-
-      function safeJsonParse(value, fallback) {
-        try {
-          return JSON.parse(value);
-        } catch (error) {
-          return fallback;
-        }
-      }
-
-      function shellCard(extra) {
-        var base = {
-          background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03))",
-          border: "1px solid var(--border)",
-          borderRadius: "var(--radius-xl)",
-          boxShadow: "var(--shadow)"
-        };
-        var output = {};
-        var key;
-        for (key in base) output[key] = base[key];
-        if (extra) for (key in extra) output[key] = extra[key];
-        return output;
-      }
-
-      function pageWrap(children) {
-        return h("div", {
-          style: {
-            width: "100%",
-            maxWidth: "var(--container)",
-            margin: "0 auto",
-            padding: "20px 16px 56px"
-          }
-        }, children);
-      }
-
-      function get(obj, path, fallback) {
-        var parts = path.split(".");
-        var current = obj;
-        var i;
-        for (i = 0; i < parts.length; i += 1) {
-          if (current == null) return fallback;
-          current = current[parts[i]];
-        }
-        return current == null ? fallback : current;
-      }
-
-      async function requestJson(url, options) {
-        var response = await fetch(url, options || {});
-        var text = await response.text();
-        var data = safeJsonParse(text, null);
-        if (!response.ok) {
-          throw new Error((data && data.error) || text || response.statusText || "Request failed");
-        }
-        return data;
-      }
-
-      async function callClaude(system, userText) {
-        var body = {
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1800,
-          messages: [{ role: "user", content: userText }]
-        };
-        if (system) body.system = system;
-        try {
-          var data = await requestJson("/api/claude", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body)
-          });
-          var raw = get(data, "content.0.text", "");
-          var cleaned = String(raw).replace(/```json|```/g, "").trim();
-          return safeJsonParse(cleaned, null);
-        } catch (error) {
-          return null;
-        }
-      }
-
-      async function callHCP(endpoint, method, body) {
-        try {
-          return await requestJson("/api/claude?action=hcp", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ endpoint: endpoint, method: method || "GET", body: body || null })
-          });
-        } catch (error) {
-          return null;
-        }
-      }
-
-      async function attachPhoto(imageUrl, estimateOptionId, caption) {
-        try {
-          var response = await fetch("/api/claude?action=attach_photo", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ imageUrl: imageUrl, estimateOptionId: estimateOptionId, caption: caption })
-          });
-          var text = await response.text();
-          var data = safeJsonParse(text, { raw: text });
-          if (!response.ok) {
-            return {
-              error: (data && data.error) || "Attachment failed",
-              status: response.status,
-              hcp: (data && data.hcp) || data
-            };
-          }
-          return data;
-        } catch (error) {
-          return { error: error.message };
-        }
-      }
-
-      async function fetchCloudinaryEstimatePhotos() {
-        try {
-          var data = await requestJson("/api/estimate-photos");
-          return Array.isArray(data && data.photos) ? data.photos : [];
-        } catch (error) {
-          return [];
-        }
-      }
-
-      async function fetchPricebook() {
-        try {
-          var data = await requestJson("/pricebook.json");
-          return Array.isArray(data) ? data : [];
-        } catch (error) {
-          return [];
-        }
-      }
-
-      function loadRules() {
-        try {
-          var saved = localStorage.getItem("fg_rules");
-          return saved ? JSON.parse(saved) : DEFAULT_RULES;
-        } catch (error) {
-          return DEFAULT_RULES;
-        }
-      }
-
-      function saveRules(rules) {
-        try {
-          localStorage.setItem("fg_rules", JSON.stringify(rules));
-        } catch (error) {}
-      }
-
-      function dollarsToCents(value) {
-        return Math.round(Number(value || 0) * 100);
-      }
-
-      function normalizeText(value) {
-        return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-      }
-
-      function tokenize(value) {
-        return normalizeText(value).split(/\s+/).filter(function (token) {
-          return token.length > 2;
+      try {
+        const data = await requestJson("/api/claude", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
         });
-      }
-
-      function buildScopeContext(scopes) {
-        var combined = []
-          .concat(scopes && scopes.requested ? scopes.requested : [])
-          .concat(scopes && scopes.safety ? scopes.safety : [])
-          .concat(scopes && scopes.enhancements ? scopes.enhancements : [])
-          .join(" ");
-        var normalized = normalizeText(combined);
-        var tokens = [];
-        tokenize(combined).forEach(function (token) {
-          if (tokens.indexOf(token) === -1) tokens.push(token);
-        });
-        var families = [];
-        CATALOG_FAMILIES.forEach(function (family) {
-          var matched = family.keywords.some(function (keyword) {
-            return normalized.indexOf(normalizeText(keyword)) >= 0;
-          });
-          if (matched) families.push(family.name);
-        });
-        return { normalized: normalized, tokens: tokens, families: families };
-      }
-
-      function scoreCatalogItem(item, context) {
-        var haystack = normalizeText((item.name || "") + " " + (item.category || "") + " " + (item.description || ""));
-        var score = item && item.active ? 10 : 0;
-
-        context.tokens.forEach(function (token) {
-          if (haystack.indexOf(token) >= 0) score += 4;
-        });
-
-        CATALOG_FAMILIES.forEach(function (family) {
-          var familyInScope = context.families.indexOf(family.name) >= 0;
-          var familyInItem = family.keywords.some(function (keyword) {
-            return haystack.indexOf(normalizeText(keyword)) >= 0;
-          });
-          if (familyInScope && familyInItem) score += 22;
-        });
-
-        if (haystack.indexOf("surge") >= 0 && context.normalized.indexOf("surge") >= 0) score += 12;
-        if (haystack.indexOf("gfci") >= 0 && context.normalized.indexOf("gfci") >= 0) score += 12;
-        if (haystack.indexOf("smoke") >= 0 && context.normalized.indexOf("smoke") >= 0) score += 12;
-
-        return score;
-      }
-
-      function buildPromptCatalog(items, pricingMode, scopes) {
-        var context = buildScopeContext(scopes || {});
-        var ranked = items
-          .filter(function (item) {
-            return item && item.pricing && item.pricing[pricingMode] != null;
-          })
-          .map(function (item) {
-            return { item: item, score: scoreCatalogItem(item, context) };
-          })
-          .sort(function (a, b) {
-            return b.score - a.score;
-          });
-
-        var pool = ranked.filter(function (entry) { return entry.score > 0; }).slice(0, 40);
-        if (!pool.length) pool = ranked.slice(0, 25);
-
-        return pool.map(function (entry) {
-          var item = entry.item;
-          return {
-            id: item.id,
-            name: item.name,
-            description: item.description || "",
-            category: item.category || "",
-            active: !!item.active,
-            price: item.pricing[pricingMode]
-          };
-        });
-      }
-
-      function buildExtractionPrompt(rules, section) {
-        var ruleText = rules.map(function (rule) {
-          return "- IF: \"" + rule.trigger + "\" THEN: \"" + rule.result + "\"";
-        }).join("\n");
-
-        var sectionGuide = {
-          request: "Extract only what the customer asked for. Return requested_scopes.",
-          safety: "Extract findings directly connected to the original ask. Apply the rules. Return safety_scopes.",
-          enhancements: "Extract what is good and what is more. Include honest upgrades and positive conditions. Return enhancement_scopes."
-        };
-
-        return "You are a master electrician helping a field tech prepare an estimate.\n\nFIELD RULES:\n" +
-          ruleText +
-          "\n\nTASK:\n" + sectionGuide[section] +
-          "\n\nReturn ONLY valid JSON.\nFor request: {\"requested_scopes\":[\"scope\"]}\nFor safety: {\"safety_scopes\":[\"scope\"]}\nFor enhancements: {\"enhancement_scopes\":[\"scope\"]}";
-      }
-
-      function buildOptionsPrompt(scopes, rules, catalog, pricingMode) {
-        var ruleText = rules.map(function (rule) {
-          return rule.trigger + " -> " + rule.result;
-        }).join("; ");
-
-        return "You are a seasoned electrical estimator helping a field tech build homeowner-friendly estimate options.\n\n" +
-          "Sales framework:\n" + OPTIONS_STRATEGY + "\n\n" +
-          "Customer ask: " + JSON.stringify(scopes.requested || []) + "\n" +
-          "Directly connected: " + JSON.stringify(scopes.safety || []) + "\n" +
-          "What's good / what's more: " + JSON.stringify(scopes.enhancements || []) + "\n" +
-          "Selected pricing mode: " + pricingMode + "\n" +
-          "Rules: " + ruleText + "\n" +
-          "Pricebook catalog: " + JSON.stringify(catalog) + "\n\n" +
-          "Required logic:\n" +
-          "- Create exactly 6 options\n" +
-          "- 2 economy, 2 midrange, 2 premium\n" +
-          "- Every option must include what the customer called for\n" +
-          "- Build for economy, midrange, and premium buyer archetypes without assuming this customer only wants the cheapest path\n" +
-          "- Put directly connected work before broader improvements\n" +
-          "- Use what's good in the value statement when relevant so the presentation feels balanced and honest\n" +
-          "- Premium options should feel turnkey, future-minded, and built to put the problem to rest for life\n" +
-          "- Do not invent pricebook items; only use the provided catalog\n" +
-          "- Only choose line items that clearly match the customer's ask, directly connected issues, or real long-term improvements\n" +
-          "- Do not use panel or service items for a fan or lighting job unless the safety findings clearly justify it\n" +
-          "- Do not use EV items unless the request or findings clearly relate to EV charging\n" +
-          "- Do not use lighting items for panel work unless lighting was part of the original ask\n" +
-          "- If the exact perfect item is missing, choose the closest honest match and stay conservative\n\n" +
-          "Return ONLY valid JSON:\n" +
-          "{\"options\":[" +
-          "{\"number\":1,\"name\":\"\",\"tier\":\"economy|midrange|premium\",\"focus_statement\":\"\",\"value_statement\":\"\",\"permits_required\":false,\"pricebook_items\":[{\"id\":\"\",\"quantity\":1}]}" +
-          "]}";
-      }
-
-      function getSuggestedPhotos(optionName, includes) {
-        var text = ((optionName || "") + " " + (includes || []).join(" ")).toLowerCase();
-        var scored = PHOTO_LIBRARY.map(function (photo) {
-          var score = 0;
-          photo.tags.forEach(function (tag) {
-            if (text.indexOf(tag) >= 0) score += 1;
-          });
-          return {
-            id: photo.id,
-            label: photo.label,
-            emoji: photo.emoji,
-            tags: photo.tags,
-            url: photo.url,
-            score: score
-          };
-        }).sort(function (a, b) {
-          return b.score - a.score;
-        });
-        var filtered = scored.filter(function (item) { return item.score > 0; });
-        return filtered.length ? filtered : PHOTO_LIBRARY;
-      }
-
-      function getOptionId(response) {
-        if (!response) return null;
-        if (response.id) return response.id;
-        if (response.estimate_option_id) return response.estimate_option_id;
-        if (response.option && response.option.id) return response.option.id;
-        if (Array.isArray(response.options) && response.options[0] && response.options[0].id) return response.options[0].id;
-        if (Array.isArray(response.estimate_options) && response.estimate_options[0] && response.estimate_options[0].id) return response.estimate_options[0].id;
+        const rawText = data?.content?.[0]?.text || "";
+        const cleaned = rawText.replace(/```json|```/g, "").trim();
+        return safeJsonParse(cleaned, null);
+      } catch {
         return null;
       }
+    }
 
-      function PrimaryButton(props) {
-        return h("button", {
-          type: props.type || "button",
-          onClick: props.onClick,
-          disabled: !!props.disabled,
-          style: {
-            width: props.style && props.style.width ? props.style.width : "100%",
-            padding: "15px 18px",
-            borderRadius: "16px",
-            background: props.disabled ? "rgba(255,255,255,0.08)" : (props.color || "var(--cyan)"),
-            color: props.disabled ? "var(--dim)" : "#091018",
-            fontWeight: 800,
-            textTransform: "uppercase",
-            letterSpacing: "0.05em",
-            boxShadow: props.disabled ? "none" : "0 12px 28px rgba(0,0,0,0.24)"
-          }
-        }, props.children);
+    async function callHCP(endpoint, method = "GET", body = null) {
+      try {
+        return await requestJson("/api/claude?action=hcp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ endpoint, method, body })
+        });
+      } catch {
+        return null;
+      }
+    }
+
+    async function attachPhoto(imageUrl, estimateOptionId, caption) {
+      try {
+        return await requestJson("/api/claude?action=attach_photo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ imageUrl, estimateOptionId, caption })
+        });
+      } catch {
+        return null;
+      }
+    }
+
+    async function fetchCloudinaryEstimatePhotos() {
+      try {
+        const data = await requestJson("/api/estimate-photos");
+        return Array.isArray(data?.photos) ? data.photos : Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
+    async function fetchPricebook() {
+      try {
+        const data = await requestJson("/pricebook.json");
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function normalizeText(value) {
+      return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    }
+
+    function tokenize(value) {
+      return normalizeText(value).split(/\s+/).filter((token) => token.length > 2);
+    }
+
+    function buildScopeContext(scopes) {
+      const requested = Array.isArray(scopes?.requested) ? scopes.requested : [];
+      const safety = Array.isArray(scopes?.safety) ? scopes.safety : [];
+      const enhancements = Array.isArray(scopes?.enhancements) ? scopes.enhancements : [];
+      const combined = [...requested, ...safety, ...enhancements].join(" ");
+      const normalized = normalizeText(combined);
+      const tokens = Array.from(new Set(tokenize(combined)));
+      const families = CATALOG_FAMILIES
+        .filter((family) => family.keywords.some((keyword) => normalized.includes(normalizeText(keyword))))
+        .map((family) => family.name);
+      return { normalized, tokens, families };
+    }
+
+    function scorePricebookItem(item, context) {
+      const haystack = normalizeText(`${item.name} ${item.category} ${item.description}`);
+      let score = item.active ? 10 : 0;
+
+      score += context.tokens.filter((token) => haystack.includes(token)).length * 4;
+
+      for (const family of CATALOG_FAMILIES) {
+        const familyInScope = context.families.includes(family.name);
+        const familyInItem = family.keywords.some((keyword) => haystack.includes(normalizeText(keyword)));
+        if (familyInScope && familyInItem) score += 22;
       }
 
-      function SoftButton(props) {
-        return h("button", {
+      if (haystack.includes("surge") && context.normalized.includes("surge")) score += 12;
+      if (haystack.includes("gfci") && context.normalized.includes("gfci")) score += 12;
+      if (haystack.includes("smoke") && context.normalized.includes("smoke")) score += 12;
+
+      return score;
+    }
+
+    function buildSystemPrompt(rules, section) {
+      const rulesText = rules.map((rule) => `- IF: "${rule.trigger}" THEN: "${rule.result}"`).join("\n");
+      const sectionPrompts = {
+        request: `Extract what the customer specifically asked for.
+Start with "What did they call you for?"
+Return requested_scopes array with direct customer ask only.`,
+        safety: `Analyze safety observations using the Four What's framework.
+Focus on "What is directly connected to what they called you for?"
+Apply ALL Field Intelligence rules.
+Return safety_scopes with full expanded scopes that are directly connected, not random add-ons.`,
+        enhancements: `Extract honest upgrade opportunities using the Four What's framework.
+Capture both "What's good?" and "What's more?"
+Always include whole-home surge protection as an enhancement.
+Return enhancement_scopes array with balanced, homeowner-friendly ideas.`
+      };
+
+      return `You are a master electrician with 30 years of estimating and service experience.
+
+FIELD INTELLIGENCE RULES:
+${rulesText}
+
+FOUR WHAT'S FRAMEWORK:
+1. What did they call you for?
+2. What is directly connected to what they called you for?
+3. What's good?
+4. What's more?
+
+YOUR JOB:
+${sectionPrompts[section]}
+
+Return ONLY valid JSON with no markdown.
+For request use: {"requested_scopes":["scope"],"job_facts":{"location":"","quantity":"","panel_condition":"","structural_conditions":[],"home_age":""}}
+For safety use: {"safety_scopes":["scope"],"job_facts":{"panel_condition":"","safety_risks":[],"urgency":"","triggers_panel_upgrade":false,"triggers_service_upgrade":false,"requires_permits":false}}
+For enhancements use: {"enhancement_scopes":["scope"],"future_opportunities":[]}`;
+    }
+
+    function buildOptionsPrompt(scopes, rules, pricebookItems, pricingMode) {
+      return `You are a seasoned electrical estimator helping a field tech build homeowner-friendly estimate options.
+Customer requested: ${JSON.stringify(scopes.requested)}
+Safety items: ${JSON.stringify(scopes.safety)}
+Enhancements: ${JSON.stringify(scopes.enhancements)}
+Key rules: ${rules.slice(0, 10).map((r) => `${r.trigger} -> ${r.result}`).join("; ")}
+Pricing mode: ${pricingMode === "in_home" ? "In Home" : "Preferred Builder"}
+Available catalog items for this pricing mode:
+${JSON.stringify(pricebookItems)}
+
+Sales framework:
+${OPTIONS_PLAYBOOK}
+
+Create exactly 6 estimate options in this exact structure:
+- 2 economy options
+- 2 midrange options
+- 2 premium options
+
+Required logic:
+- Every option must include the original customer ask.
+- Economy options should focus on the immediate need and the bare minimum directly connected work.
+- Midrange options should include the immediate need, directly connected work, and a stronger reliability or safety package.
+- Premium options should feel turnkey, future-minded, and built to put the problem to rest for life.
+- "What's directly connected" should be handled before "what's more".
+- "What's good" should show up in the value statement when relevant so the option feels balanced.
+- Do not randomly mix items across tiers.
+- Be practical and honest.
+- Never invent pricing.
+- Use only items from the provided catalog.
+- Return 1 or more matched catalog items in pricebook_items for each option.
+- Include a short focus_statement that explains the buyer intent of the option.
+- Include permit flag where appropriate.
+- Do not use panel or service items unless the customer request or safety findings clearly justify panel or service work.
+- Do not use EV items unless the customer request clearly relates to an EV charger.
+- Do not use lighting or fan items unless the customer request clearly relates to those categories.
+- If the catalog does not have the exact perfect item, pick the closest honest match and stay conservative.
+
+Return ONLY valid JSON:
+{"options":[
+  {"number":1,"name":"Option name","tier":"economy","focus_statement":"Immediate need only","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]},
+  {"number":2,"name":"Option name","tier":"economy","focus_statement":"Immediate need plus essential connected work","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]},
+  {"number":3,"name":"Option name","tier":"midrange","focus_statement":"Balanced repair with connected improvements","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]},
+  {"number":4,"name":"Option name","tier":"midrange","focus_statement":"Stronger reliability and safety package","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]},
+  {"number":5,"name":"Option name","tier":"premium","focus_statement":"Turnkey solution with convenience and longevity","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]},
+  {"number":6,"name":"Option name","tier":"premium","focus_statement":"Best long-term put-it-to-rest solution","permits_required":false,"value_statement":"What this means for the home","pricebook_items":[{"id":"catalog-id","quantity":1}]}
+]}`;
+    }
+
+    function buildPromptPricebookItems(items, pricingMode, scopes) {
+      const context = buildScopeContext(scopes);
+      const ranked = items
+        .filter((item) => item?.pricing?.[pricingMode] != null)
+        .map((item) => ({
+          ...item,
+          match_score: scorePricebookItem(item, context)
+        }))
+        .sort((a, b) => b.match_score - a.match_score);
+
+      const topRelevant = ranked.filter((item) => item.match_score > 0).slice(0, 40);
+      const finalItems = topRelevant.length ? topRelevant : ranked.slice(0, 25);
+
+      return finalItems.map((item) => ({
+        id: item.id,
+        name: item.name,
+        category: item.category,
+        description: item.description,
+        price: item.pricing[pricingMode]
+      }));
+    }
+
+    function getOptionId(response) {
+      if (!response || typeof response !== "object") return null;
+      if (typeof response.estimate_option_id === "string") return response.estimate_option_id;
+      if (typeof response.id === "string") return response.id;
+      for (const value of Object.values(response)) {
+        if (Array.isArray(value)) continue;
+        const nested = getOptionId(value);
+        if (nested) return nested;
+      }
+      return null;
+    }
+
+    function dollarsToCents(amount) {
+      return Math.round((Number(amount) || 0) * 100);
+    }
+
+    function getSuggestedPhotos(optionName, includes) {
+      const haystack = `${optionName} ${(includes || []).join(" ")}`.toLowerCase();
+      const scored = PHOTO_LIBRARY
+        .map((photo) => ({
+          ...photo,
+          score: photo.tags.filter((tag) => haystack.includes(tag)).length
+        }))
+        .sort((a, b) => b.score - a.score);
+      return scored.some((item) => item.score > 0) ? scored.filter((item) => item.score > 0) : PHOTO_LIBRARY;
+    }
+
+    function shellCardStyle(extra = {}) {
+      return {
+        background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03))",
+        border: "1px solid var(--border)",
+        borderRadius: "var(--radius-xl)",
+        boxShadow: "var(--shadow-md)",
+        ...extra
+      };
+    }
+
+    function pageWrap(children) {
+      return h("div", {
+        style: {
+          width: "100%",
+          maxWidth: "var(--container)",
+          margin: "0 auto",
+          padding: "20px 16px 56px"
+        }
+      }, children);
+    }
+
+    function PrimaryButton({ children, onClick, disabled = false, color = "var(--cyan)", style = {}, type = "button" }) {
+      return h("button", {
+        type,
+        onClick,
+        disabled,
+        style: {
+          width: "100%",
+          padding: "15px 18px",
+          borderRadius: "16px",
+          background: disabled ? "rgba(255,255,255,0.08)" : color,
+          color: disabled ? "var(--text-dim)" : "#091018",
+          fontWeight: 800,
+          letterSpacing: "0.05em",
+          textTransform: "uppercase",
+          boxShadow: disabled ? "none" : "0 12px 28px rgba(0,0,0,0.24)",
+          ...style
+        }
+      }, children);
+    }
+
+    function SoftButton({ children, onClick, style = {}, selected = false }) {
+      return h("button", {
+        type: "button",
+        onClick,
+        style: {
+          padding: "10px 14px",
+          borderRadius: "12px",
+          background: selected ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.04)",
+          border: selected ? "1px solid var(--border-strong)" : "1px solid var(--border)",
+          color: selected ? "var(--text)" : "var(--text-muted)",
+          fontWeight: 700,
+          ...style
+        }
+      }, children);
+    }
+
+    function Badge({ children, tone = "default" }) {
+      const toneMap = {
+        default: { bg: "rgba(255,255,255,0.06)", color: "var(--text-muted)", border: "var(--border)" },
+        cyan: { bg: "var(--cyan-deep)", color: "var(--cyan)", border: "rgba(50,212,255,0.24)" },
+        amber: { bg: "var(--amber-deep)", color: "var(--amber)", border: "rgba(255,176,32,0.24)" },
+        green: { bg: "var(--green-deep)", color: "var(--green)", border: "rgba(49,215,140,0.24)" }
+      };
+      const t = toneMap[tone] || toneMap.default;
+      return h("span", {
+        style: {
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          padding: "4px 9px",
+          borderRadius: 999,
+          background: t.bg,
+          border: `1px solid ${t.border}`,
+          color: t.color,
+          fontSize: 11,
+          fontWeight: 800,
+          textTransform: "uppercase",
+          letterSpacing: "0.08em"
+        }
+      }, children);
+    }
+
+    function EmptyState({ title, body, emoji = "📋" }) {
+      return h("div", {
+        style: {
+          ...shellCardStyle(),
+          padding: "28px 20px",
+          textAlign: "center"
+        }
+      }, [
+        h("div", { key: "emoji", style: { fontSize: 34, marginBottom: 10 } }, emoji),
+        h("div", { key: "title", style: { fontSize: 18, fontWeight: 800, marginBottom: 6 } }, title),
+        h("div", { key: "body", style: { fontSize: 14, color: "var(--text-muted)", lineHeight: 1.6 } }, body)
+      ]);
+    }
+
+    function LoadingState({ title, body }) {
+      return h("div", {
+        style: {
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 14,
+          padding: "64px 0"
+        }
+      }, [
+        h("div", {
+          key: "spinner",
+          style: {
+            width: 58,
+            height: 58,
+            borderRadius: "50%",
+            border: "3px solid rgba(255,255,255,0.1)",
+            borderTopColor: "var(--cyan)",
+            animation: "spin 0.9s linear infinite"
+          }
+        }),
+        h("div", { key: "title", style: { fontSize: 18, fontWeight: 800 } }, title),
+        h("div", { key: "body", style: { fontSize: 14, color: "var(--text-muted)" } }, body)
+      ]);
+    }
+
+    function ScopeChip({ text, color, onRemove }) {
+      return h("div", {
+        style: {
+          display: "flex",
+          alignItems: "stretch",
+          gap: 0,
+          marginBottom: 10,
+          borderRadius: "16px",
+          overflow: "hidden",
+          boxShadow: "var(--shadow-md)",
+          animation: "floatUp 0.22s ease"
+        }
+      }, [
+        h("div", {
+          key: "stripe",
+          style: {
+            width: 10,
+            background: color
+          }
+        }),
+        h("div", {
+          key: "body",
+          style: {
+            flex: 1,
+            padding: "14px 16px",
+            background: "rgba(255,255,255,0.06)",
+            fontSize: 14,
+            lineHeight: 1.45,
+            fontWeight: 700
+          }
+        }, text),
+        onRemove ? h("button", {
+          key: "remove",
           type: "button",
-          onClick: props.onClick,
+          onClick: onRemove,
+          "aria-label": `Remove scope: ${text}`,
           style: {
-            padding: (props.style && props.style.padding) || "10px 14px",
-            borderRadius: "12px",
-            background: props.selected ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.04)",
-            border: props.selected ? "1px solid rgba(255,255,255,0.2)" : "1px solid var(--border)",
-            color: props.selected ? "var(--text)" : "var(--muted)",
-            fontWeight: 700,
-            width: props.style && props.style.width,
-            textAlign: props.style && props.style.textAlign,
-            borderStyle: props.style && props.style.borderStyle,
-            marginTop: props.style && props.style.marginTop,
-            color: (props.style && props.style.color) || (props.selected ? "var(--text)" : "var(--muted)")
+            width: 54,
+            background: "rgba(255,255,255,0.08)",
+            color: "var(--text)",
+            fontSize: 24
           }
-        }, props.children);
-      }
+        }, "×") : null
+      ]);
+    }
 
-      function Badge(props) {
-        var tones = {
-          "default": { bg: "rgba(255,255,255,0.06)", color: "var(--muted)", border: "var(--border)" },
-          cyan: { bg: "var(--cyan-soft)", color: "var(--cyan)", border: "rgba(49,212,255,0.24)" },
-          amber: { bg: "var(--amber-soft)", color: "var(--amber)", border: "rgba(255,177,31,0.24)" },
-          green: { bg: "var(--green-soft)", color: "var(--green)", border: "rgba(52,213,139,0.24)" }
-        };
-        var tone = tones[props.tone || "default"];
-        return h("span", {
+    function TechSelector({ onSelect }) {
+      return h("div", {
+        style: {
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "28px 18px"
+        }
+      }, pageWrap([
+        h("div", {
+          key: "hero",
           style: {
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "4px 9px",
-            borderRadius: "999px",
-            background: tone.bg,
-            border: "1px solid " + tone.border,
-            color: tone.color,
-            fontSize: 11,
-            fontWeight: 800,
-            textTransform: "uppercase",
-            letterSpacing: "0.08em"
-          }
-        }, props.children);
-      }
-
-      function EmptyState(props) {
-        return h("div", { style: Object.assign(shellCard(), { padding: "28px 20px", textAlign: "center" }) }, [
-          h("div", { key: "emoji", style: { fontSize: 34, marginBottom: 10 } }, props.emoji || "📋"),
-          h("div", { key: "title", style: { fontSize: 18, fontWeight: 800, marginBottom: 6 } }, props.title),
-          h("div", { key: "body", style: { fontSize: 14, color: "var(--muted)", lineHeight: 1.6 } }, props.body)
-        ]);
-      }
-
-      function LoadingState(props) {
-        return h("div", {
-          style: {
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 14,
-            padding: "64px 0"
+            ...shellCardStyle(),
+            padding: "26px 22px",
+            marginBottom: 18,
+            overflow: "hidden",
+            position: "relative"
           }
         }, [
           h("div", {
-            key: "spinner",
+            key: "orb",
             style: {
-              width: 58,
-              height: 58,
+              position: "absolute",
+              inset: "auto -40px -40px auto",
+              width: 120,
+              height: 120,
               borderRadius: "50%",
-              border: "3px solid rgba(255,255,255,0.1)",
-              borderTopColor: "var(--cyan)",
-              animation: "spin 0.9s linear infinite"
+              background: "radial-gradient(circle, rgba(50,212,255,0.22), transparent 70%)"
             }
           }),
-          h("div", { key: "title", style: { fontSize: 18, fontWeight: 800 } }, props.title),
-          h("div", { key: "body", style: { fontSize: 14, color: "var(--muted)" } }, props.body)
-        ]);
-      }
-
-      function TechSelector(props) {
-        return h("div", {
+          h("div", { key: "eyebrow", style: { fontSize: 11, color: "var(--cyan)", fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 10 } }, "Electrical Estimating"),
+          h("div", { key: "title", style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 38, lineHeight: 0.95, letterSpacing: "0.06em" } }, [
+            "FIELD",
+            h("span", { key: "guide", style: { color: "var(--cyan)" } }, "GUIDE")
+          ]),
+          h("p", { key: "copy", style: { margin: "12px 0 0", fontSize: 15, lineHeight: 1.6, color: "var(--text-muted)", maxWidth: 360 } },
+            "Faster estimate building for field techs: capture the ask, decode the field conditions, and send clean options into Housecall Pro.")
+        ]),
+        h("div", {
+          key: "list",
           style: {
-            minHeight: "100vh",
+            display: "grid",
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: 12
+          }
+        }, TECHS.map((tech, index) => h("button", {
+          key: tech,
+          type: "button",
+          onClick: () => onSelect(tech),
+          style: {
+            ...shellCardStyle(),
+            padding: "18px 14px",
+            textAlign: "center",
+            color: "var(--text)",
+            fontWeight: 800,
+            fontSize: 16,
+            animation: "floatUp 0.24s ease both",
+            animationDelay: `${index * 0.04}s`
+          }
+        }, tech)))
+      ]));
+    }
+
+    function Header({ techName, jobName, step, onReset, onOpenRules }) {
+      const labels = [
+        { key: "request", title: "Request" },
+        { key: "safety", title: "Field" },
+        { key: "enhancements", title: "Ideas" },
+        { key: "review", title: "Review" },
+        { key: "options", title: "Options" }
+      ];
+
+      const stepIndex = labels.findIndex((item) => item.key === step);
+      const visible = step !== "job";
+
+      return h("header", {
+        style: {
+          position: "sticky",
+          top: 0,
+          zIndex: 20,
+          backdropFilter: "blur(16px)",
+          background: "rgba(17, 21, 28, 0.76)",
+          borderBottom: "1px solid rgba(255,255,255,0.06)"
+        }
+      }, pageWrap([
+        h("div", {
+          key: "top",
+          style: {
+            paddingTop: 14,
+            paddingBottom: visible ? 10 : 14,
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            padding: "28px 18px"
+            gap: 12
           }
-        }, pageWrap([
-          h("div", { key: "hero", style: Object.assign(shellCard(), { padding: "26px 22px", marginBottom: 18 }) }, [
-            h("div", { key: "eyebrow", style: { fontSize: 11, color: "var(--cyan)", fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 10 } }, "Electrical Estimating"),
-            h("div", { key: "title", style: { fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 38, lineHeight: 0.95, letterSpacing: "0.06em" } }, [
-              "FIELD",
-              h("span", { key: "guide", style: { color: "var(--cyan)" } }, "GUIDE")
-            ]),
-            h("p", { key: "copy", style: { margin: "12px 0 0", color: "var(--muted)", lineHeight: 1.6 } }, "Capture what they called for, what is directly connected, what is good, and what is more.")
-          ]),
-          h("div", { key: "list", style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 12 } },
-            TECHS.map(function (tech, index) {
-              return h("button", {
-                key: tech.label,
-                type: "button",
-                onClick: function () { props.onSelect(tech); },
-                style: Object.assign(shellCard(), {
-                  padding: "18px 14px",
-                  textAlign: "center",
-                  color: "var(--text)",
-                  fontWeight: 800,
-                  fontSize: 16,
-                  animation: "fadeUp 0.24s ease both",
-                  animationDelay: (index * 0.04) + "s"
-                })
-              }, tech.label);
-            })
-          )
-        ]));
-      }
-
-      function Header(props) {
-        return h("header", {
-          style: {
-            position: "sticky",
-            top: 0,
-            zIndex: 20,
-            backdropFilter: "blur(16px)",
-            background: "rgba(17,21,28,0.78)",
-            borderBottom: "1px solid rgba(255,255,255,0.06)"
-          }
-        }, pageWrap([
-          h("div", { key: "top", style: { paddingTop: 14, paddingBottom: 12, display: "flex", alignItems: "center", gap: 12 } }, [
+        }, [
+          h("div", {
+            key: "logo",
+            style: {
+              width: 42,
+              height: 42,
+              borderRadius: 14,
+              display: "grid",
+              placeItems: "center",
+              background: "linear-gradient(135deg, rgba(50,212,255,0.22), rgba(50,212,255,0.06))",
+              border: "1px solid rgba(50,212,255,0.22)"
+            }
+          }, "🧭"),
+          h("div", { key: "name", style: { flex: 1, minWidth: 0 } }, [
             h("div", {
-              key: "logo",
+              key: "brand",
               style: {
-                width: 42,
-                height: 42,
-                borderRadius: 14,
-                display: "grid",
-                placeItems: "center",
-                background: "linear-gradient(135deg, rgba(49,212,255,0.22), rgba(49,212,255,0.06))",
-                border: "1px solid rgba(49,212,255,0.22)"
+                fontFamily: '"Barlow Condensed", sans-serif',
+                fontWeight: 900,
+                fontSize: 24,
+                lineHeight: 1,
+                letterSpacing: "0.08em"
               }
-            }, "🧭"),
-            h("div", { key: "brand", style: { flex: 1, minWidth: 0 } }, [
-              h("div", { key: "name", style: { fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 24, lineHeight: 1, letterSpacing: "0.08em" } }, [
-                "FIELD",
-                h("span", { key: "guide", style: { color: "var(--cyan)" } }, "GUIDE")
-              ]),
-              h("div", { key: "job", style: { marginTop: 4, fontSize: 12, color: "var(--muted)" } }, props.jobName || "Electrical Estimating")
-            ]),
-            h("div", { key: "actions", style: { display: "flex", gap: 8, alignItems: "center" } }, [
-              h(SoftButton, { key: "rules", onClick: props.onRules, style: { color: "var(--amber)" } }, "Rules"),
-              h(SoftButton, { key: "jobs", onClick: props.onJobs }, "Jobs"),
-              h(SoftButton, { key: "restart", onClick: props.onRestart, style: { color: "var(--red)" } }, "Restart")
-            ])
+            }, ["FIELD", h("span", { key: "guide", style: { color: "var(--cyan)" } }, "GUIDE")]),
+            h("div", { key: "job", style: { marginTop: 4, fontSize: 12, color: "var(--text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+              jobName || "Electrical Estimating")
           ]),
-          h("div", { key: "bottom", style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 } }, [
-            h(Badge, { key: "tech", tone: "green" }, props.tech ? props.tech.label : "")
+          h("div", { key: "actions", style: { display: "flex", gap: 8, alignItems: "center" } }, [
+            h(SoftButton, { key: "rules", onClick: onOpenRules, style: { color: "var(--amber)" } }, "Rules"),
+            visible ? h(SoftButton, { key: "reset", onClick: onReset }, "Jobs") : null
           ])
-        ]));
+        ]),
+        h("div", {
+          key: "bottom",
+          style: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 10,
+            paddingBottom: visible ? 12 : 0
+          }
+        }, [
+          h(Badge, { key: "tech", tone: "green" }, techName),
+          visible ? h("div", {
+            key: "steps",
+            style: {
+              display: "flex",
+              gap: 8,
+              overflowX: "auto",
+              paddingBottom: 2
+            }
+          }, labels.map((item, index) => {
+            const active = step === item.key;
+            const done = stepIndex > index;
+            return h("div", {
+              key: item.key,
+              style: {
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 7,
+                whiteSpace: "nowrap",
+                padding: "6px 10px",
+                borderRadius: 999,
+                background: active ? "rgba(50,212,255,0.14)" : "rgba(255,255,255,0.04)",
+                border: active ? "1px solid rgba(50,212,255,0.22)" : "1px solid var(--border)"
+              }
+            }, [
+              h("span", {
+                key: "dot",
+                style: {
+                  width: 18,
+                  height: 18,
+                  borderRadius: "50%",
+                  display: "grid",
+                  placeItems: "center",
+                  background: active ? "var(--cyan)" : done ? "var(--green)" : "rgba(255,255,255,0.14)",
+                  color: active || done ? "#091018" : "var(--text-muted)",
+                  fontSize: 11,
+                  fontWeight: 900
+                }
+              }, done ? "✓" : String(index + 1)),
+              h("span", {
+                key: "label",
+                style: {
+                  fontSize: 11,
+                  fontWeight: 800,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: active ? "var(--cyan)" : done ? "var(--green)" : "var(--text-muted)"
+                }
+              }, item.title)
+            ]);
+          })) : null
+        ])
+      ]));
+    }
+
+    function JobPicker({ techName, onSelect }) {
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState("");
+      const [estimates, setEstimates] = useState([]);
+
+      useEffect(() => {
+        let live = true;
+
+        (async () => {
+          setLoading(true);
+          setError("");
+
+          const employeeData = await callHCP("/employees?page_size=100", "GET");
+          const employee = employeeData?.employees?.find((item) =>
+            (item.first_name || "").trim().toLowerCase() === techName.toLowerCase()
+          );
+
+          if (!employee?.id) {
+            if (live) {
+              setEstimates([]);
+              setError("Could not match this tech to a Housecall Pro employee.");
+              setLoading(false);
+            }
+            return;
+          }
+
+          const now = new Date();
+          const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).toISOString();
+          const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
+          const estimateData = await callHCP(`/estimates?page_size=100&scheduled_start_min=${start}&scheduled_start_max=${end}`, "GET");
+          const rawEstimates = estimateData?.estimates || (Array.isArray(estimateData) ? estimateData : []);
+          const assigned = rawEstimates.filter((estimate) =>
+            estimate.assigned_employees?.some((person) => person.id === employee.id)
+          );
+
+          const detailed = await Promise.all(
+            assigned.slice(0, 20).map(async (estimate) => (await callHCP(`/estimates/${estimate.id}`, "GET")) || estimate)
+          );
+
+          if (live) {
+            setEstimates(detailed.filter(Boolean));
+            setLoading(false);
+          }
+        })().catch(() => {
+          if (live) {
+            setError("Could not load estimates from Housecall Pro.");
+            setLoading(false);
+          }
+        });
+
+        return () => {
+          live = false;
+        };
+      }, [techName]);
+
+      if (loading) {
+        return h(LoadingState, {
+          title: "Loading estimates...",
+          body: `Pulling ${techName}'s schedule from Housecall Pro`
+        });
       }
 
-      function JobPicker(props) {
-        var tech = props.tech;
-        var _a = useState(true), loading = _a[0], setLoading = _a[1];
-        var _b = useState(""), error = _b[0], setError = _b[1];
-        var _c = useState([]), estimates = _c[0], setEstimates = _c[1];
+      return pageWrap([
+        h("div", { key: "intro", style: { marginBottom: 16 } }, [
+          h("div", {
+            key: "title",
+            style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 32, letterSpacing: "0.04em" }
+          }, "Today's Estimates"),
+          h("div", { key: "sub", style: { fontSize: 14, color: "var(--text-muted)", marginTop: 4 } }, `${techName}'s jobs for today`)
+        ]),
+        error ? h("div", {
+          key: "error",
+          style: {
+            ...shellCardStyle({ marginBottom: 14 }),
+            padding: "14px 16px",
+            color: "var(--red)",
+            borderColor: "rgba(255,102,122,0.2)"
+          }
+        }, error) : null,
+        estimates.length === 0 ? h(EmptyState, {
+          key: "empty",
+          title: "No estimates scheduled",
+          body: "Nothing is assigned to this tech today, or the schedule could not be matched.",
+          emoji: "🗓️"
+        }) : null,
+        ...estimates.map((estimate, index) => {
+          const firstName = estimate.customer?.first_name || "";
+          const lastName = estimate.customer?.last_name || "";
+          const customer = `${firstName} ${lastName}`.trim() || "Unknown Customer";
+          const street = estimate.address?.street || "";
+          const city = estimate.address?.city || "";
+          const address = [street, city].filter(Boolean).join(", ");
+          const optionCount = estimate.options?.length || 0;
+          const estimateNumber = estimate.estimate_number || estimate.id?.slice(-6) || "Pending";
 
-        useEffect(function () {
-          var live = true;
-          (async function () {
-            setLoading(true);
-            setError("");
-
-            var employeeData = await callHCP("/employees?page_size=100", "GET");
-            var employeeList = employeeData && employeeData.employees ? employeeData.employees : [];
-            var employee = employeeList.find(function (item) {
-              return String(item.first_name || "").trim().toLowerCase() === String(tech.hcpName || tech.label).trim().toLowerCase();
-            });
-
-            if (!employee || !employee.id) {
-              if (live) {
-                setError("Could not match this tech to a Housecall Pro employee.");
-                setEstimates([]);
-                setLoading(false);
-              }
-              return;
-            }
-
-            var now = new Date();
-            var start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).toISOString();
-            var end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
-            var estimateData = await callHCP("/estimates?page_size=100&scheduled_start_min=" + encodeURIComponent(start) + "&scheduled_start_max=" + encodeURIComponent(end), "GET");
-            var rawEstimates = estimateData && estimateData.estimates ? estimateData.estimates : [];
-            var assigned = rawEstimates.filter(function (estimate) {
-              var assignedEmployees = estimate.assigned_employees || [];
-              return assignedEmployees.some(function (person) { return person.id === employee.id; });
-            });
-
-            if (live) {
-              setEstimates(assigned);
-              setLoading(false);
-            }
-          })().catch(function () {
-            if (live) {
-              setError("Could not load estimates from Housecall Pro.");
-              setLoading(false);
-            }
-          });
-
-          return function () { live = false; };
-        }, [tech]);
-
-        if (loading) {
-          return pageWrap(h(LoadingState, { title: "Loading estimates...", body: "Pulling " + tech.label + "'s jobs from Housecall Pro" }));
-        }
-
-        return pageWrap([
-          h("div", { key: "intro", style: { marginBottom: 16 } }, [
-            h("div", { key: "title", style: { fontFamily: "'Barlow Condensed', sans-serif", fontSize: 34, fontWeight: 900, letterSpacing: "0.04em" } }, "Today's Estimates"),
-            h("div", { key: "sub", style: { color: "var(--muted)", fontSize: 14, marginTop: 4 } }, tech.label + "'s jobs for today")
-          ]),
-          error ? h("div", { key: "error", style: Object.assign(shellCard({ marginBottom: 14, borderColor: "rgba(255,106,127,0.22)" }), { padding: "14px 16px", color: "var(--red)" }) }, error) : null,
-          estimates.length === 0 ? h(EmptyState, { key: "empty", title: "No estimates scheduled", body: "Nothing is assigned to this tech today, or the schedule could not be matched.", emoji: "🗓️" }) : null
-        ].concat(estimates.map(function (estimate, index) {
-          var firstName = get(estimate, "customer.first_name", "");
-          var lastName = get(estimate, "customer.last_name", "");
-          var customer = (firstName + " " + lastName).trim() || "Unknown Customer";
-          var address = [get(estimate, "address.street", ""), get(estimate, "address.city", "")].filter(Boolean).join(", ");
-          var estimateNumber = estimate.estimate_number || (estimate.id ? estimate.id.slice(-6) : "Pending");
           return h("button", {
-            key: estimate.id || index,
+            key: estimate.id,
             type: "button",
-            onClick: function () { props.onSelect(estimate); },
-            style: Object.assign(shellCard(), {
+            onClick: () => onSelect(estimate),
+            style: {
+              ...shellCardStyle(),
               width: "100%",
+              marginBottom: 12,
               padding: 0,
               textAlign: "left",
               overflow: "hidden",
-              marginBottom: 12,
-              animation: "fadeUp 0.24s ease both",
-              animationDelay: (index * 0.04) + "s"
-            })
-          }, [
-            h("div", { key: "line", style: { height: 4, background: "linear-gradient(90deg, var(--cyan), rgba(49,212,255,0.14))" } }),
-            h("div", { key: "body", style: { display: "flex", gap: 14, alignItems: "center", padding: "16px" } }, [
-              h("div", { key: "icon", style: { width: 48, height: 48, borderRadius: 16, display: "grid", placeItems: "center", background: "rgba(49,212,255,0.12)", border: "1px solid rgba(49,212,255,0.18)", flexShrink: 0, fontSize: 23 } }, "🏠"),
-              h("div", { key: "meta", style: { flex: 1, minWidth: 0 } }, [
-                h("div", { key: "customer", style: { fontWeight: 800, fontSize: 17, color: "#ffffff" } }, customer),
-                address ? h("div", { key: "address", style: { marginTop: 4, color: "var(--muted)", fontSize: 13 } }, address) : null,
-                h("div", { key: "num", style: { marginTop: 10 } }, h(Badge, { tone: "cyan" }, "Est #" + estimateNumber))
-              ]),
-              h("div", { key: "arrow", style: { color: "var(--dim)", fontSize: 24 } }, "›")
-            ])
-          ]);
-        })));
-      }
-
-      function InputStep(props) {
-        var meta = STEP_META[props.stepKey];
-        var _a = useState((props.saved && props.saved.text) || ""), text = _a[0], setText = _a[1];
-        var _b = useState((props.saved && props.saved.extracted) || null), extracted = _b[0], setExtracted = _b[1];
-        var _c = useState(false), analyzing = _c[0], setAnalyzing = _c[1];
-        var _d = useState(""), error = _d[0], setError = _d[1];
-
-        var scopeKey = props.stepKey === "request" ? "requested_scopes" : (props.stepKey === "safety" ? "safety_scopes" : "enhancement_scopes");
-        var scopes = extracted && extracted[scopeKey] ? extracted[scopeKey] : [];
-
-        async function analyze() {
-          if (!text.trim()) return;
-          setAnalyzing(true);
-          setError("");
-          var result = await callClaude(buildExtractionPrompt(props.rules, props.stepKey), text.trim());
-          if (!result) setError("The AI response could not be parsed. Try again.");
-          else setExtracted(result);
-          setAnalyzing(false);
-        }
-
-        return pageWrap([
-          h("section", { key: "card", style: Object.assign(shellCard(), { overflow: "hidden" }) }, [
-            h("div", { key: "band", style: { height: 5, background: "linear-gradient(90deg, " + meta.color + ", transparent)" } }),
-            h("div", { key: "body", style: { padding: "22px 18px 20px" } }, [
-              h("div", { key: "label", style: { color: meta.color, fontWeight: 800, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 8 } }, meta.title),
-              h("div", { key: "sub", style: { color: "var(--muted)", lineHeight: 1.6, marginBottom: 14 } }, meta.subtitle),
-              h("textarea", {
-                key: "textarea",
-                value: text,
-                onChange: function (event) { setText(event.target.value); },
-                placeholder: meta.placeholder,
-                style: {
-                  width: "100%",
-                  minHeight: 150,
-                  padding: "14px 16px",
-                  borderRadius: "18px",
-                  border: "1px solid var(--border)",
-                  background: "rgba(255,255,255,0.03)",
-                  color: "var(--text)",
-                  resize: "vertical",
-                  lineHeight: 1.6
-                }
-              }),
-              error ? h("div", { key: "error", style: { marginTop: 12, padding: "12px 14px", borderRadius: "14px", background: "var(--red-soft)", color: "var(--red)", fontWeight: 700 } }, error) : null,
-              !extracted ? h(PrimaryButton, { key: "analyze", onClick: analyze, disabled: analyzing || !text.trim(), color: meta.color, style: { marginTop: 14 } }, analyzing ? "Analyzing..." : "Analyze Notes") : null
-            ])
-          ]),
-          extracted ? h("section", { key: "results", style: Object.assign(shellCard(), { marginTop: 14, padding: "18px 16px" }) }, [
-            h("div", { key: "title", style: { color: meta.color, fontWeight: 800, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 12 } }, "Extracted Scope"),
-            scopes.length ? scopes.map(function (scope, index) {
-              return h("div", {
-                key: scope + "-" + index,
-                style: {
-                  marginBottom: 10,
-                  padding: "12px 14px",
-                  borderRadius: "14px",
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid var(--border)",
-                  fontWeight: 700,
-                  lineHeight: 1.5
-                }
-              }, scope);
-            }) : h("div", { key: "none", style: { color: "var(--muted)" } }, "Nothing extracted."),
-            h(PrimaryButton, {
-              key: "next",
-              onClick: function () {
-                props.onDone({ text: text, extracted: extracted });
-              },
-              color: meta.color,
-              style: { marginTop: 14 }
-            }, "Looks Good - Next")
-          ]) : null
-        ]);
-      }
-
-      function ReviewStep(props) {
-        var sections = [
-          { label: "What They Called For", color: "var(--cyan)", scopes: get(props.data, "request.extracted.requested_scopes", []) },
-          { label: "What's Directly Connected", color: "var(--amber)", scopes: get(props.data, "safety.extracted.safety_scopes", []) },
-          { label: "What's Good / What's More", color: "var(--green)", scopes: get(props.data, "enhancements.extracted.enhancement_scopes", []) }
-        ];
-
-        return pageWrap([
-          h("div", { key: "hero", style: { textAlign: "center", marginBottom: 16 } }, [
-            h("div", { key: "emoji", style: { fontSize: 40, marginBottom: 8 } }, "📋"),
-            h("div", { key: "title", style: { fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 34, letterSpacing: "0.04em" } }, "Ready to Build"),
-            h("div", { key: "sub", style: { color: "var(--muted)", marginTop: 6 } }, "Review the scope before generating options.")
-          ])
-        ].concat(sections.map(function (section) {
-          return h("section", { key: section.label, style: Object.assign(shellCard(), { marginBottom: 12, overflow: "hidden" }) }, [
-            h("div", { key: "head", style: { padding: "14px 16px", borderBottom: "1px solid var(--border)", background: "rgba(255,255,255,0.02)" } }, [
-              h("div", { key: "label", style: { color: section.color, fontWeight: 800, fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase" } }, section.label)
-            ]),
-            h("div", { key: "body", style: { padding: "14px 16px" } },
-              section.scopes.length ? section.scopes.map(function (scope, index) {
-                return h("div", { key: scope + "-" + index, style: { marginBottom: 8, lineHeight: 1.5, fontWeight: 600 } }, "• " + scope);
-              }) : h("div", { style: { color: "var(--muted)" } }, "Nothing captured in this section.")
-            )
-          ]);
-        })).concat([
-          h(PrimaryButton, {
-            key: "build",
-            onClick: function () {
-              props.onConfirm({
-                requested: get(props.data, "request.extracted.requested_scopes", []),
-                safety: get(props.data, "safety.extracted.safety_scopes", []),
-                enhancements: get(props.data, "enhancements.extracted.enhancement_scopes", [])
-              });
+              animation: "floatUp 0.24s ease both",
+              animationDelay: `${index * 0.04}s`
             }
-          }, "Build Estimate Options")
-        ]));
+          }, [
+            h("div", {
+              key: "line",
+              style: {
+                height: 4,
+                background: "linear-gradient(90deg, var(--cyan), rgba(50,212,255,0.15))"
+              }
+            }),
+            h("div", {
+              key: "body",
+              style: {
+                padding: "16px 16px 18px",
+                display: "flex",
+                gap: 14,
+                alignItems: "center"
+              }
+            }, [
+              h("div", {
+                key: "icon",
+                style: {
+                  width: 50,
+                  height: 50,
+                  borderRadius: 16,
+                  display: "grid",
+                  placeItems: "center",
+                  background: "rgba(50,212,255,0.12)",
+                  border: "1px solid rgba(50,212,255,0.18)",
+                  fontSize: 24,
+                  flexShrink: 0
+                }
+              }, "🏠"),
+              h("div", { key: "meta", style: { flex: 1, minWidth: 0 } }, [
+                h("div", { key: "customer", style: { fontSize: 17, fontWeight: 800, color: "#ffffff" } }, customer),
+                address ? h("div", { key: "address", style: { marginTop: 4, color: "var(--text-muted)", fontSize: 13 } }, address) : null,
+                h("div", { key: "badges", style: { marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" } }, [
+                  h(Badge, { key: "num", tone: "cyan" }, `Est #${estimateNumber}`),
+                  estimate.work_status ? h(Badge, { key: "status" }, estimate.work_status.replace(/_/g, " ")) : null,
+                  optionCount ? h(Badge, { key: "opt", tone: "amber" }, `${optionCount} option${optionCount > 1 ? "s" : ""}`) : null
+                ])
+              ]),
+              h("div", { key: "arrow", style: { color: "var(--text-dim)", fontSize: 24 } }, "›")
+            ])
+          ]);
+        })
+      ]);
+    }
+
+    function InputStep({ meta, saved, rules, onDone }) {
+      const [mode, setMode] = useState(saved?.mode || "type");
+      const [text, setText] = useState(saved?.text || "");
+      const [recording, setRecording] = useState(false);
+      const [analyzing, setAnalyzing] = useState(false);
+      const [error, setError] = useState("");
+      const [extracted, setExtracted] = useState(saved?.extracted || null);
+      const recognitionRef = useRef(null);
+
+      useEffect(() => {
+        return () => {
+          recognitionRef.current?.stop?.();
+        };
+      }, []);
+
+      const sectionKey = meta.num === 1 ? "request" : meta.num === 2 ? "safety" : "enhancements";
+      const scopeKey = extracted ? Object.keys(extracted).find((key) => key.includes("scopes")) : null;
+      const scopes = scopeKey ? extracted?.[scopeKey] || [] : [];
+
+      function startVoice() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          setError("Voice input is not available in this browser.");
+          return;
+        }
+
+        setError("");
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = "en-US";
+
+        let committed = text;
+
+        recognition.onresult = (event) => {
+          let interim = "";
+          for (let i = event.resultIndex; i < event.results.length; i += 1) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) committed += `${transcript} `;
+            else interim += transcript;
+          }
+          setText(`${committed}${interim}`.trimStart());
+        };
+
+        recognition.onerror = () => {
+          setRecording(false);
+        };
+        recognition.onend = () => {
+          setRecording(false);
+        };
+
+        recognition.start();
+        recognitionRef.current = recognition;
+        setRecording(true);
       }
 
-      function PhotoPicker(props) {
-        var _a = useState("suggested"), tab = _a[0], setTab = _a[1];
-        var _b = useState(""), query = _b[0], setQuery = _b[1];
-        var _c = useState(false), searching = _c[0], setSearching = _c[1];
-        var _d = useState([]), results = _d[0], setResults = _d[1];
-        var _e = useState(false), cloudinaryLoading = _e[0], setCloudinaryLoading = _e[1];
-        var _f = useState([]), cloudinaryPhotos = _f[0], setCloudinaryPhotos = _f[1];
-        var _g = useState(false), cloudinaryLoaded = _g[0], setCloudinaryLoaded = _g[1];
+      function stopVoice() {
+        recognitionRef.current?.stop?.();
+        setRecording(false);
+      }
 
-        var suggested = useMemo(function () {
-          return getSuggestedPhotos(props.option.name, props.option.includes || []);
-        }, [props.option.name, JSON.stringify(props.option.includes || [])]);
-
-        useEffect(function () {
-          var live = true;
-          if (tab !== "cloudinary" || cloudinaryLoaded) return;
-          (async function () {
-            setCloudinaryLoading(true);
-            var photos = await fetchCloudinaryEstimatePhotos();
-            if (!live) return;
-            setCloudinaryPhotos(photos);
-            setCloudinaryLoaded(true);
-            setCloudinaryLoading(false);
-          })();
-          return function () { live = false; };
-        }, [tab, cloudinaryLoaded]);
-
-        async function searchUnsplash() {
-          if (!query.trim()) return;
-          setSearching(true);
-          try {
-            var data = await requestJson("/api/claude?action=unsplash&q=" + encodeURIComponent(query + " electrical finished work"));
-            setResults((data && data.results) || []);
-          } catch (error) {
-            setResults([]);
-          }
-          setSearching(false);
+      async function analyze() {
+        if (!text.trim()) return;
+        setAnalyzing(true);
+        setError("");
+        const result = await callClaude(buildSystemPrompt(rules, sectionKey), text.trim());
+        if (!result) {
+          setError("The AI response could not be parsed. Try re-running it or tightening the notes.");
+        } else {
+          setExtracted(result);
         }
+        setAnalyzing(false);
+      }
 
-        function renderGrid(items, renderer) {
-          return h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 } }, items.map(renderer));
-        }
+      function removeScope(index) {
+        if (!scopeKey) return;
+        setExtracted({
+          ...extracted,
+          [scopeKey]: scopes.filter((_, i) => i !== index)
+        });
+      }
 
-        return h("div", {
+      const factEntries = Object.entries(extracted?.job_facts || {}).filter(([, value]) => {
+        if (!value) return false;
+        if (Array.isArray(value)) return value.length > 0;
+        if (typeof value === "boolean") return value;
+        return !["unknown", "not mentioned"].includes(String(value).toLowerCase());
+      });
+
+      return pageWrap([
+        h("section", {
+          key: "card",
           style: {
-            position: "fixed",
-            inset: 0,
-            zIndex: 40,
-            background: "rgba(7,10,15,0.88)",
-            backdropFilter: "blur(14px)",
-            padding: "20px 14px",
-            display: "flex",
-            justifyContent: "center"
+            ...shellCardStyle({
+              overflow: "hidden",
+              borderColor: "rgba(255,255,255,0.11)"
+            })
           }
-        }, h("div", {
-          style: Object.assign(shellCard({ overflow: "hidden" }), {
-            width: "100%",
-            maxWidth: 560,
-            maxHeight: "100%",
-            display: "flex",
-            flexDirection: "column"
-          })
         }, [
-          h("div", { key: "head", style: { padding: "16px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 } }, [
-            h("div", { key: "copy" }, [
-              h("div", { key: "title", style: { fontWeight: 800, fontSize: 18 } }, "Add a Finished Work Photo"),
-              h("div", { key: "sub", style: { color: "var(--muted)", fontSize: 13, marginTop: 3 } }, props.option.name)
+          h("div", {
+            key: "band",
+            style: {
+              height: 5,
+              background: `linear-gradient(90deg, ${meta.accent}, transparent)`
+            }
+          }),
+          h("div", { key: "body", style: { padding: "22px 18px 20px" } }, [
+            h("div", { key: "intro", style: { display: "flex", gap: 14, alignItems: "flex-start", marginBottom: 16 } }, [
+              h("div", {
+                key: "icon",
+                style: {
+                  width: 56,
+                  height: 56,
+                  borderRadius: 18,
+                  display: "grid",
+                  placeItems: "center",
+                  background: meta.accentSoft,
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  fontSize: 27,
+                  flexShrink: 0
+                }
+              }, meta.emoji),
+              h("div", { key: "copy" }, [
+                h("div", { key: "label", style: { color: meta.accent, fontWeight: 800, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 6 } },
+                  `Step ${meta.num} of 3 - ${meta.label}`),
+                h("div", { key: "question", style: { fontSize: 22, fontWeight: 800, lineHeight: 1.2 } }, meta.question),
+                h("div", { key: "sub", style: { marginTop: 6, color: "var(--text-muted)", fontSize: 14, lineHeight: 1.5 } }, meta.sub)
+              ])
             ]),
-            h(SoftButton, { key: "close", onClick: props.onClose }, "Close")
-          ]),
-          h("div", { key: "tabs", style: { display: "flex", gap: 8, padding: "12px 16px 0" } }, [
-            h(SoftButton, { key: "s", onClick: function () { setTab("suggested"); }, selected: tab === "suggested" }, "Suggested"),
-            h(SoftButton, { key: "l", onClick: function () { setTab("library"); }, selected: tab === "library" }, "Library"),
-            h(SoftButton, { key: "c", onClick: function () { setTab("cloudinary"); }, selected: tab === "cloudinary" }, "Cloudinary"),
-            h(SoftButton, { key: "u", onClick: function () { setTab("search"); }, selected: tab === "search" }, "Search")
-          ]),
-          h("div", { key: "body", style: { flex: 1, overflowY: "auto", padding: "16px" } }, [
-            tab === "search" ? h("div", { key: "search" }, [
-              h("div", { key: "bar", style: { display: "flex", gap: 8, marginBottom: 14 } }, [
-                h("input", {
-                  key: "input",
-                  value: query,
-                  onChange: function (event) { setQuery(event.target.value); },
-                  onKeyDown: function (event) { if (event.key === "Enter") searchUnsplash(); },
-                  placeholder: "Search finished electrical work...",
+            h("div", {
+              key: "modes",
+              style: {
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 8,
+                marginBottom: 14
+              }
+            }, [
+              h(SoftButton, { key: "type", onClick: () => setMode("type"), selected: mode === "type" }, "Type"),
+              h(SoftButton, { key: "voice", onClick: () => setMode("voice"), selected: mode === "voice" }, "Voice")
+            ]),
+            mode === "voice"
+              ? h("div", {
+                  key: "voice-ui",
                   style: {
-                    flex: 1,
-                    padding: "12px 14px",
-                    borderRadius: "14px",
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid var(--border)",
+                    borderRadius: "18px",
+                    padding: "18px 16px",
+                    textAlign: "center"
+                  }
+                }, [
+                  h("button", {
+                    key: "mic",
+                    type: "button",
+                    onClick: recording ? stopVoice : startVoice,
+                    style: {
+                      width: 92,
+                      height: 92,
+                      borderRadius: "50%",
+                      margin: "0 auto 12px",
+                      display: "grid",
+                      placeItems: "center",
+                      fontSize: 34,
+                      background: recording ? "rgba(255,102,122,0.14)" : meta.accentSoft,
+                      border: `2px solid ${recording ? "var(--red)" : meta.accent}`,
+                      animation: recording ? "pulseRing 1.6s ease-in-out infinite" : "none"
+                    }
+                  }, recording ? "⏹" : "🎤"),
+                  h("div", { key: "label", style: { fontWeight: 800, color: recording ? "var(--red)" : "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.12em", fontSize: 12 } },
+                    recording ? "Listening" : "Tap to start voice capture"),
+                  text ? h("div", {
+                    key: "preview",
+                    style: {
+                      marginTop: 14,
+                      background: "rgba(0,0,0,0.18)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "14px",
+                      padding: "12px 14px",
+                      textAlign: "left",
+                      lineHeight: 1.6,
+                      color: "var(--text-muted)",
+                      maxHeight: 130,
+                      overflowY: "auto"
+                    }
+                  }, text) : null
+                ])
+              : h("textarea", {
+                  key: "textarea",
+                  value: text,
+                  onChange: (event) => setText(event.target.value),
+                  placeholder: meta.placeholder,
+                  style: {
+                    width: "100%",
+                    minHeight: 148,
+                    padding: "14px 16px",
+                    borderRadius: "18px",
                     border: "1px solid var(--border)",
                     background: "rgba(255,255,255,0.03)",
-                    color: "var(--text)"
+                    color: "var(--text)",
+                    resize: "vertical",
+                    lineHeight: 1.6
                   }
                 }),
-                h(PrimaryButton, { key: "go", onClick: searchUnsplash, disabled: searching || !query.trim(), style: { width: "auto" } }, searching ? "Searching" : "Search")
-              ]),
-              searching ? h(LoadingState, { key: "loading", title: "Searching photos...", body: "Looking for finished-work imagery" }) : null,
-              !searching && query && results.length === 0 ? h(EmptyState, { key: "empty", title: "No results found", body: "Try different wording or use another tab.", emoji: "🔍" }) : null,
-              renderGrid(results, function (photo, index) {
-                return h("button", {
-                  key: photo.id || index,
-                  type: "button",
-                  onClick: function () { props.onSelect(get(photo, "urls.regular", ""), photo.alt_description || "Electrical work"); },
-                  style: { padding: 0, background: "transparent", borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border)" }
-                }, [
-                  h("div", { key: "imgWrap", style: { aspectRatio: "4 / 3", background: "var(--panel)" } }, [
-                    h("img", { key: "img", src: get(photo, "urls.small", ""), alt: photo.alt_description || "Electrical work", style: { width: "100%", height: "100%", objectFit: "cover" } })
-                  ]),
-                  h("div", { key: "credit", style: { padding: "8px 10px", color: "var(--muted)", fontSize: 11 } }, get(photo, "user.name", "Unsplash"))
-                ]);
-              })
-            ]) : null,
-            tab === "cloudinary" ? h("div", { key: "cloudinary" }, [
-              cloudinaryLoading ? h(LoadingState, { key: "loading", title: "Loading Cloudinary photos...", body: "Pulling from Estimate Pics" }) : null,
-              !cloudinaryLoading && cloudinaryLoaded && cloudinaryPhotos.length === 0 ? h(EmptyState, { key: "empty", title: "No Cloudinary photos found", body: "Check the Estimate Pics folder.", emoji: "☁️" }) : null,
-              renderGrid(cloudinaryPhotos, function (photo, index) {
-                return h("button", {
-                  key: photo.id || photo.public_id || index,
-                  type: "button",
-                  onClick: function () { props.onSelect(photo.url, photo.label || photo.public_id || "Estimate photo"); },
-                  style: { padding: 0, background: "transparent", borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border)" }
-                }, [
-                  h("div", { key: "imgWrap", style: { position: "relative", aspectRatio: "4 / 3", background: "var(--panel)" } }, [
-                    h("img", { key: "img", src: photo.thumb || photo.url, alt: photo.label || "Estimate photo", style: { width: "100%", height: "100%", objectFit: "cover" } }),
-                    h("div", { key: "overlay", style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "18px 10px 10px", background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.82))", color: "white", fontWeight: 800, fontSize: 12, textAlign: "left" } }, photo.label || photo.public_id || "Estimate photo")
-                  ])
-                ]);
-              })
-            ]) : null,
-            (tab === "suggested" || tab === "library") ? renderGrid(tab === "suggested" ? suggested : PHOTO_LIBRARY, function (photo) {
-              return h("button", {
-                key: photo.id,
-                type: "button",
-                onClick: function () { props.onSelect(photo.url, photo.label); },
-                style: { padding: 0, background: "transparent", borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border)" }
-              }, [
-                h("div", { key: "imgWrap", style: { position: "relative", aspectRatio: "4 / 3", background: "var(--panel)" } }, [
-                  h("img", { key: "img", src: photo.url, alt: photo.label, style: { width: "100%", height: "100%", objectFit: "cover" } }),
-                  h("div", { key: "overlay", style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "18px 10px 10px", background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.82))", color: "white", fontWeight: 800, fontSize: 12, textAlign: "left" } }, photo.emoji + " " + photo.label)
-                ])
-              ]);
-            }) : null
+            error ? h("div", {
+              key: "error",
+              style: {
+                marginTop: 12,
+                padding: "12px 14px",
+                borderRadius: "14px",
+                border: "1px solid rgba(255,102,122,0.22)",
+                background: "var(--red-deep)",
+                color: "var(--red)",
+                fontWeight: 700,
+                lineHeight: 1.5
+              }
+            }, error) : null,
+            !extracted ? h(PrimaryButton, {
+              key: "analyze",
+              onClick: analyze,
+              disabled: analyzing || !text.trim(),
+              color: meta.accent,
+              style: { marginTop: 14 }
+            }, analyzing ? "Analyzing..." : "Analyze Notes") : null
           ])
+        ]),
+        extracted ? h("section", {
+          key: "results",
+          style: {
+            ...shellCardStyle(),
+            marginTop: 14,
+            padding: "18px 16px"
+          }
+        }, [
+          h("div", {
+            key: "top",
+            style: {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
+              marginBottom: 12
+            }
+          }, [
+            h("div", { key: "label", style: { fontSize: 12, color: meta.accent, fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase" } }, "Extracted Scopes"),
+            h(Badge, { key: "count", tone: meta.num === 1 ? "cyan" : meta.num === 2 ? "amber" : "green" }, String(scopes.length))
+          ]),
+          scopes.length ? scopes.map((scope, index) => h(ScopeChip, {
+            key: `${scope}-${index}`,
+            text: scope,
+            color: meta.accent,
+            onRemove: () => removeScope(index)
+          })) : h("div", { key: "none", style: { color: "var(--text-muted)" } }, "No scopes were extracted."),
+          factEntries.length ? h("div", {
+            key: "facts",
+            style: {
+              marginTop: 14,
+              paddingTop: 14,
+              borderTop: "1px solid var(--border)"
+            }
+          }, [
+            h("div", { key: "title", style: { fontSize: 12, color: "var(--text-dim)", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 10 } }, "Field Intelligence"),
+            h("div", { key: "wrap", style: { display: "flex", flexWrap: "wrap", gap: 8 } },
+              factEntries.map(([key, value]) => h("div", {
+                key,
+                style: {
+                  padding: "7px 10px",
+                  borderRadius: "12px",
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid var(--border)",
+                  fontSize: 12,
+                  lineHeight: 1.4
+                }
+              }, [
+                h("span", { key: "k", style: { color: "var(--text-dim)" } }, `${key.replace(/_/g, " ")}: `),
+                h("span", { key: "v", style: { color: "var(--text)" } }, Array.isArray(value) ? value.join(", ") : String(value))
+              ])))
+          ]) : null,
+          h(PrimaryButton, {
+            key: "next",
+            onClick: () => onDone({ text, mode, extracted }),
+            color: meta.accent,
+            style: { marginTop: 16 }
+          }, "Looks Good - Next")
+        ]) : null
+      ]);
+    }
+
+    function ReviewStep({ data, onConfirm }) {
+      const sections = [
+        { label: "Customer Request", emoji: "🏠", color: "var(--cyan)", scopes: data.request?.extracted?.requested_scopes || [] },
+        { label: "Field Findings", emoji: "⚡", color: "var(--amber)", scopes: data.safety?.extracted?.safety_scopes || [] },
+        { label: "Upgrade Ideas", emoji: "💡", color: "var(--green)", scopes: data.enhancements?.extracted?.enhancement_scopes || [] }
+      ];
+
+      const payload = {
+        requested: sections[0].scopes,
+        safety: sections[1].scopes,
+        enhancements: sections[2].scopes
+      };
+
+      const total = Object.values(payload).reduce((sum, list) => sum + list.length, 0);
+
+      return pageWrap([
+        h("div", {
+          key: "hero",
+          style: {
+            textAlign: "center",
+            marginBottom: 16
+          }
+        }, [
+          h("div", { key: "emoji", style: { fontSize: 40, marginBottom: 8 } }, "📋"),
+          h("div", {
+            key: "title",
+            style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 34, letterSpacing: "0.04em" }
+          }, "Ready to Build"),
+          h("div", { key: "sub", style: { color: "var(--text-muted)", fontSize: 14, marginTop: 6 } }, `${total} scopes gathered across the visit`)
+        ]),
+        ...sections.map((section) => h("section", {
+          key: section.label,
+          style: {
+            ...shellCardStyle(),
+            marginBottom: 12,
+            overflow: "hidden"
+          }
+        }, [
+          h("div", {
+            key: "head",
+            style: {
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "14px 16px",
+              borderBottom: "1px solid var(--border)",
+              background: "rgba(255,255,255,0.02)"
+            }
+          }, [
+            h("div", { key: "emoji", style: { fontSize: 18 } }, section.emoji),
+            h("div", { key: "label", style: { color: section.color, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", fontSize: 12 } }, section.label),
+            h("div", { key: "count", style: { marginLeft: "auto" } }, h(Badge, { tone: section.color.includes("cyan") ? "cyan" : section.color.includes("amber") ? "amber" : "green" }, String(section.scopes.length)))
+          ]),
+          h("div", { key: "body", style: { padding: "14px 14px 8px" } },
+            section.scopes.length
+              ? section.scopes.map((scope, index) => h(ScopeChip, { key: `${scope}-${index}`, text: scope, color: section.color }))
+              : h("div", { style: { color: "var(--text-muted)", padding: "4px 2px 10px" } }, "Nothing captured in this section."))
+        ])),
+        h(PrimaryButton, {
+          key: "build",
+          onClick: () => onConfirm(payload)
+        }, "Build Estimate Options")
+      ]);
+    }
+
+    function PhotoPicker({ option, onClose, onSelect }) {
+      const [tab, setTab] = useState("suggested");
+      const [query, setQuery] = useState("");
+      const [searching, setSearching] = useState(false);
+      const [results, setResults] = useState([]);
+      const [cloudinaryLoading, setCloudinaryLoading] = useState(false);
+      const [cloudinaryLoaded, setCloudinaryLoaded] = useState(false);
+      const [cloudinaryPhotos, setCloudinaryPhotos] = useState([]);
+
+      const suggested = useMemo(
+        () => getSuggestedPhotos(option.name, option.includes),
+        [option.name, option.includes]
+      );
+
+      useEffect(() => {
+        let live = true;
+
+        async function loadCloudinary() {
+          setCloudinaryLoading(true);
+          const photos = await fetchCloudinaryEstimatePhotos();
+          if (!live) return;
+          setCloudinaryPhotos(photos);
+          setCloudinaryLoaded(true);
+          setCloudinaryLoading(false);
+        }
+
+        if (tab === "cloudinary" && !cloudinaryLoaded) {
+          loadCloudinary();
+        }
+
+        return () => {
+          live = false;
+        };
+      }, [tab, cloudinaryLoaded]);
+
+      async function searchUnsplash() {
+        if (!query.trim()) return;
+        setSearching(true);
+        try {
+          const data = await requestJson(`/api/claude?action=unsplash&q=${encodeURIComponent(`${query} electrical finished work`)}`);
+          setResults(data?.results || []);
+        } catch {
+          setResults([]);
+        }
+        setSearching(false);
+      }
+
+      return h("div", {
+        style: {
+          position: "fixed",
+          inset: 0,
+          background: "rgba(7, 10, 15, 0.88)",
+          backdropFilter: "blur(14px)",
+          zIndex: 40,
+          display: "flex",
+          justifyContent: "center",
+          padding: "20px 14px"
+        }
+      }, h("div", {
+        style: {
+          width: "100%",
+          maxWidth: 560,
+          maxHeight: "100%",
+          display: "flex",
+          flexDirection: "column",
+          ...shellCardStyle({
+            overflow: "hidden"
+          })
+        }
+      }, [
+        h("div", {
+          key: "head",
+          style: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 10,
+            padding: "16px 16px 14px",
+            borderBottom: "1px solid var(--border)"
+          }
+        }, [
+          h("div", { key: "copy" }, [
+            h("div", { key: "title", style: { fontWeight: 800, fontSize: 18 } }, "Add a Finished Work Photo"),
+            h("div", { key: "sub", style: { color: "var(--text-muted)", fontSize: 13, marginTop: 3 } }, option.name)
+          ]),
+          h(SoftButton, { key: "close", onClick: onClose }, "Close")
+        ]),
+        h("div", {
+          key: "tabs",
+          style: {
+            display: "flex",
+            gap: 8,
+            padding: "12px 16px 0"
+          }
+        }, [
+          h(SoftButton, { key: "s", onClick: () => setTab("suggested"), selected: tab === "suggested" }, "Suggested"),
+          h(SoftButton, { key: "a", onClick: () => setTab("library"), selected: tab === "library" }, "Library"),
+          h(SoftButton, { key: "c", onClick: () => setTab("cloudinary"), selected: tab === "cloudinary" }, "Cloudinary"),
+          h(SoftButton, { key: "q", onClick: () => setTab("search"), selected: tab === "search" }, "Search")
+        ]),
+        h("div", {
+          key: "body",
+          style: {
+            flex: 1,
+            overflowY: "auto",
+            padding: "16px"
+          }
+        }, [
+          tab === "search" ? h("div", { key: "search" }, [
+            h("div", { key: "searchbar", style: { display: "flex", gap: 8, marginBottom: 14 } }, [
+              h("input", {
+                key: "input",
+                value: query,
+                onChange: (event) => setQuery(event.target.value),
+                onKeyDown: (event) => {
+                  if (event.key === "Enter") searchUnsplash();
+                },
+                placeholder: "Search finished electrical work...",
+                style: {
+                  flex: 1,
+                  padding: "12px 14px",
+                  borderRadius: "14px",
+                  border: "1px solid var(--border)",
+                  background: "rgba(255,255,255,0.03)",
+                  color: "var(--text)"
+                }
+              }),
+              h(PrimaryButton, {
+                key: "go",
+                onClick: searchUnsplash,
+                disabled: searching || !query.trim(),
+                style: { width: "auto", padding: "12px 16px", minWidth: 108 }
+              }, searching ? "Searching" : "Search")
+            ]),
+            searching ? h(LoadingState, { key: "loading", title: "Searching photos...", body: "Looking for finished-work imagery" }) : null,
+            !searching && query && results.length === 0 ? h(EmptyState, { key: "empty", title: "No results found", body: "Try different wording or use the built-in library.", emoji: "🔍" }) : null,
+            h("div", {
+              key: "results",
+              style: {
+                display: "grid",
+                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                gap: 10
+              }
+            }, results.map((photo, index) => h("button", {
+              key: `${photo.id || index}`,
+              type: "button",
+              onClick: () => onSelect(photo.urls?.regular, photo.alt_description || "Electrical work"),
+              style: {
+                padding: 0,
+                borderRadius: "16px",
+                overflow: "hidden",
+                background: "transparent",
+                border: "1px solid var(--border)"
+              }
+            }, [
+              h("div", { key: "wrap", style: { aspectRatio: "4 / 3", background: "var(--bg-panel)" } }, [
+                h("img", {
+                  key: "img",
+                  src: photo.urls?.small,
+                  alt: photo.alt_description || "Electrical work",
+                  loading: "lazy",
+                  style: { width: "100%", height: "100%", objectFit: "cover" }
+                })
+              ]),
+              h("div", { key: "credit", style: { padding: "8px 10px", color: "var(--text-muted)", fontSize: 11 } }, photo.user?.name || "Unsplash")
+            ])))
+          ]) : null,
+          tab === "cloudinary" ? h("div", { key: "cloudinary" }, [
+            cloudinaryLoading ? h(LoadingState, { key: "loading", title: "Loading Cloudinary photos...", body: "Pulling from the Estimate Pics folder" }) : null,
+            !cloudinaryLoading && cloudinaryLoaded && cloudinaryPhotos.length === 0 ? h(EmptyState, {
+              key: "empty",
+              title: "No Cloudinary photos found",
+              body: "Check that the backend route is returning assets from the Estimate Pics folder.",
+              emoji: "☁️"
+            }) : null,
+            h("div", {
+              key: "grid",
+              style: {
+                display: "grid",
+                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                gap: 10
+              }
+            }, cloudinaryPhotos.map((photo, index) => h("button", {
+              key: photo.id || photo.public_id || index,
+              type: "button",
+              onClick: () => onSelect(photo.url, photo.label || photo.public_id || "Estimate photo"),
+              style: {
+                padding: 0,
+                borderRadius: "16px",
+                overflow: "hidden",
+                background: "transparent",
+                border: "1px solid var(--border)"
+              }
+            }, [
+              h("div", { key: "imgWrap", style: { position: "relative", aspectRatio: "4 / 3", background: "var(--bg-panel)" } }, [
+                h("img", {
+                  key: "img",
+                  src: photo.thumb || photo.url,
+                  alt: photo.label || photo.public_id || "Estimate photo",
+                  loading: "lazy",
+                  style: { width: "100%", height: "100%", objectFit: "cover" }
+                }),
+                h("div", {
+                  key: "overlay",
+                  style: {
+                    position: "absolute",
+                    inset: "auto 0 0 0",
+                    padding: "18px 10px 10px",
+                    background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.82))",
+                    textAlign: "left"
+                  }
+                }, [
+                  h("div", { key: "title", style: { fontWeight: 800, fontSize: 12, color: "white" } }, photo.label || photo.public_id || "Estimate photo")
+                ])
+              ])
+            ])))
+          ]) : null,
+          (tab === "suggested" || tab === "library") ? h("div", {
+            key: "grid",
+            style: {
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+              gap: 10
+            }
+          }, (tab === "suggested" ? suggested : PHOTO_LIBRARY).map((photo) => h("button", {
+            key: photo.id,
+            type: "button",
+            onClick: () => onSelect(photo.url, photo.label),
+            style: {
+              padding: 0,
+              borderRadius: "16px",
+              overflow: "hidden",
+              background: "transparent",
+              border: "1px solid var(--border)"
+            }
+          }, [
+            h("div", { key: "imgWrap", style: { position: "relative", aspectRatio: "4 / 3", background: "var(--bg-panel)" } }, [
+              h("img", {
+                key: "img",
+                src: photo.url,
+                alt: photo.label,
+                loading: "lazy",
+                style: { width: "100%", height: "100%", objectFit: "cover" }
+              }),
+              h("div", {
+                key: "overlay",
+                style: {
+                  position: "absolute",
+                  inset: "auto 0 0 0",
+                  padding: "18px 10px 10px",
+                  background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.82))",
+                  textAlign: "left"
+                }
+              }, [
+                h("div", { key: "title", style: { fontWeight: 800, fontSize: 12, color: "white" } }, `${photo.emoji} ${photo.label}`)
+              ])
+            ])
+          ]))) : null
+        ])
+      ]));
+    }
+
+    function OptionsStep({ scopes, rules, estimate }) {
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState("");
+      const [options, setOptions] = useState([]);
+      const [pricebook, setPricebook] = useState([]);
+      const [pricingMode, setPricingMode] = useState("in_home");
+      const [selected, setSelected] = useState({});
+      const [expanded, setExpanded] = useState(null);
+      const [photos, setPhotos] = useState({});
+      const [pickerFor, setPickerFor] = useState(null);
+      const [sending, setSending] = useState(false);
+      const [sent, setSent] = useState(false);
+      const [sendError, setSendError] = useState("");
+
+      useEffect(() => {
+        let live = true;
+
+        (async () => {
+          const pricebookItems = await fetchPricebook();
+          if (!live) return;
+          setPricebook(pricebookItems);
+
+          const promptItems = buildPromptPricebookItems(pricebookItems, pricingMode, scopes);
+          const result = await callClaude(null, buildOptionsPrompt(scopes, rules, promptItems, pricingMode));
+          if (!live) return;
+
+          const pricebookById = Object.fromEntries(pricebookItems.map((item) => [item.id, item]));
+          const built = Array.isArray(result?.options) ? result.options.map((option) => {
+            const matchedItems = Array.isArray(option?.pricebook_items)
+              ? option.pricebook_items
+                  .map((match) => {
+                    const item = pricebookById[match?.id];
+                    if (!item || item?.pricing?.[pricingMode] == null) return null;
+                    return {
+                      id: item.id,
+                      name: item.name,
+                      description: item.description || "",
+                      price: item.pricing[pricingMode],
+                      quantity: Math.max(1, Number(match?.quantity) || 1)
+                    };
+                  })
+                  .filter(Boolean)
+              : [];
+
+            if (!option || !option.number || !option.name || !matchedItems.length) return null;
+
+            return {
+              ...option,
+              pricebook_items: matchedItems,
+              includes: matchedItems.map((item) => `${item.quantity > 1 ? `${item.quantity}x ` : ""}${item.name}`)
+            };
+          }).filter(Boolean) : [];
+
+          if (built.length) {
+            setOptions(built);
+          } else {
+            setError("Could not build options from the AI response.");
+          }
+          setLoading(false);
+        })().catch(() => {
+          if (live) {
+            setError("Could not build options.");
+            setLoading(false);
+          }
+        });
+
+        return () => {
+          live = false;
+        };
+      }, [scopes, rules, pricingMode]);
+
+      const selectedOptions = options.filter((option) => selected[option.number]);
+      const availablePricebookItems = pricebook.filter((item) => item?.pricing?.[pricingMode] != null);
+      const inHomeCount = pricebook.filter((item) => item?.pricing?.in_home != null).length;
+      const preferredBuilderCount = pricebook.filter((item) => item?.pricing?.preferred_builder != null).length;
+
+      function toggleSelected(number) {
+        setSelected((current) => ({ ...current, [number]: !current[number] }));
+      }
+
+      function handlePhotoSelect(url, label) {
+        if (!pickerFor || !url) return;
+        setPhotos((current) => ({
+          ...current,
+          [pickerFor.number]: { url, label }
+        }));
+        setPickerFor(null);
+      }
+
+      async function sendToHCP() {
+        if (!estimate?.id || !selectedOptions.length) return;
+        setSending(true);
+        setSendError("");
+
+        try {
+          for (const option of selectedOptions) {
+            const response = await callHCP(`/estimates/${estimate.id}/options`, "POST", {
+              name: option.name,
+              line_items: option.pricebook_items.map((item) => ({
+                name: item.name,
+                description: item.description || (option.permits_required ? "Permits may be required." : ""),
+                unit_price: dollarsToCents(item.price),
+                quantity: item.quantity
+              }))
+            });
+
+            const optionId = getOptionId(response);
+            const photo = photos[option.number];
+            if (photo && optionId) {
+              await attachPhoto(photo.url, optionId, photo.label);
+            }
+          }
+
+          setSent(true);
+        } catch {
+          setSendError("Sending failed. Please try again.");
+        }
+
+        setSending(false);
+      }
+
+      if (loading) {
+        return pageWrap(h(LoadingState, {
+          title: "Building options...",
+          body: "Grouping scopes into homeowner-friendly estimate choices"
+        }));
+      }
+
+      if (error) {
+        return pageWrap(h(EmptyState, {
+          title: "Options couldn't be built",
+          body: error,
+          emoji: "⚠️"
+        }));
+      }
+
+      if (sent) {
+        return pageWrap(h("div", {
+          style: {
+            ...shellCardStyle(),
+            padding: "34px 22px",
+            textAlign: "center"
+          }
+        }, [
+          h("div", {
+            key: "check",
+            style: {
+              width: 84,
+              height: 84,
+              borderRadius: "50%",
+              margin: "0 auto 14px",
+              display: "grid",
+              placeItems: "center",
+              background: "var(--green-deep)",
+              border: "1px solid rgba(49,215,140,0.28)",
+              color: "var(--green)",
+              fontSize: 36,
+              fontWeight: 900
+            }
+          }, "✓"),
+          h("div", {
+            key: "title",
+            style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 32, letterSpacing: "0.04em" }
+          }, "Sent to Housecall Pro"),
+          h("p", {
+            key: "body",
+            style: { margin: "10px 0 0", color: "var(--text-muted)", lineHeight: 1.6 }
+          }, `${selectedOptions.length} option${selectedOptions.length > 1 ? "s were" : " was"} added to Estimate #${estimate.estimate_number || ""}.`)
         ]));
       }
 
-      function OptionsStep(props) {
-        var _a = useState(true), loading = _a[0], setLoading = _a[1];
-        var _b = useState(""), error = _b[0], setError = _b[1];
-        var _c = useState([]), pricebook = _c[0], setPricebook = _c[1];
-        var _d = useState("in_home"), pricingMode = _d[0], setPricingMode = _d[1];
-        var _e = useState([]), options = _e[0], setOptions = _e[1];
-        var _f = useState({}), selected = _f[0], setSelected = _f[1];
-        var _g = useState(null), expanded = _g[0], setExpanded = _g[1];
-        var _h = useState({}), photos = _h[0], setPhotos = _h[1];
-        var _i = useState(null), pickerFor = _i[0], setPickerFor = _i[1];
-        var _j = useState(false), sending = _j[0], setSending = _j[1];
-        var _k = useState(false), sent = _k[0], setSent = _k[1];
-        var _l = useState(""), sendMessage = _l[0], setSendMessage = _l[1];
-
-        useEffect(function () {
-          var live = true;
-          (async function () {
-            setLoading(true);
-            setError("");
-            var pricebookItems = await fetchPricebook();
-            if (!live) return;
-            setPricebook(pricebookItems);
-            var catalog = buildPromptCatalog(pricebookItems, pricingMode, props.scopes);
-            var aiResult = await callClaude(null, buildOptionsPrompt(props.scopes, props.rules, catalog, pricingMode));
-            if (!live) return;
-            var byId = {};
-            pricebookItems.forEach(function (item) { byId[item.id] = item; });
-            var rawOptions = aiResult && Array.isArray(aiResult.options) ? aiResult.options : [];
-            var built = rawOptions.map(function (option) {
-              if (!option || !option.pricebook_items || !option.pricebook_items.length) return null;
-              var matched = option.pricebook_items.map(function (match) {
-                var item = byId[match.id];
-                if (!item || !item.pricing || item.pricing[pricingMode] == null) return null;
-                return {
-                  id: item.id,
-                  name: item.name,
-                  description: item.description || "",
-                  price: item.pricing[pricingMode],
-                  quantity: Math.max(1, Number(match.quantity) || 1)
-                };
-              }).filter(Boolean);
-              if (!option.number || !option.name || !matched.length) return null;
-              return {
-                number: option.number,
-                name: option.name,
-                tier: option.tier || "midrange",
-                focus_statement: option.focus_statement || "",
-                value_statement: option.value_statement || "",
-                permits_required: !!option.permits_required,
-                pricebook_items: matched,
-                includes: matched.map(function (item) {
-                  return (item.quantity > 1 ? item.quantity + "x " : "") + item.name;
-                })
-              };
-            }).filter(Boolean);
-
-            if (built.length) setOptions(built);
-            else setError("Could not build options from the AI response.");
-            setLoading(false);
-          })().catch(function () {
-            if (live) {
-              setError("Could not build options.");
-              setLoading(false);
-            }
-          });
-          return function () { live = false; };
-        }, [JSON.stringify(props.scopes), JSON.stringify(props.rules), pricingMode]);
-
-        var selectedOptions = options.filter(function (option) { return !!selected[option.number]; });
-        var inHomeCount = pricebook.filter(function (item) { return item && item.pricing && item.pricing.in_home != null; }).length;
-        var preferredCount = pricebook.filter(function (item) { return item && item.pricing && item.pricing.preferred_builder != null; }).length;
-        var availableCount = pricebook.filter(function (item) { return item && item.pricing && item.pricing[pricingMode] != null; }).length;
-
-        async function sendToHCP() {
-          if (!props.estimate || !props.estimate.id || !selectedOptions.length) return;
-          setSending(true);
-          setSendMessage("");
-          var warnings = [];
-
-          try {
-            var idx;
-            for (idx = 0; idx < selectedOptions.length; idx += 1) {
-              var option = selectedOptions[idx];
-              var response = await callHCP("/estimates/" + props.estimate.id + "/options", "POST", {
-                name: option.name,
-                line_items: option.pricebook_items.map(function (item) {
-                  return {
-                    name: item.name,
-                    description: item.description || "",
-                    unit_price: dollarsToCents(item.price),
-                    quantity: item.quantity
-                  };
-                })
-              });
-              var optionId = getOptionId(response);
-              var photo = photos[option.number];
-
-              if (photo && !optionId) {
-                warnings.push("\"" + option.name + "\" was created, but FieldGuide could not find the new HCP option ID to attach the photo.");
-              }
-
-              if (photo && optionId) {
-                var attachResult = await attachPhoto(photo.url, optionId, photo.label);
-                if (!attachResult || attachResult.error) {
-                  warnings.push("\"" + option.name + "\" was created, but the photo did not attach in HCP.");
-                }
-              }
-            }
-            setSendMessage(warnings.join(" "));
-            setSent(true);
-          } catch (err) {
-            setSendMessage("Sending failed. Please try again.");
+      return pageWrap([
+        pickerFor ? h(PhotoPicker, {
+          key: "picker",
+          option: pickerFor,
+          onClose: () => setPickerFor(null),
+          onSelect: handlePhotoSelect
+        }) : null,
+        h("div", { key: "intro", style: { marginBottom: 16 } }, [
+          h("div", {
+            key: "title",
+            style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 32, letterSpacing: "0.04em" }
+          }, `${options.length} Options Ready`),
+          h("div", { key: "sub", style: { color: "var(--text-muted)", fontSize: 14, marginTop: 4 } }, "Pick the options you want to send, then add photos if helpful.")
+        ]),
+        h("div", {
+          key: "context",
+          style: {
+            ...shellCardStyle(),
+            marginBottom: 14,
+            padding: "14px 16px"
           }
-
-          setSending(false);
-        }
-
-        if (loading) {
-          return pageWrap(h(LoadingState, { title: "Building options...", body: "Grouping scope into homeowner-friendly choices" }));
-        }
-
-        if (error) {
-          return pageWrap(h(EmptyState, { title: "Options couldn't be built", body: error, emoji: "⚠️" }));
-        }
-
-        if (sent) {
-          return pageWrap(h("div", { style: Object.assign(shellCard(), { padding: "34px 22px", textAlign: "center" }) }, [
-            h("div", {
-              key: "check",
-              style: {
-                width: 84,
-                height: 84,
-                borderRadius: "50%",
-                margin: "0 auto 14px",
-                display: "grid",
-                placeItems: "center",
-                background: "var(--green-soft)",
-                border: "1px solid rgba(52,213,139,0.28)",
-                color: "var(--green)",
-                fontSize: 36,
-                fontWeight: 900
-              }
-            }, "✓"),
-            h("div", { key: "title", style: { fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 34, letterSpacing: "0.04em" } }, "Sent to Housecall Pro"),
-            h("p", { key: "body", style: { margin: "10px 0 0", color: "var(--muted)", lineHeight: 1.6 } }, selectedOptions.length + " option" + (selectedOptions.length > 1 ? "s were" : " was") + " added to Estimate #" + (props.estimate.estimate_number || "" ) + "."),
-            sendMessage ? h("div", { key: "warning", style: { marginTop: 14, padding: "12px 14px", borderRadius: "14px", border: "1px solid rgba(255,177,31,0.22)", background: "var(--amber-soft)", color: "var(--amber)", fontWeight: 700, lineHeight: 1.5, textAlign: "left" } }, sendMessage) : null
-          ]));
-        }
-
-        return pageWrap([
-          pickerFor ? h(PhotoPicker, {
-            key: "picker",
-            option: pickerFor,
-            onClose: function () { setPickerFor(null); },
-            onSelect: function (url, label) {
-              if (!pickerFor || !url) return;
-              var next = {};
-              var key;
-              for (key in photos) next[key] = photos[key];
-              next[pickerFor.number] = { url: url, label: label };
-              setPhotos(next);
-              setPickerFor(null);
+        }, [
+          h("div", { key: "label", style: { color: "var(--cyan)", fontWeight: 800, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 6 } }, "Estimate Target"),
+          h("div", { key: "name", style: { fontWeight: 800, fontSize: 15 } },
+            `${estimate.customer?.first_name || ""} ${estimate.customer?.last_name || ""}`.trim() || "Customer"),
+          estimate.address ? h("div", { key: "address", style: { marginTop: 4, color: "var(--text-muted)", fontSize: 13 } },
+            [estimate.address.street, estimate.address.city].filter(Boolean).join(", ")) : null,
+          h("div", { key: "num", style: { marginTop: 8 } }, h(Badge, { tone: "cyan" }, `Est #${estimate.estimate_number || "Pending"}`))
+        ]),
+        h("div", {
+          key: "pricing-mode",
+          style: {
+            ...shellCardStyle(),
+            marginBottom: 14,
+            padding: "14px 16px"
+          }
+        }, [
+          h("div", { key: "label", style: { color: "var(--green)", fontWeight: 800, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 6 } }, "Pricing Mode"),
+          h("div", { key: "sub", style: { color: "var(--text-muted)", fontSize: 13, lineHeight: 1.5, marginBottom: 12 } },
+            "Choose which price book this estimate should follow before sending it to Housecall Pro."),
+          h("div", {
+            key: "toggle",
+            style: {
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 8
             }
-          }) : null,
-          h("div", { key: "intro", style: { marginBottom: 16 } }, [
-            h("div", { key: "title", style: { fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 34, letterSpacing: "0.04em" } }, options.length + " Options Ready"),
-            h("div", { key: "sub", style: { color: "var(--muted)", marginTop: 4 } }, "Two economy, two midrange, two premium.")
+          }, [
+            h(SoftButton, {
+              key: "in-home",
+              onClick: () => setPricingMode("in_home"),
+              selected: pricingMode === "in_home",
+              style: {
+                width: "100%",
+                padding: "14px 12px",
+                textAlign: "left",
+                color: pricingMode === "in_home" ? "var(--text)" : "var(--text-muted)"
+              }
+            }, `In Home (${inHomeCount})`),
+            h(SoftButton, {
+              key: "preferred-builder",
+              onClick: () => setPricingMode("preferred_builder"),
+              selected: pricingMode === "preferred_builder",
+              style: {
+                width: "100%",
+                padding: "14px 12px",
+                textAlign: "left",
+                color: pricingMode === "preferred_builder" ? "var(--text)" : "var(--text-muted)"
+              }
+            }, `Preferred Builder (${preferredBuilderCount})`)
           ]),
-          h("div", { key: "estimate", style: Object.assign(shellCard(), { marginBottom: 14, padding: "14px 16px" }) }, [
-            h("div", { key: "label", style: { color: "var(--cyan)", fontWeight: 800, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 6 } }, "Estimate Target"),
-            h("div", { key: "name", style: { fontWeight: 800, fontSize: 15 } }, ((get(props.estimate, "customer.first_name", "") + " " + get(props.estimate, "customer.last_name", "")).trim()) || "Customer"),
-            h("div", { key: "num", style: { marginTop: 8 } }, h(Badge, { tone: "cyan" }, "Est #" + (props.estimate.estimate_number || "Pending")))
-          ]),
-          h("div", { key: "pricing", style: Object.assign(shellCard(), { marginBottom: 14, padding: "14px 16px" }) }, [
-            h("div", { key: "label", style: { color: "var(--green)", fontWeight: 800, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 6 } }, "Pricing Mode"),
-            h("div", { key: "sub", style: { color: "var(--muted)", fontSize: 13, lineHeight: 1.5, marginBottom: 12 } }, "Choose which price book this estimate should follow before sending to Housecall Pro."),
-            h("div", { key: "toggle", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 } }, [
-              h(SoftButton, { key: "in", onClick: function () { setPricingMode("in_home"); }, selected: pricingMode === "in_home", style: { width: "100%", textAlign: "left" } }, "In Home (" + inHomeCount + ")"),
-              h(SoftButton, { key: "pb", onClick: function () { setPricingMode("preferred_builder"); }, selected: pricingMode === "preferred_builder", style: { width: "100%", textAlign: "left" } }, "Preferred Builder (" + preferredCount + ")")
-            ]),
-            h("div", { key: "count", style: { marginTop: 12, color: "var(--muted)", fontSize: 13 } }, availableCount + " catalog items available for this mode.")
+          h("div", {
+            key: "available",
+            style: {
+              marginTop: 12,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
+              flexWrap: "wrap"
+            }
+          }, [
+            h("div", { key: "copy", style: { color: "var(--text-muted)", fontSize: 13 } },
+              `${availablePricebookItems.length} catalog item${availablePricebookItems.length === 1 ? "" : "s"} available for ${pricingMode === "in_home" ? "In Home" : "Preferred Builder"} pricing.`),
+            h(Badge, { key: "mode", tone: "green" }, pricingMode === "in_home" ? "In Home" : "Preferred Builder")
           ])
-        ].concat(options.map(function (option, index) {
-          var color = OPTION_COLORS[index % OPTION_COLORS.length];
-          var isSelected = !!selected[option.number];
-          var isExpanded = expanded === option.number;
-          var photo = photos[option.number];
-          var total = option.pricebook_items.reduce(function (sum, item) {
-            return sum + (Number(item.price || 0) * Number(item.quantity || 1));
-          }, 0);
+        ]),
+        ...options.map((option, index) => {
+          const color = OPTION_COLORS[index % OPTION_COLORS.length];
+          const isSelected = !!selected[option.number];
+          const isExpanded = expanded === option.number;
+          const photo = photos[option.number];
 
-          return h("section", { key: option.number, style: Object.assign(shellCard({ marginBottom: 12, overflow: "hidden", borderColor: isSelected ? color : "var(--border)" })) }, [
-            h("div", { key: "head", style: { display: "grid", gridTemplateColumns: "56px 1fr 48px", alignItems: "stretch", background: "linear-gradient(135deg, " + color + ", " + color + "cc)" } }, [
+          return h("section", {
+            key: option.number,
+            style: {
+              ...shellCardStyle({
+                marginBottom: 12,
+                overflow: "hidden",
+                borderColor: isSelected ? color : "var(--border)"
+              })
+            }
+          }, [
+            h("div", {
+              key: "head",
+              style: {
+                display: "grid",
+                gridTemplateColumns: "56px 1fr 48px",
+                alignItems: "stretch",
+                background: `linear-gradient(135deg, ${color}, ${color}cc)`
+              }
+            }, [
               h("button", {
                 key: "check",
                 type: "button",
-                onClick: function () {
-                  var next = {};
-                  var key;
-                  for (key in selected) next[key] = selected[key];
-                  next[option.number] = !next[option.number];
-                  setSelected(next);
-                },
-                style: { background: "rgba(0,0,0,0.18)", display: "grid", placeItems: "center" }
-              }, h("div", { style: { width: 28, height: 28, borderRadius: 8, display: "grid", placeItems: "center", background: isSelected ? "white" : "rgba(255,255,255,0.2)", color: isSelected ? color : "transparent", border: "2px solid rgba(255,255,255,0.45)", fontWeight: 900 } }, "✓")),
+                onClick: () => toggleSelected(option.number),
+                "aria-label": `${isSelected ? "Deselect" : "Select"} ${option.name}`,
+                style: {
+                  background: "rgba(0,0,0,0.18)",
+                  display: "grid",
+                  placeItems: "center"
+                }
+              }, h("div", {
+                style: {
+                  width: 28,
+                  height: 28,
+                  borderRadius: 8,
+                  display: "grid",
+                  placeItems: "center",
+                  background: isSelected ? "white" : "rgba(255,255,255,0.2)",
+                  color: isSelected ? color : "transparent",
+                  border: "2px solid rgba(255,255,255,0.45)",
+                  fontWeight: 900
+                }
+              }, "✓")),
               h("button", {
                 key: "summary",
                 type: "button",
-                onClick: function () { setExpanded(isExpanded ? null : option.number); },
-                style: { padding: "14px 14px 15px", textAlign: "left", background: "transparent", color: "white" }
+                onClick: () => setExpanded(isExpanded ? null : option.number),
+                style: {
+                  padding: "14px 14px 15px",
+                  textAlign: "left",
+                  background: "transparent",
+                  color: "white"
+                }
               }, [
                 h("div", { key: "name", style: { fontWeight: 800, fontSize: 17, lineHeight: 1.2 } }, option.name),
-                option.focus_statement ? h("div", { key: "focus", style: { marginTop: 4, fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.82)" } }, option.focus_statement) : null,
+                option.focus_statement ? h("div", {
+                  key: "focus",
+                  style: {
+                    marginTop: 4,
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: "rgba(255,255,255,0.82)"
+                  }
+                }, option.focus_statement) : null,
                 h("div", { key: "badges", style: { marginTop: 7, display: "flex", gap: 8, flexWrap: "wrap" } }, [
-                  h(Badge, { key: "tier", tone: "default" }, TIER_LABELS[option.tier] || option.tier),
+                  h("span", {
+                    key: "tier",
+                    style: {
+                      fontSize: 11,
+                      fontWeight: 800,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      color: "rgba(255,255,255,0.78)"
+                    }
+                  }, TIER_LABELS[option.tier] || option.tier),
                   option.permits_required ? h(Badge, { key: "permits", tone: "amber" }, "Permits") : null,
                   photo ? h(Badge, { key: "photo", tone: "green" }, "Photo") : null
                 ])
@@ -1211,204 +1986,401 @@
               h("button", {
                 key: "toggle",
                 type: "button",
-                onClick: function () { setExpanded(isExpanded ? null : option.number); },
-                style: { background: "rgba(0,0,0,0.14)", color: "rgba(255,255,255,0.75)", fontSize: 18 }
+                onClick: () => setExpanded(isExpanded ? null : option.number),
+                style: {
+                  background: "rgba(0,0,0,0.14)",
+                  color: "rgba(255,255,255,0.75)",
+                  fontSize: 18
+                }
               }, isExpanded ? "▴" : "▾")
             ]),
-            isExpanded ? h("div", { key: "detail", style: { padding: "16px", borderTop: "1px solid var(--border)" } }, [
-              h("div", { key: "value", style: { color: "var(--muted)", fontStyle: "italic", lineHeight: 1.6, marginBottom: 12 } }, "\"" + option.value_statement + "\""),
-              option.focus_statement ? h("div", { key: "focus2", style: { marginBottom: 12, color: "var(--text)", fontSize: 13, fontWeight: 700 } }, "Focus: " + option.focus_statement) : null,
-              h("div", { key: "total", style: { display: "inline-flex", alignItems: "center", gap: 6, marginBottom: 12, padding: "6px 10px", borderRadius: "999px", background: "rgba(255,255,255,0.06)", border: "1px solid var(--border)", fontWeight: 700 } }, "Estimated total: $" + total.toFixed(2)),
-              h("div", { key: "inclabel", style: { color: "var(--dim)", fontSize: 12, fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 10 } }, "What's Included")
-            ].concat(option.pricebook_items.map(function (item, itemIndex) {
-              return h("div", { key: option.number + "-" + itemIndex, style: { display: "flex", alignItems: "center", gap: 10, padding: "11px 12px", marginBottom: 8, borderRadius: "14px", background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)" } }, [
-                h("div", { key: "dot", style: { width: 8, height: 8, borderRadius: "50%", background: color, flexShrink: 0 } }),
-                h("div", { key: "text", style: { flex: 1, fontWeight: 600, lineHeight: 1.5 } }, (item.quantity > 1 ? item.quantity + "x " : "") + item.name),
-                h("div", { key: "price", style: { color: "var(--muted)", fontWeight: 700 } }, "$" + (item.price * item.quantity).toFixed(2))
-              ]);
-            })).concat([
-              h("div", { key: "photo-block", style: { marginTop: 14, paddingTop: 14, borderTop: "1px solid var(--border)" } }, [
-                h("div", { key: "photo-title", style: { color: "var(--dim)", fontSize: 12, fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 10 } }, "Finished Work Photo"),
-                photo ? h("div", { key: "photo-wrap" }, [
-                  h("div", { key: "img", style: { position: "relative", overflow: "hidden", borderRadius: "16px", border: "1px solid var(--border)" } }, [
-                    h("img", { key: "photo", src: photo.url, alt: photo.label, style: { width: "100%", height: 180, objectFit: "cover" } }),
-                    h("div", { key: "caption", style: { position: "absolute", left: 10, bottom: 10, padding: "5px 8px", borderRadius: "10px", background: "rgba(0,0,0,0.68)", color: "white", fontSize: 12 } }, photo.label)
+            isExpanded ? h("div", {
+              key: "detail",
+              style: {
+                padding: "16px 16px 18px",
+                borderTop: "1px solid var(--border)"
+              }
+            }, [
+              h("div", {
+                key: "value",
+                style: {
+                  color: "var(--text-muted)",
+                  fontSize: 14,
+                  fontStyle: "italic",
+                  lineHeight: 1.6,
+                  marginBottom: 12
+                }
+              }, `"${option.value_statement}"`),
+              option.focus_statement ? h("div", {
+                key: "focus-detail",
+                style: {
+                  marginBottom: 12,
+                  color: "var(--text)",
+                  fontSize: 13,
+                  fontWeight: 700
+                }
+              }, `Focus: ${option.focus_statement}`) : null,
+              h("div", {
+                key: "price-total",
+                style: {
+                  marginBottom: 12,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "6px 10px",
+                  borderRadius: "999px",
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid var(--border)",
+                  color: "var(--text)"
+                }
+              }, `Estimated total: $${option.pricebook_items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}`),
+              h("div", { key: "inclabel", style: { color: "var(--text-dim)", fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 10 } }, "What's Included"),
+              ...option.pricebook_items.map((item, itemIndex) => h("div", {
+                key: `${option.number}-${itemIndex}`,
+                style: {
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  marginBottom: 8,
+                  padding: "11px 12px",
+                  borderRadius: "14px",
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid var(--border)"
+                }
+              }, [
+                h("div", {
+                  key: "dot",
+                  style: {
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: color,
+                    flexShrink: 0
+                  }
+                }),
+                h("div", { key: "text", style: { flex: 1, fontWeight: 600, lineHeight: 1.5 } }, `${item.quantity > 1 ? `${item.quantity}x ` : ""}${item.name}`),
+                h("div", { key: "price", style: { fontWeight: 700, color: "var(--text-muted)" } }, `$${(item.price * item.quantity).toFixed(2)}`)
+              ])),
+              h("div", {
+                key: "photoBlock",
+                style: {
+                  marginTop: 14,
+                  paddingTop: 14,
+                  borderTop: "1px solid var(--border)"
+                }
+              }, [
+                h("div", { key: "photolabel", style: { color: "var(--text-dim)", fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.16em", marginBottom: 10 } }, "Finished Work Photo"),
+                photo ? h("div", {
+                  key: "withPhoto"
+                }, [
+                  h("div", {
+                    key: "img",
+                    style: {
+                      position: "relative",
+                      overflow: "hidden",
+                      borderRadius: "16px",
+                      border: "1px solid var(--border)"
+                    }
+                  }, [
+                    h("img", {
+                      key: "photo",
+                      src: photo.url,
+                      alt: photo.label,
+                      style: { width: "100%", height: 180, objectFit: "cover" }
+                    }),
+                    h("div", {
+                      key: "cap",
+                      style: {
+                        position: "absolute",
+                        left: 10,
+                        bottom: 10,
+                        padding: "5px 8px",
+                        borderRadius: "10px",
+                        background: "rgba(0,0,0,0.68)",
+                        color: "white",
+                        fontSize: 12
+                      }
+                    }, photo.label)
                   ]),
-                  h("div", { key: "actions", style: { display: "flex", gap: 8, marginTop: 10 } }, [
-                    h(SoftButton, { key: "change", onClick: function () { setPickerFor(option); } }, "Change"),
+                  h("div", { key: "photoactions", style: { display: "flex", gap: 8, marginTop: 10 } }, [
+                    h(SoftButton, { key: "change", onClick: () => setPickerFor(option) }, "Change"),
                     h(SoftButton, {
                       key: "remove",
-                      onClick: function () {
-                        var next = {};
-                        var key;
-                        for (key in photos) if (String(key) !== String(option.number)) next[key] = photos[key];
-                        setPhotos(next);
-                      },
+                      onClick: () => setPhotos((current) => {
+                        const next = { ...current };
+                        delete next[option.number];
+                        return next;
+                      }),
                       style: { color: "var(--red)" }
                     }, "Remove")
                   ])
-                ]) : h(SoftButton, { key: "add", onClick: function () { setPickerFor(option); }, style: { width: "100%", borderStyle: "dashed", color: color } }, "Add Photo")
+                ]) : h(SoftButton, {
+                  key: "add",
+                  onClick: () => setPickerFor(option),
+                  style: {
+                    width: "100%",
+                    padding: "15px 14px",
+                    borderStyle: "dashed",
+                    color
+                  }
+                }, "Add Photo")
               ])
-            ])) : null
+            ]) : null
           ]);
-        })).concat([
-          sendMessage && !sent ? h("div", { key: "error", style: Object.assign(shellCard({ borderColor: "rgba(255,106,127,0.22)" }), { marginBottom: 12, padding: "12px 14px", color: "var(--red)" }) }, sendMessage) : null,
-          selectedOptions.length ? h(PrimaryButton, { key: "send", onClick: sendToHCP, disabled: sending, color: "var(--amber)" }, sending ? "Sending to Housecall Pro..." : "Add " + selectedOptions.length + " Option" + (selectedOptions.length > 1 ? "s" : "") + " to Housecall Pro") : null
-        ]));
+        }),
+        sendError ? h("div", {
+          key: "senderr",
+          style: {
+            ...shellCardStyle(),
+            marginBottom: 12,
+            padding: "12px 14px",
+            color: "var(--red)",
+            borderColor: "rgba(255,102,122,0.2)"
+          }
+        }, sendError) : null,
+        selectedOptions.length ? h(PrimaryButton, {
+          key: "send",
+          onClick: sendToHCP,
+          disabled: sending,
+          color: "var(--amber)"
+        }, sending ? "Sending to Housecall Pro..." : `Add ${selectedOptions.length} Option${selectedOptions.length > 1 ? "s" : ""} to Housecall Pro`) : null
+      ]);
+    }
+
+    function IntelligenceScreen({ rules, onBack, onSave }) {
+      const [localRules, setLocalRules] = useState(rules);
+      const [showAdd, setShowAdd] = useState(false);
+      const [trigger, setTrigger] = useState("");
+      const [result, setResult] = useState("");
+
+      function addRule() {
+        if (!trigger.trim() || !result.trim()) return;
+        const updated = [...localRules, { id: Date.now(), trigger: trigger.trim(), result: result.trim() }];
+        setLocalRules(updated);
+        onSave(updated);
+        setTrigger("");
+        setResult("");
+        setShowAdd(false);
       }
 
-      function RulesScreen(props) {
-        var _a = useState(props.rules), localRules = _a[0], setLocalRules = _a[1];
-        var _b = useState(false), showAdd = _b[0], setShowAdd = _b[1];
-        var _c = useState(""), trigger = _c[0], setTrigger = _c[1];
-        var _d = useState(""), result = _d[0], setResult = _d[1];
+      function removeRule(id) {
+        const updated = localRules.filter((rule) => rule.id !== id);
+        setLocalRules(updated);
+        onSave(updated);
+      }
 
-        function addRule() {
-          if (!trigger.trim() || !result.trim()) return;
-          var updated = localRules.concat([{ id: Date.now(), trigger: trigger.trim(), result: result.trim() }]);
-          setLocalRules(updated);
-          props.onSave(updated);
-          setTrigger("");
-          setResult("");
-          setShowAdd(false);
-        }
-
-        function removeRule(id) {
-          var updated = localRules.filter(function (rule) { return rule.id !== id; });
-          setLocalRules(updated);
-          props.onSave(updated);
-        }
-
-        return pageWrap([
-          h("div", { key: "back", style: { marginBottom: 12 } }, h(SoftButton, { onClick: props.onBack }, "Back")),
-          h("div", { key: "hero", style: Object.assign(shellCard(), { padding: "22px 18px", marginBottom: 14 }) }, [
-            h("div", { key: "eyebrow", style: { color: "var(--amber)", fontWeight: 800, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 10 } }, "Electrical Rules Engine"),
-            h("div", { key: "title", style: { fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: 34, letterSpacing: "0.04em" } }, "Field Intelligence"),
-            h("div", { key: "copy", style: { color: "var(--muted)", lineHeight: 1.6, marginTop: 10 } }, "These rules teach FieldGuide how to expand field notes into real scope.")
+      return h("div", null, [
+        h("div", { key: "top", style: { paddingTop: 10 } }, pageWrap([
+          h("div", { key: "back", style: { marginBottom: 12 } }, h(SoftButton, { onClick: onBack }, "Back")),
+          h("div", {
+            key: "hero",
+            style: {
+              ...shellCardStyle(),
+              padding: "22px 18px"
+            }
+          }, [
+            h("div", { key: "eyebrow", style: { color: "var(--amber)", fontWeight: 800, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", marginBottom: 10 } }, "Electrical Rules Engine"),
+            h("div", {
+              key: "title",
+              style: { fontFamily: '"Barlow Condensed", sans-serif', fontWeight: 900, fontSize: 34, letterSpacing: "0.04em" }
+            }, "Field Intelligence"),
+            h("p", { key: "body", style: { margin: "10px 0 0", color: "var(--text-muted)", lineHeight: 1.6 } },
+              "These rules teach FieldGuide how to expand field notes into real scope. Keep them practical and specific so the AI stays grounded.")
           ]),
-          h(SoftButton, { key: "toggle", onClick: function () { setShowAdd(!showAdd); }, style: { width: "100%", color: showAdd ? "var(--muted)" : "var(--green)" } }, showAdd ? "Cancel" : "Add New Rule"),
-          showAdd ? h("div", { key: "form", style: Object.assign(shellCard(), { padding: "16px", marginTop: 12, marginBottom: 12 }) }, [
-            h("div", { key: "l1", style: { marginBottom: 8, color: "var(--green)", fontWeight: 800, fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase" } }, "When tech sees..."),
+          h(SoftButton, {
+            key: "toggle",
+            onClick: () => setShowAdd((current) => !current),
+            style: {
+              marginTop: 14,
+              width: "100%",
+              padding: "14px 16px",
+              color: showAdd ? "var(--text-muted)" : "var(--green)"
+            }
+          }, showAdd ? "Cancel" : "Add New Rule"),
+          showAdd ? h("div", {
+            key: "form",
+            style: {
+              ...shellCardStyle(),
+              marginTop: 12,
+              padding: "16px"
+            }
+          }, [
+            h("div", { key: "l1", style: { marginBottom: 8, color: "var(--green)", fontWeight: 800, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.14em" } }, "When tech sees..."),
             h("textarea", {
               key: "trigger",
               value: trigger,
-              onChange: function (event) { setTrigger(event.target.value); },
-              style: { width: "100%", minHeight: 84, padding: "12px 14px", borderRadius: "14px", border: "1px solid var(--border)", background: "rgba(255,255,255,0.03)", color: "var(--text)", resize: "vertical" }
+              onChange: (event) => setTrigger(event.target.value),
+              placeholder: "Example: panel is full, 200A service, no room for EV charger breaker",
+              style: {
+                width: "100%",
+                minHeight: 84,
+                resize: "vertical",
+                padding: "12px 14px",
+                borderRadius: "14px",
+                border: "1px solid var(--border)",
+                background: "rgba(255,255,255,0.03)",
+                color: "var(--text)"
+              }
             }),
-            h("div", { key: "l2", style: { margin: "14px 0 8px", color: "var(--green)", fontWeight: 800, fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase" } }, "AI should include..."),
+            h("div", { key: "l2", style: { margin: "14px 0 8px", color: "var(--green)", fontWeight: 800, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.14em" } }, "AI should include..."),
             h("textarea", {
               key: "result",
               value: result,
-              onChange: function (event) { setResult(event.target.value); },
-              style: { width: "100%", minHeight: 84, padding: "12px 14px", borderRadius: "14px", border: "1px solid var(--border)", background: "rgba(255,255,255,0.03)", color: "var(--text)", resize: "vertical" }
+              onChange: (event) => setResult(event.target.value),
+              placeholder: "Example: offer sub-panel or load calculation before recommending full service upgrade",
+              style: {
+                width: "100%",
+                minHeight: 84,
+                resize: "vertical",
+                padding: "12px 14px",
+                borderRadius: "14px",
+                border: "1px solid var(--border)",
+                background: "rgba(255,255,255,0.03)",
+                color: "var(--text)"
+              }
             }),
-            h(PrimaryButton, { key: "save", onClick: addRule, color: "var(--green)", style: { marginTop: 14 } }, "Save Rule")
-          ]) : null
-        ].concat(localRules.map(function (rule) {
-          return h("div", { key: rule.id, style: Object.assign(shellCard(), { overflow: "hidden", marginBottom: 12 }) }, [
+            h(PrimaryButton, {
+              key: "save",
+              onClick: addRule,
+              color: "var(--green)",
+              style: { marginTop: 14 }
+            }, "Save Rule")
+          ]) : null,
+          h("div", { key: "count", style: { marginTop: 16, marginBottom: 10 } }, h(Badge, { tone: "amber" }, `${localRules.length} active rules`)),
+          ...localRules.map((rule) => h("div", {
+            key: rule.id,
+            style: {
+              ...shellCardStyle(),
+              marginBottom: 12,
+              overflow: "hidden"
+            }
+          }, [
             h("div", { key: "a", style: { padding: "14px 16px", borderBottom: "1px solid var(--border)" } }, [
-              h("div", { key: "l", style: { color: "var(--amber)", fontWeight: 800, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 6 } }, "When tech sees..."),
-              h("div", { key: "t", style: { lineHeight: 1.55, fontWeight: 700 } }, rule.trigger)
+              h("div", { key: "label", style: { color: "var(--amber)", fontWeight: 800, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 6 } }, "When tech sees..."),
+              h("div", { key: "trigger", style: { lineHeight: 1.55, fontWeight: 700 } }, rule.trigger)
             ]),
-            h("div", { key: "b", style: { padding: "14px 16px", background: "rgba(52,213,139,0.04)", borderBottom: "1px solid var(--border)" } }, [
-              h("div", { key: "l", style: { color: "var(--green)", fontWeight: 800, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 6 } }, "AI includes..."),
-              h("div", { key: "r", style: { color: "var(--muted)", lineHeight: 1.55 } }, rule.result)
+            h("div", { key: "b", style: { padding: "14px 16px", background: "rgba(49,215,140,0.04)", borderBottom: "1px solid var(--border)" } }, [
+              h("div", { key: "label", style: { color: "var(--green)", fontWeight: 800, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", marginBottom: 6 } }, "AI includes..."),
+              h("div", { key: "result", style: { lineHeight: 1.55, color: "var(--text-muted)" } }, rule.result)
             ]),
-            h("div", { key: "c", style: { padding: "10px 16px", display: "flex", justifyContent: "flex-end" } }, h(SoftButton, { onClick: function () { removeRule(rule.id); }, style: { color: "var(--red)" } }, "Remove"))
-          ]);
-        })));
+            h("div", { key: "c", style: { padding: "10px 16px", display: "flex", justifyContent: "flex-end" } },
+              h(SoftButton, { onClick: () => removeRule(rule.id), style: { color: "var(--red)" } }, "Remove"))
+          ]))
+        ]))
+      ]);
+    }
+
+    function FieldGuide() {
+      const [tech, setTech] = useState(null);
+      const [step, setStep] = useState("job");
+      const [estimate, setEstimate] = useState(null);
+      const [data, setData] = useState({});
+      const [scopes, setScopes] = useState(null);
+      const [rules, setRules] = useState(loadRules);
+      const [showRules, setShowRules] = useState(false);
+
+      function resetFlow() {
+        setStep("job");
+        setEstimate(null);
+        setData({});
+        setScopes(null);
       }
 
-      function FieldGuide() {
-        var _a = useState(null), tech = _a[0], setTech = _a[1];
-        var _b = useState("job"), step = _b[0], setStep = _b[1];
-        var _c = useState(null), estimate = _c[0], setEstimate = _c[1];
-        var _d = useState({}), data = _d[0], setData = _d[1];
-        var _e = useState(null), scopes = _e[0], setScopes = _e[1];
-        var _f = useState(loadRules()), rules = _f[0], setRules = _f[1];
-        var _g = useState(false), showRules = _g[0], setShowRules = _g[1];
+      function saveStep(key, result) {
+        setData((current) => ({ ...current, [key]: result }));
+        if (key === "request") setStep("safety");
+        if (key === "safety") setStep("enhancements");
+        if (key === "enhancements") setStep("review");
+      }
 
-        function restartApp() {
-          setTech(null);
-          setStep("job");
-          setEstimate(null);
-          setData({});
-          setScopes(null);
-          setShowRules(false);
-        }
+      function jobName() {
+        if (!estimate) return "";
+        const customer = `${estimate.customer?.first_name || ""} ${estimate.customer?.last_name || ""}`.trim();
+        return customer ? `${customer} - Est #${estimate.estimate_number || "Pending"}` : `Est #${estimate.estimate_number || "Pending"}`;
+      }
 
-        function goToJobs() {
-          setStep("job");
-          setEstimate(null);
-          setData({});
-          setScopes(null);
-          setShowRules(false);
-        }
+      if (!tech) {
+        return h(TechSelector, { onSelect: setTech });
+      }
 
-        function saveStep(key, result) {
-          var next = {};
-          var name;
-          for (name in data) next[name] = data[name];
-          next[key] = result;
-          setData(next);
-          if (key === "request") setStep("safety");
-          if (key === "safety") setStep("enhancements");
-          if (key === "enhancements") setStep("review");
-        }
-
-        function currentJobName() {
-          if (!estimate) return "";
-          var customer = (get(estimate, "customer.first_name", "") + " " + get(estimate, "customer.last_name", "")).trim();
-          return customer ? customer + " - Est #" + (estimate.estimate_number || "Pending") : "Est #" + (estimate.estimate_number || "Pending");
-        }
-
-        if (!tech) {
-          return h(TechSelector, { onSelect: setTech });
-        }
-
-        return h("div", null, [
+      if (showRules) {
+        return h(React.Fragment, null, [
           h(Header, {
             key: "header",
-            tech: tech,
-            jobName: currentJobName(),
-            onJobs: goToJobs,
-            onRestart: restartApp,
-            onRules: function () { setShowRules(true); }
+            techName: tech,
+            jobName: jobName(),
+            step,
+            onReset: resetFlow,
+            onOpenRules: () => setShowRules(false)
           }),
-          showRules ? h(RulesScreen, {
+          h(IntelligenceScreen, {
             key: "rules",
-            rules: rules,
-            onBack: function () { setShowRules(false); },
-            onSave: function (updated) {
+            rules,
+            onBack: () => setShowRules(false),
+            onSave: (updated) => {
               setRules(updated);
               saveRules(updated);
             }
-          }) : null,
-          !showRules && step === "job" ? h(JobPicker, {
-            key: "job",
-            tech: tech,
-            onSelect: function (selectedEstimate) {
-              setEstimate(selectedEstimate);
-              setStep("request");
-            }
-          }) : null,
-          !showRules && step === "request" ? h(InputStep, { key: "request", stepKey: "request", saved: data.request, rules: rules, onDone: function (result) { saveStep("request", result); } }) : null,
-          !showRules && step === "safety" ? h(InputStep, { key: "safety", stepKey: "safety", saved: data.safety, rules: rules, onDone: function (result) { saveStep("safety", result); } }) : null,
-          !showRules && step === "enhancements" ? h(InputStep, { key: "enhancements", stepKey: "enhancements", saved: data.enhancements, rules: rules, onDone: function (result) { saveStep("enhancements", result); } }) : null,
-          !showRules && step === "review" ? h(ReviewStep, {
-            key: "review",
-            data: data,
-            onConfirm: function (payload) {
-              setScopes(payload);
-              setStep("options");
-            }
-          }) : null,
-          !showRules && step === "options" && scopes ? h(OptionsStep, { key: "options", scopes: scopes, rules: rules, estimate: estimate }) : null
+          })
         ]);
       }
 
-      createRoot(document.getElementById("root")).render(h(FieldGuide));
-    })();
+      return h("div", null, [
+        h(Header, {
+          key: "header",
+          techName: tech,
+          jobName: jobName(),
+          step,
+          onReset: resetFlow,
+          onOpenRules: () => setShowRules(true)
+        }),
+        step === "job" ? h(JobPicker, {
+          key: "jobs",
+          techName: tech,
+          onSelect: (selectedEstimate) => {
+            setEstimate(selectedEstimate);
+            setStep("request");
+          }
+        }) : null,
+        step === "request" ? h(InputStep, {
+          key: "request",
+          meta: STEP_META.request,
+          saved: data.request,
+          rules,
+          onDone: (result) => saveStep("request", result)
+        }) : null,
+        step === "safety" ? h(InputStep, {
+          key: "safety",
+          meta: STEP_META.safety,
+          saved: data.safety,
+          rules,
+          onDone: (result) => saveStep("safety", result)
+        }) : null,
+        step === "enhancements" ? h(InputStep, {
+          key: "enhancements",
+          meta: STEP_META.enhancements,
+          saved: data.enhancements,
+          rules,
+          onDone: (result) => saveStep("enhancements", result)
+        }) : null,
+        step === "review" ? h(ReviewStep, {
+          key: "review",
+          data,
+          onConfirm: (payload) => {
+            setScopes(payload);
+            setStep("options");
+          }
+        }) : null,
+        step === "options" && scopes ? h(OptionsStep, {
+          key: "options",
+          scopes,
+          rules,
+          estimate
+        }) : null
+      ]);
+    }
+
+    createRoot(document.getElementById("root")).render(h(FieldGuide));
   </script>
 </body>
 </html>
